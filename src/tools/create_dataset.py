@@ -2,7 +2,7 @@ import os
 import uuid
 import cv2
 
-IMAGES_PATH = os.path.join(r'C:\Users\yuram\Documents\BP\FaceDetection\data/seccam_2','images')
+IMAGES_PATH = os.path.join(r'C:\Users\yuram\Documents\BP\data/datasets/seccam_2','images')
 number_images = 30
 
 cap = cv2.VideoCapture("rtsp://147.232.24.197/live.sdp")

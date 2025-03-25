@@ -8,7 +8,7 @@ async def capture_and_save_images(frame, img_path):
     cv2.imwrite(imgname, frame)
 
 def main():
-    IMAGES_PATH = os.path.join(r'C:\Users\yuram\Documents\BP\FaceDetection\data/seccam_2', 'images')
+    IMAGES_PATH = os.path.join(r'C:\Users\yuram\Documents\BP\data/datasets/seccam_2', 'images')
     cam1 = cv2.VideoCapture("rtsp://147.232.24.197/live.sdp")
     cam2 = cv2.VideoCapture("rtsp://147.232.24.189/live.sdp")
 

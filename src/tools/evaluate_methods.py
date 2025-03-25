@@ -186,7 +186,7 @@ def summarize_method_performance(results):
 
 if __name__ == '__main__':
     # Define dataset paths and methods
-    datasets = ['FaceDetection/data/seccam', 'FaceDetection/data/webcam']
+    datasets = ['/data/datasets/seccam', '/data/datasets/webcam']
     methods = [
         (detect_faces_haar, 'Haar Cascade'),
         (detect_faces_hog, 'Dlib HOG'),

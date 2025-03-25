@@ -1,14 +1,14 @@
 # Tools and Libraries for Face Recognition
 
-[Comparison of deep learning software](https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software)
-
 In our project, we utilized a combination of custom model creation and pre-built libraries for face detection and recognition. Below, we provide a list of the tools tested, accompanied by a description of each and a comparison of the algorithms employed.
+
 ## Custom Model Creation
 
 ### Overview
 
 In this approach, we developed a face recognition model from the ground up using well-established machine learning libraries. This methodology allowed us to control every stage of the process, from image preprocessing to model training and evaluation.
-### Libraries:
+
+### Libraries
 
 - **OpenCV**: OpenCV served as the foundation for image processing and face detection. We employed the Haar cascades method, which is widely used for object detection. Haar cascades work by training classifiers on thousands of positive and negative images, detecting features like eyes, noses, and mouths through edge detection and brightness differences.
 - **TensorFlow**: The deep learning model was constructed using TensorFlow, with a particular focus on convolutional neural networks (CNNs). CNNs were chosen for their proven ability to recognize and classify visual data by automatically detecting relevant features (e.g., facial landmarks) through layers of convolutional filters. Our architecture was a multi-layer CNN model designed to extract features and perform classification on facial data.
@@ -20,21 +20,23 @@ In this approach, we developed a face recognition model from the ground up using
 - **Haar Cascades** (OpenCV): Utilized for real-time face detection by focusing on distinguishing facial features through edge detection.
 - **Convolutional Neural Networks** (TensorFlow): Deployed for face recognition by leveraging automatic feature extraction and classification of faces.
 - **Data Augmentation** Applied for increasing the diversity of training data by simulating real-world conditions.
-![[Pasted image 20241008150151.png]]
-**Figure 1**: Architecture of the convolutional neural network used in our custom model.
+  ![[Pasted image 20241008150151.png]]
+  **Figure 1**: Architecture of the convolutional neural network used in our custom model.
 
 > This image will illustrate the layers of the CNN, including convolutional, pooling, and fully connected layers, emphasizing how each step processes and refines the image data.
 
 This custom model creation approach provided us with significant flexibility. However, it demanded substantial effort in terms of fine-tuning the model and optimizing performance. Compared to pre-built solutions, this method allowed us to tailor our model specifically to the dataset and tasks at hand.
 
 ### References
-
-[TensorFlow Documentation](https://www.tensorflow.org/)  
-[OpenCV Python Documentation](https://docs.opencv.org/4.x/)
-[Albumentations Documentation](https://albumentations.ai/docs/)
+- [Comparison of deep learning software](https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software)
+- [TensorFlow Documentation](https://www.tensorflow.org/)  
+- [OpenCV Python Documentation](https://docs.opencv.org/4.x/)
+- [Albumentations Documentation](https://albumentations.ai/docs/)
 
 ---
+
 ## `Face-Recognition` Library
+
 ### Overview
 
 In parallel with building our own model, we also experimented with the `face-recognition` library, a popular tool that provides state-of-the-art face detection and recognition with minimal configuration. This library is built on top of `dlib`, a powerful machine learning library that implements advanced face detection and recognition techniques.
@@ -49,7 +51,7 @@ In parallel with building our own model, we also experimented with the `face-rec
 
 - **Histogram of Oriented Gradients (HOG)**: Employed for face detection, HOG extracts gradients of pixel intensity, providing robust detection across varying lighting and environments.
 - **Deep Metric Learning (ResNet-34)**: For face recognition, dlib utilizes a ResNet-34 model trained on a large-scale facial recognition dataset. The output is a 128-dimensional vector representation of each face, which is compared to other faces using distance metrics.
- 
+
 ![[Files/Pasted image 20241008151235.png]]
 **Figure 2**: Example of face recognition in the `face_recognition` library, showing detected faces.
 
@@ -86,7 +88,8 @@ The networks use a combination of classification and regression tasks, sharing t
 
 ### References
 
- Zhang, K., Zhang, Z., Li, Z., & Qiao, Y. (2016). Joint face detection and alignment using multitask cascaded convolutional networks. _IEEE Signal Processing Letters_, 23(10), 1499-1503.
+Zhang, K., Zhang, Z., Li, Z., & Qiao, Y. (2016). Joint face detection and alignment using multitask cascaded convolutional networks. _IEEE Signal Processing Letters_, 23(10), 1499-1503.
+
 ```bibtex
 @article{zhang2016joint,
   title={Joint face detection and alignment using multitask cascaded convolutional networks},
@@ -120,7 +123,7 @@ FaceNet can be implemented with TensorFlow or PyTorch and typically uses pre-tra
 
 ### Key References
 
-Schroff, F., Kalenichenko, D., & Philbin, J. (2015). FaceNet: A unified embedding for face recognition and clustering. In _Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition_ (pp. 815-823). 
+Schroff, F., Kalenichenko, D., & Philbin, J. (2015). FaceNet: A unified embedding for face recognition and clustering. In _Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition_ (pp. 815-823).
 
     @inproceedings{schroff2015facenet,   title={FaceNet: A unified embedding for face recognition and clustering},   author={Schroff, Florian and Kalenichenko, Dmitry and Philbin, James},   booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},   pages={815--823},   year={2015} }
 
@@ -149,16 +152,17 @@ Amazon Rekognition offers several capabilities related to facial analysis:
 ### References
 
 Amazon Web Services (2023). Amazon Rekognition Developer Guide. Retrieved from [Documentation](https://docs.aws.amazon.com/rekognition/)
-    
+
     @manual{awsrekognition,   title = {Amazon Rekognition Developer Guide},   author = {Amazon Web Services},   year = {2023},   note = {Retrieved from \url{https://docs.aws.amazon.com/rekognition/}} }
 
 ## Comparison (doplniť)
+
 While both approaches utilize deep learning techniques for face recognition, the key difference lies in the level of control and customization they offer. The custom model approach allows for full flexibility in terms of architecture design, dataset preprocessing, and performance tuning. However, this comes at the cost of increased complexity and development time.
 
 In contrast, the `face-recognition` library, built on dlib, offers a streamlined solution that abstracts many of the intricate details of face recognition. This is particularly advantageous for rapid prototyping or situations where pre-built models meet the required level of accuracy.
 
-
 ---
+
 # Methods and Algorithms for Face Recognition
 
 Face recognition is a crucial area within the field of computer vision, with various applications such as biometric authentication, surveillance, and human-computer interaction. Over the years, researchers have developed numerous techniques to accurately identify and verify faces in images. In this chapter, we will explore some of the most prominent methods and algorithms used for face recognition, focusing on their theoretical aspects.
@@ -172,15 +176,18 @@ The CNN operates by applying convolutional filters to an image, detecting featur
 Popular face recognition systems such as FaceNet and VGGFace rely on CNN architectures. These models are trained on large datasets containing millions of labeled faces, enabling them to generalize across different lighting conditions, angles, and facial expressions. CNNs are typically employed in combination with classification or embedding techniques for face verification and identification tasks.
 
 ### Citations
+
 - Schroff, Florian, et al. "FaceNet: A Unified Embedding for Face Recognition and Clustering." _Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition_ (2015): 815-823.
 
-		@article{Schroff2015FaceNetAU, title={FaceNet: A unified embedding for face recognition and clustering}, author={Florian Schroff and Dmitry Kalenichenko and James Philbin}, journal={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, year={2015}, pages={815-823}, url={https://api.semanticscholar.org/CorpusID:206592766} }
+      @article{Schroff2015FaceNetAU, title={FaceNet: A unified embedding for face recognition and clustering}, author={Florian Schroff and Dmitry Kalenichenko and James Philbin}, journal={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, year={2015}, pages={815-823}, url={https://api.semanticscholar.org/CorpusID:206592766} }
+
 - Parkhi, Omkar M., et al. "Deep Face Recognition." _British Machine Vision Conference_ (BMVC) 2015.
 
-		@inproceedings{Parkhi2015DeepFR, title={Deep Face Recognition}, author={Omkar M. Parkhi and Andrea Vedaldi and Andrew Zisserman}, booktitle={British Machine Vision Conference}, year={2015}, url={https://api.semanticscholar.org/CorpusID:4637184} }
+      @inproceedings{Parkhi2015DeepFR, title={Deep Face Recognition}, author={Omkar M. Parkhi and Andrea Vedaldi and Andrew Zisserman}, booktitle={British Machine Vision Conference}, year={2015}, url={https://api.semanticscholar.org/CorpusID:4637184} }
+
 ## 2. Eigenfaces
 
-The Eigenface method is a classical approach based on Principal Component Analysis (PCA). Developed in the early 1990s, this method represents faces as linear combinations of a set of basis images known as "eigenfaces." Each eigenface corresponds to a direction of maximal variance in the face dataset. The idea behind this method is to reduce the dimensionality of face data while retaining the most significant information that differentiates one face from 
+The Eigenface method is a classical approach based on Principal Component Analysis (PCA). Developed in the early 1990s, this method represents faces as linear combinations of a set of basis images known as "eigenfaces." Each eigenface corresponds to a direction of maximal variance in the face dataset. The idea behind this method is to reduce the dimensionality of face data while retaining the most significant information that differentiates one face from
 ![[Pasted image 20241017002332.png]]
 
 To recognize a face using the Eigenface approach, an input image is projected onto the subspace spanned by the eigenfaces. The resulting projection is compared to stored projections of known faces in the database. Recognition is achieved by measuring the similarity between the input face's projection and the stored ones.
@@ -188,25 +195,24 @@ To recognize a face using the Eigenface approach, an input image is projected on
 While the Eigenface method was a significant advancement at the time, its main limitation lies in its sensitivity to variations in lighting, pose, and expression. It also struggles with facial recognition in unconstrained environments.
 
 ### Citations
+
 Turk, Matthew, and Alex Pentland. "Eigenfaces for Recognition." _Journal of Cognitive Neuroscience_ 3.1 (1991): 71-86.
 
-	@article{10.1162/jocn.1991.3.1.71,
-	    author = {Turk, Matthew and Pentland, Alex},
-	    title = "{Eigenfaces for Recognition}",
-	    journal = {Journal of Cognitive Neuroscience},
-	    volume = {3},
-	    number = {1},
-	    pages = {71-86},
-	    year = {1991},
-	    month = {01},
-	    abstract = "{We have developed a near-real-time computer system that can locate and track a subject's head, and then recognize the person by comparing characteristics of the face to those of known individuals. The computational approach taken in this system is motivated by both physiology and information theory, as well as by the practical requirements of near-real-time performance and accuracy. Our approach treats the face recognition problem as an intrinsically two-dimensional (2-D) recognition problem rather than requiring recovery of three-dimensional geometry, taking advantage of the fact that faces are normally upright and thus may be described by a small set of 2-D characteristic views. The system functions by projecting face images onto a feature space that spans the significant variations among known face images. The significant features are known as "eigenfaces," because they are the eigenvectors (principal components) of the set of faces; they do not necessarily correspond to features such as eyes, ears, and noses. The projection operation characterizes an individual face by a weighted sum of the eigenface features, and so to recognize a particular face it is necessary only to compare these weights to those of known individuals. Some particular advantages of our approach are that it provides for the ability to learn and later recognize new faces in an unsupervised manner, and that it is easy to implement using a neural network architecture.}",
-	    issn = {0898-929X},
-	    doi = {10.1162/jocn.1991.3.1.71},
-	    url = {https://doi.org/10.1162/jocn.1991.3.1.71},
-	    eprint = {https://direct.mit.edu/jocn/article-pdf/3/1/71/1932018/jocn.1991.3.1.71.pdf},
+    @article{10.1162/jocn.1991.3.1.71,
+        author = {Turk, Matthew and Pentland, Alex},
+        title = "{Eigenfaces for Recognition}",
+        journal = {Journal of Cognitive Neuroscience},
+        volume = {3},
+        number = {1},
+        pages = {71-86},
+        year = {1991},
+        month = {01},
+        abstract = "{We have developed a near-real-time computer system that can locate and track a subject's head, and then recognize the person by comparing characteristics of the face to those of known individuals. The computational approach taken in this system is motivated by both physiology and information theory, as well as by the practical requirements of near-real-time performance and accuracy. Our approach treats the face recognition problem as an intrinsically two-dimensional (2-D) recognition problem rather than requiring recovery of three-dimensional geometry, taking advantage of the fact that faces are normally upright and thus may be described by a small set of 2-D characteristic views. The system functions by projecting face images onto a feature space that spans the significant variations among known face images. The significant features are known as "eigenfaces," because they are the eigenvectors (principal components) of the set of faces; they do not necessarily correspond to features such as eyes, ears, and noses. The projection operation characterizes an individual face by a weighted sum of the eigenface features, and so to recognize a particular face it is necessary only to compare these weights to those of known individuals. Some particular advantages of our approach are that it provides for the ability to learn and later recognize new faces in an unsupervised manner, and that it is easy to implement using a neural network architecture.}",
+        issn = {0898-929X},
+        doi = {10.1162/jocn.1991.3.1.71},
+        url = {https://doi.org/10.1162/jocn.1991.3.1.71},
+        eprint = {https://direct.mit.edu/jocn/article-pdf/3/1/71/1932018/jocn.1991.3.1.71.pdf},
     }
-
-
 
 ## 3. Fisherfaces
 
@@ -217,18 +223,19 @@ The Fisherface approach projects the face data onto a subspace where the ratio o
 Fisherfaces, therefore, offer better performance than Eigenfaces, especially in more realistic, variable conditions, making it a more practical choice for face recognition.
 
 ### Citations
+
 Belhumeur, Peter N., et al. "Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection." _IEEE Transactions on Pattern Analysis and Machine Intelligence_ 19.7 (1997): 711-720.
 
-	@ARTICLE{598228,
-	  author={Belhumeur, P.N. and Hespanha, J.P. and Kriegman, D.J.},
-	  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
-	  title={Eigenfaces vs. Fisherfaces: recognition using class specific linear projection}, 
-	  year={1997},
-	  volume={19},
-	  number={7},
-	  pages={711-720},
-	  keywords={Face recognition;Light scattering;Lighting;Face detection;Principal component analysis;Shadow mapping;Light sources;Pattern classification;Pixel;Error analysis},
-	  doi={10.1109/34.598228}}
+    @ARTICLE{598228,
+      author={Belhumeur, P.N. and Hespanha, J.P. and Kriegman, D.J.},
+      journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+      title={Eigenfaces vs. Fisherfaces: recognition using class specific linear projection},
+      year={1997},
+      volume={19},
+      number={7},
+      pages={711-720},
+      keywords={Face recognition;Light scattering;Lighting;Face detection;Principal component analysis;Shadow mapping;Light sources;Pattern classification;Pixel;Error analysis},
+      doi={10.1109/34.598228}}
 
 ## 4. Local Binary Patterns (LBP)
 
@@ -240,16 +247,16 @@ The advantage of LBP lies in its simplicity and computational efficiency. It is 
 
 Ahonen, Timo, et al. "Face Recognition with Local Binary Patterns." _European Conference on Computer Vision_ (ECCV) 2004.
 
-	@article{article,
-	author = {Ahonen, Timo and Hadid, Abdenour and Pietikäinen, Matti},
-	year = {2007},
-	month = {01},
-	pages = {2037-41},
-	title = {Face Description with Local Binary Patterns: Application to Face Recognition},
-	volume = {28},
-	journal = {IEEE transactions on pattern analysis and machine intelligence},
-	doi = {10.1109/TPAMI.2006.244}
-	}
+    @article{article,
+    author = {Ahonen, Timo and Hadid, Abdenour and Pietikäinen, Matti},
+    year = {2007},
+    month = {01},
+    pages = {2037-41},
+    title = {Face Description with Local Binary Patterns: Application to Face Recognition},
+    volume = {28},
+    journal = {IEEE transactions on pattern analysis and machine intelligence},
+    doi = {10.1109/TPAMI.2006.244}
+    }
 
 ## 5. Haar Cascades
 
@@ -263,16 +270,16 @@ Although Haar Cascades are primarily used for face detection, they can also be e
 
 Viola, Paul, and Michael Jones. "Rapid Object Detection Using a Boosted Cascade of Simple Features." _Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition_ 2001.
 
-	@INPROCEEDINGS{990517,
-	  author={Viola, P. and Jones, M.},
-	  booktitle={Proceedings of the 2001 IEEE Computer Society Conference on Computer Vision and Pattern Recognition. CVPR 2001}, 
-	  title={Rapid object detection using a boosted cascade of simple features}, 
-	  year={2001},
-	  volume={1},
-	  number={},
-	  pages={I-I},
-	  keywords={Object detection;Face detection;Pixel;Detectors;Filters;Machine learning;Image representation;Focusing;Skin;Robustness},
-	  doi={10.1109/CVPR.2001.990517}}
+    @INPROCEEDINGS{990517,
+      author={Viola, P. and Jones, M.},
+      booktitle={Proceedings of the 2001 IEEE Computer Society Conference on Computer Vision and Pattern Recognition. CVPR 2001},
+      title={Rapid object detection using a boosted cascade of simple features},
+      year={2001},
+      volume={1},
+      number={},
+      pages={I-I},
+      keywords={Object detection;Face detection;Pixel;Detectors;Filters;Machine learning;Image representation;Focusing;Skin;Robustness},
+      doi={10.1109/CVPR.2001.990517}}
 
 ## 6. Histogram of Oriented Gradients (HOG)
 
@@ -283,18 +290,19 @@ The Histogram of Oriented Gradients (HOG) method is a feature extraction techniq
 HOG-based face recognition is robust to small variations in pose and lighting, and it is computationally efficient. However, its performance is generally lower than deep learning-based approaches like CNNs, especially when dealing with more complex, unconstrained face recognition tasks.
 
 ### Citations
+
 Dalal, Navneet, and Bill Triggs. "Histograms of Oriented Gradients for Human Detection." _Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition_ 2005.
 
-	@INPROCEEDINGS{1467360,
-	  author={Dalal, N. and Triggs, B.},
-	  booktitle={2005 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'05)}, 
-	  title={Histograms of oriented gradients for human detection}, 
-	  year={2005},
-	  volume={1},
-	  number={},
-	  pages={886-893 vol. 1},
-	  keywords={Histograms;Humans;Robustness;Object recognition;Support vector machines;Object detection;Testing;Image edge detection;High performance computing;Image databases},
-	  doi={10.1109/CVPR.2005.177}}
+    @INPROCEEDINGS{1467360,
+      author={Dalal, N. and Triggs, B.},
+      booktitle={2005 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'05)},
+      title={Histograms of oriented gradients for human detection},
+      year={2005},
+      volume={1},
+      number={},
+      pages={886-893 vol. 1},
+      keywords={Histograms;Humans;Robustness;Object recognition;Support vector machines;Object detection;Testing;Image edge detection;High performance computing;Image databases},
+      doi={10.1109/CVPR.2005.177}}
 
 ## 7. Deep Metric Learning
 
@@ -309,29 +317,37 @@ This technique enables robust face recognition by transforming the problem into 
 3D face recognition is typically combined with 2D methods to enhance performance. Although more accurate, the requirement for specialized sensors makes this approach less practical for everyday applications compared to 2D methods.
 
 ### Citations
+
 Bowyer, Kevin W., et al. "Face Recognition Technology: Security vs. Privacy." _IEEE Technology and Society Magazine_ 23.1 (2004): 9-19.
 
-	@ARTICLE{1273467,
-	  author={Bowyer, K.W.},
-	  journal={IEEE Technology and Society Magazine}, 
-	  title={Face recognition technology: security versus privacy}, 
-	  year={2004},
-	  volume={23},
-	  number={1},
-	  pages={9-19},
-	  keywords={Face recognition;Privacy;Terrorism;Video surveillance;Biometrics;Cameras;National security;Constitution;Airports;Law enforcement},
-	  doi={10.1109/MTAS.2004.1273467}}
+    @ARTICLE{1273467,
+      author={Bowyer, K.W.},
+      journal={IEEE Technology and Society Magazine},
+      title={Face recognition technology: security versus privacy},
+      year={2004},
+      volume={23},
+      number={1},
+      pages={9-19},
+      keywords={Face recognition;Privacy;Terrorism;Video surveillance;Biometrics;Cameras;National security;Constitution;Airports;Law enforcement},
+      doi={10.1109/MTAS.2004.1273467}}
+
 ---
+
 # Datasets
 
 Datasets are collections of related data used to train and evaluate machine learning models. In the context of face recognition using surveillance systems, datasets are essential for developing and testing algorithms that can accurately identify individuals.
 
 ## Uses of Datasets in Machine Learning
+
 Datasets play a crucial role in various stages of machine learning, including:
+
 - **Training Models**: Providing the data necessary to train face recognition algorithms.
 - **Evaluation and Validation**: Assessing the performance and reliability of models.
+
 ## Importance of High-Quality Datasets
+
 The quality of a dataset significantly impacts the accuracy and effectiveness of face recognition systems. High-quality datasets are characterized by:
+
 - **Diversity**: A wide range of images capturing different angles, lighting conditions, and expressions.
 - **Accuracy**: Correctly labeled data with minimal errors.
 - **Size**: A large enough dataset to adequately train the model.
@@ -339,46 +355,58 @@ The quality of a dataset significantly impacts the accuracy and effectiveness of
 High-quality datasets ensure that the face recognition system can generalize well to new, unseen data.
 
 ## Creating Your Own Dataset
-Creating a custom dataset involves several steps and considerations:
-### 1. Collecting images
-For this thesis, the dataset was created using two main sources: a personal webcam and a security camera installed at the university. A series of 30 images was captured for each dataset, with one image taken every two seconds over a one-minute period. 
 
->For best performance I needed to shoot my face from different angles.
-![Web camera image example | 400](webcam_example.jpg)
-_Figure 1: Picture captured using a web camera._
+Creating a custom dataset involves several steps and considerations:
+
+### 1. Collecting images
+
+For this thesis, the dataset was created using two main sources: a personal webcam and a security camera installed at the university. A series of 30 images was captured for each dataset, with one image taken every two seconds over a one-minute period.
+
+> For best performance I needed to shoot my face from different angles.
+> ![Web camera image example | 400](webcam_example.jpg) > _Figure 1: Picture captured using a web camera._
 
 ![Security camera image example | 600](seccam_example.jpg)
 _Figure 2: Picture captured using a security camera._
+
 #### Challenges and Solutions
+
 Throughout the dataset creation process, various challenges were encountered:
+
 - **Location**: Security cameras are located under the ceiling, resulting into limited visibility if the person is not faced directly at the camera. This challenge was addressed by capturing images from multiple angles using different security cameras.
 - **Image quality**: objects appear smaller when filming from such height, which impacts the potential quality of dataset images.
-To mitigate these issues, a web camera dataset was created for a comparative analysis of deep learning model performance on both datasets. The goal was to evaluate how face recognition performance varies with different camera types.
+  To mitigate these issues, a web camera dataset was created for a comparative analysis of deep learning model performance on both datasets. The goal was to evaluate how face recognition performance varies with different camera types.
+
 ### 2. Labeling
+
 Once the images were collected, they needed to be labeled accurately to train the face recognition model.
-For this task, Python library `labelme` was used to manually label all 30 pictures for each dataset. The labeling process consists of drawing a rectangle around the face. 
->[!note] Result
+For this task, Python library `labelme` was used to manually label all 30 pictures for each dataset. The labeling process consists of drawing a rectangle around the face.
+
+> [!note] Result
 > The label files have JSON format and contain information about the image itself and coordinates of face along with the label name
+
 ### 3. Augmentation
+
 Data augmentation is a technique used to artificially increase the diversity of the training data without actually collecting new data.
 For this thesis, the `Albumentations` library was used to perform data augmentation by implementing a comprehensive augmentation pipeline, incuding ==random cropping== (450x450 pixels), ==horizontal and vertical flipping==, ==brightness and contrast adjustments==, ==gamma correction==, and ==color shifts==.
 This helped improve the robustness of the face recognition model by exposing it to a wider variety of training samples.
 
-
 **TODO**: add parameter values to text, note that during augmentation we also augmented labels.
+
 #### Augmentor definition
+
 ```python
 import albumentations as alb
 
-augmentor = alb.Compose([alb.RandomCrop(width=450, height=450), 
-                         alb.HorizontalFlip(p=0.5), 
+augmentor = alb.Compose([alb.RandomCrop(width=450, height=450),
+                         alb.HorizontalFlip(p=0.5),
                          alb.RandomBrightnessContrast(p=0.2),
-                         alb.RandomGamma(p=0.2), 
-                         alb.RGBShift(p=0.2), 
-                         alb.VerticalFlip(p=0.5)], 
-                       bbox_params=alb.BboxParams(format='albumentations', 
+                         alb.RandomGamma(p=0.2),
+                         alb.RGBShift(p=0.2),
+                         alb.VerticalFlip(p=0.5)],
+                       bbox_params=alb.BboxParams(format='albumentations',
                                                   label_fields=['class_labels']))
 ```
+
 ### Citations
 
 ```bibtex
@@ -404,12 +432,26 @@ augmentor = alb.Compose([alb.RandomCrop(width=450, height=450),
   publisher={Elsevier}
 }
 ```
+
 ## Evaluation of pre-trained models on custom dataset
+
 ## `face_recognition`
+
 ### Sample
+
 ![[webcam_result.jpg | 400]]
+
 ### Test
+
 ![[seccam_result.jpg | 600]]
 
 ---
-![C:\Users\yuram\Documents\BP\plots\detection_time.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/detection_time.png)![C:\Users\yuram\Documents\BP\plots\false_positives.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/false_positives.png)![C:\Users\yuram\Documents\BP\plots\not_found.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/not_found.png)![C:\Users\yuram\Documents\BP\plots\num_faces_detected.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/num_faces_detected.png)
+
+![Detection time | 600](file:///c%3A/Users/yuram/Documents/BP/plots/detection_time.png)
+
+![C:\Users\yuram\Documents\BP\assets\plots\false_positives.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/false_positives.png)
+
+![C:\Users\yuram\Documents\BP\assets\plots\not_found.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/not_found.png)
+
+![C:\Users\yuram\Documents\BP\assets\plots\num_faces_detected.png | 600](file:///c%3A/Users/yuram/Documents/BP/plots/num_faces_detected.png)
+
