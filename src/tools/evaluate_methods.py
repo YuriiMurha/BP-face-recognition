@@ -8,34 +8,82 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Define the numeric columns
 numeric_columns = ['num_faces_detected', 'false_positives', 'not_found', 'detection_time', 'accuracy']
+# Assets path
+assets_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'plots'))
 
-def evaluate_method(dataset_path, method_function, method_name):
+def check_paths_exist(paths, subset=None):
+    """
+    Check if all paths in the list exist. Print a warning for each missing path.
+    Returns True if all exist, False otherwise.
+    """
+    all_exist = True
+    for path in paths:
+        if not os.path.isdir(path):
+            msg = f"Warning: Path '{path}' does not exist."
+            if subset:
+                msg += f" Skipping subset '{subset}'."
+            print(msg)
+            all_exist = False
+    return all_exist
+
+def evaluate_method(dataset, dataset_path, method_function, method_name):
     results = []
-    with ThreadPoolExecutor() as executor:
-        futures = []
-        for subset in ['test', 'train', 'val']:
-            images_path = os.path.join(dataset_path, subset, 'images')
-            labels_path = os.path.join(dataset_path, subset, 'labels')
-            for image_file in os.listdir(images_path):
-                image_path = os.path.join(images_path, image_file)
-                futures.append(executor.submit(process_image, image_path, image_file,labels_path, method_function, method_name, subset))
-        
-        for future in futures:
-            result = future.result()
-            if result:
-                results.append(result)
+    subsets = ['test', 'train', 'val']
+
+    multithreaded = method_name != 'Dlib HOG'
+    for subset in subsets:
+        print(f"Evaluating subset '{subset}' of dataset '{dataset}' using method '{method_name}'...")  # Debug log
+        results.extend(process_subset(subset, dataset_path, method_function, multithreaded=multithreaded))
 
     return results
 
-def process_image(image_path, image_file, labels_path, method_function, method_name, subset):
+def process_subset(subset, dataset_path, method_function, multithreaded=False):
+    images_path = os.path.join(dataset_path, subset, 'images')
+    labels_path = os.path.join(dataset_path, subset, 'labels')
+    if not check_paths_exist([images_path, labels_path], subset=subset):
+        return []
+    image_files = [f for f in os.listdir(images_path) if os.path.isfile(os.path.join(images_path, f))]
+    if not image_files:
+        print(f"Warning: No images found in '{images_path}'. Skipping subset '{subset}'.")
+        return []
+    
+    subset_results = []
+    
+    if multithreaded:
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            for image_file in image_files:
+                image_path = os.path.join(images_path, image_file)
+                futures.append(executor.submit(process_image, image_path, image_file, labels_path, method_function, method_name, dataset, subset))
+            for future in futures:
+                try:
+                    result = future.result()
+                    if result:
+                        subset_results.append(result)
+                except Exception as e:
+                    print(f"Error in threaded processing: {e}")
+    else:
+        for image_file in image_files:
+            image_path = os.path.join(images_path, image_file)
+            try:
+                result = process_image(image_path, image_file, labels_path, method_function, method_name, dataset, subset)
+                if result:
+                    subset_results.append(result)
+            except Exception as e:
+                print(f"Error processing image '{image_file}' in subset '{subset}' of dataset '{dataset}' using method '{method_name}': {e}")
+    return subset_results
+
+def process_image(image_path, image_file, labels_path, method_function, method_name, dataset, subset):
     try:
         import cv2
-        # Load the image
         image = cv2.imread(image_path)
-        if image is None:
-            raise ValueError(f"Failed to load image: {image_path}")
-        
-        faces, detection_time = method_function(image)
+        if image is None or image.size == 0:
+            raise ValueError(f"Failed to load or empty image: {image_path}")
+
+        try:
+            faces, detection_time = method_function(image)
+        except Exception as e:
+            raise RuntimeError(f"Face detection failed for '{image_file}': {e}")
 
         # Get ground truth bounding boxes from Labelme
         labels_file = os.path.join(labels_path, image_file.replace('.jpg', '.json'))  # Adjust for your format
@@ -64,6 +112,7 @@ def process_image(image_path, image_file, labels_path, method_function, method_n
         
         return {
             'method': method_name,
+            'dataset': dataset,
             'subset': subset,
             'image': image_file,
             'num_faces_detected': len(faces),
@@ -74,7 +123,7 @@ def process_image(image_path, image_file, labels_path, method_function, method_n
         }
     
     except Exception as e:
-        print(f"Error processing {image_path}: {e}")
+        print(f"Error processing image '{image_file}' in subset '{subset}' of dataset '{dataset}' using method '{method_name}': {e}")  # Error log
         return None
 
 
@@ -153,27 +202,35 @@ def plot_results(results):
     
     df = pd.DataFrame(results)
 
-    # Filter numeric columns
-    summary = df.groupby(['method'])[numeric_columns].mean().reset_index()
-
     # Create plots for each metric
     for metric in numeric_columns:
-        pivot = summary.pivot(index='method', columns='method', values=metric)
-        pivot.plot(kind='bar', figsize=(12, 8), alpha=0.8)
+        # Filter numeric columns
+        grouped = df.groupby(['method'])[metric].mean().reset_index()
+        # Plot the metric directly from the summary
+        ax = grouped.plot(x='method', y=metric, kind='bar', stacked=True, figsize=(12, 8), colormap='Set2')
         
         title = metric.replace('_', ' ').capitalize()
-        plt.title(f'{title} comparison')
+        plt.title(f'{title} comparison by subset')
+        plt.xlabel('Method')
         plt.ylabel(title)
-        plt.xticks(rotation=0)
-        plt.legend(title='Method', loc='upper left')
+        plt.xticks(rotation=45)
+        plt.legend(title="Subset")
         plt.tight_layout()
+        # Annotate values inside bars
+        for container in ax.containers:
+            ax.bar_label(container, fmt='%.2f', label_type='center')
+
+        # Save the plot to a file BEFORE showing or closing
+        save_path = os.path.join(assets_path, f'{title}.png')
+        ax.get_figure().savefig(save_path)
         plt.show()
-        # save the plot to a file
-        plt.savefig(f'{title} comparison.png')
+        plt.waitforbuttonpress()
         plt.close()
 
 def summarize_method_performance(results):
     import pandas as pd
+    import os
+
     df = pd.DataFrame(results)
 
     # Group by method and calculate mean for all subsets combined
@@ -182,27 +239,50 @@ def summarize_method_performance(results):
     print("\nGeneral Reliability Summary:")
     print(summary)
 
+    # Save summary as markdown table
+    markdown_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'data', 'method_evaluation.md'))
+    with open(markdown_path, 'w', encoding='utf-8') as f:
+        f.write("# Method evaluation summary\n\n")
+    df.to_markdown(markdown_path, index=False, tablefmt="github")    
+        
     return summary
 
-if __name__ == '__main__':
-    # Define dataset paths and methods
-    datasets = ['/data/datasets/seccam', '/data/datasets/webcam']
-    methods = [
+def get_datasets(base_dir):
+    """
+    Automatically define and return datasets with their paths.
+    """
+    dataset_names = ['seccam', 'webcam', 'seccam_2']
+    return {name: os.path.normpath(os.path.join(base_dir, '..', 'data', 'datasets', name)) for name in dataset_names}
+
+def get_methods():
+    """
+    Define and return face detection methods.
+    """
+    return [
         (detect_faces_haar, 'Haar Cascade'),
         (detect_faces_hog, 'Dlib HOG'),
         (detect_faces_facenet, 'FaceNet'),
         (detect_faces_face_recognition, 'Face Recognition')
     ]
 
+if __name__ == '__main__':
+    base_dir = os.path.dirname(os.path.abspath(__file__))  # folder containing evaluate_methods.py
+    
+    # Get datasets and methods
+    datasets = get_datasets(base_dir)
+    methods = get_methods()
+
     # Evaluate each method on each dataset
     all_results = []
-    for dataset_path in datasets:
+    for dataset, dataset_path in datasets.items():
         for method_function, method_name in methods:
-            results = evaluate_method(dataset_path, method_function, method_name)
+            print(f"Evaluating dataset '{dataset}' using method '{method_name}'...")  # Debug log
+            results = evaluate_method(dataset, dataset_path, method_function, method_name)
             all_results.extend(results)
 
     # Save results to CSV
-    save_results_to_csv(all_results, 'face_detection_results.csv')
+    output_file = os.path.normpath(os.path.join(base_dir, '..', 'data', 'face_detection_results.csv'))
+    save_results_to_csv(all_results, output_file)
 
     # Plot results
     plot_results(all_results)

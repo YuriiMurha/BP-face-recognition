@@ -38,8 +38,20 @@ _12-Dec-24_
 
 _25-Mar-25_
 
+- [ ] Evaluate seccam_2
+  - [ ] FaceNet?
+- Implement deep learning
 - [ ] Save objects to `.pickle` format
 - [ ] Test deep learning
+
+_April_
+
+- Write documentation
+  - [ ] User
+  - [ ] System
+- Write about the code in python notebooks
+  - [ ] Preprocessing, augmentation
+  - [ ] Deep Learning
 
 ---
 
