@@ -5,6 +5,7 @@ import dlib
 from shapely.geometry import box
 from detection_methods import detect_faces_haar, detect_faces_hog, detect_faces_facenet, detect_faces_face_recognition
 from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
 
 # Define the numeric columns
 numeric_columns = ['num_faces_detected', 'false_positives', 'not_found', 'detection_time', 'accuracy']
@@ -26,18 +27,20 @@ def check_paths_exist(paths, subset=None):
             all_exist = False
     return all_exist
 
+
 def evaluate_method(dataset, dataset_path, method_function, method_name):
     results = []
     subsets = ['test', 'train', 'val']
 
     multithreaded = method_name != 'Dlib HOG'
     for subset in subsets:
-        print(f"Evaluating subset '{subset}' of dataset '{dataset}' using method '{method_name}'...")  # Debug log
-        results.extend(process_subset(subset, dataset_path, method_function, multithreaded=multithreaded))
+        # print(f"Evaluating subset '{subset}' of dataset '{dataset}' using method '{method_name}'...")  # Debug log
+        results.extend(process_subset(subset, dataset_path, method_function, method_name, dataset, multithreaded=multithreaded))
 
     return results
 
-def process_subset(subset, dataset_path, method_function, multithreaded=False):
+
+def process_subset(subset, dataset_path, method_function, method_name, dataset, multithreaded=False):
     images_path = os.path.join(dataset_path, subset, 'images')
     labels_path = os.path.join(dataset_path, subset, 'labels')
     if not check_paths_exist([images_path, labels_path], subset=subset):
@@ -55,7 +58,7 @@ def process_subset(subset, dataset_path, method_function, multithreaded=False):
             for image_file in image_files:
                 image_path = os.path.join(images_path, image_file)
                 futures.append(executor.submit(process_image, image_path, image_file, labels_path, method_function, method_name, dataset, subset))
-            for future in futures:
+            for future in tqdm(futures, desc=f"Processing {subset} images ({method_name})", unit="img"):
                 try:
                     result = future.result()
                     if result:
@@ -63,7 +66,7 @@ def process_subset(subset, dataset_path, method_function, multithreaded=False):
                 except Exception as e:
                     print(f"Error in threaded processing: {e}")
     else:
-        for image_file in image_files:
+        for image_file in tqdm(image_files, desc=f"Processing {subset} images ({method_name})", unit="img"):
             image_path = os.path.join(images_path, image_file)
             try:
                 result = process_image(image_path, image_file, labels_path, method_function, method_name, dataset, subset)
@@ -72,6 +75,7 @@ def process_subset(subset, dataset_path, method_function, multithreaded=False):
             except Exception as e:
                 print(f"Error processing image '{image_file}' in subset '{subset}' of dataset '{dataset}' using method '{method_name}': {e}")
     return subset_results
+
 
 def process_image(image_path, image_file, labels_path, method_function, method_name, dataset, subset):
     try:
@@ -173,6 +177,7 @@ def evaluate_accuracy(detected_faces, ground_truth_faces, iou_threshold=0.5):
 
     return accuracy, false_positives, not_found
 
+
 def get_ground_truth_faces(label_file):
     """
     Extract the ground truth bounding boxes from a Labelme JSON file.
@@ -196,21 +201,31 @@ def save_results_to_csv(results, output_file):
         writer.writeheader()
         writer.writerows(results)
 
+
 def plot_results(results):
     import pandas as pd
     import matplotlib.pyplot as plt
-    
+
     df = pd.DataFrame(results)
 
     # Create plots for each metric
     for metric in numeric_columns:
-        # Filter numeric columns
-        grouped = df.groupby(['method'])[metric].mean().reset_index()
-        # Plot the metric directly from the summary
-        ax = grouped.plot(x='method', y=metric, kind='bar', stacked=True, figsize=(12, 8), colormap='Set2')
+        # Pivot to have subsets as columns, methods as index
+        pivot_df = df.pivot_table(values=metric, index='method', columns='dataset', aggfunc='mean').fillna(0)
+
+        # Print the pivoted DataFrame sample for debugging
+        print(pivot_df.head())
         
+        # Plot as stacked bar chart: one bar per method, stacked by dataset (each color = dataset)
+        ax = pivot_df.plot(
+            kind='bar',
+            stacked=True,
+            figsize=(12, 6),
+            colormap='Set2'
+        )
+
         title = metric.replace('_', ' ').capitalize()
-        plt.title(f'{title} comparison by subset')
+        plt.title(f'{title} comparison by dataset')
         plt.xlabel('Method')
         plt.ylabel(title)
         plt.xticks(rotation=45)
@@ -224,8 +239,8 @@ def plot_results(results):
         save_path = os.path.join(assets_path, f'{title}.png')
         ax.get_figure().savefig(save_path)
         plt.show()
-        plt.waitforbuttonpress()
         plt.close()
+
 
 def summarize_method_performance(results):
     import pandas as pd
@@ -243,9 +258,10 @@ def summarize_method_performance(results):
     markdown_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'data', 'method_evaluation.md'))
     with open(markdown_path, 'w', encoding='utf-8') as f:
         f.write("# Method evaluation summary\n\n")
-    df.to_markdown(markdown_path, index=False, tablefmt="github")    
+    summary.to_markdown(markdown_path, index=False, tablefmt="github")    
         
     return summary
+
 
 def get_datasets(base_dir):
     """
@@ -253,6 +269,7 @@ def get_datasets(base_dir):
     """
     dataset_names = ['seccam', 'webcam', 'seccam_2']
     return {name: os.path.normpath(os.path.join(base_dir, '..', 'data', 'datasets', name)) for name in dataset_names}
+
 
 def get_methods():
     """
@@ -265,6 +282,7 @@ def get_methods():
         (detect_faces_face_recognition, 'Face Recognition')
     ]
 
+
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.path.abspath(__file__))  # folder containing evaluate_methods.py
     
@@ -274,9 +292,9 @@ if __name__ == '__main__':
 
     # Evaluate each method on each dataset
     all_results = []
-    for dataset, dataset_path in datasets.items():
-        for method_function, method_name in methods:
-            print(f"Evaluating dataset '{dataset}' using method '{method_name}'...")  # Debug log
+    for dataset, dataset_path in tqdm(datasets.items(), desc="Datasets", unit="dataset"):
+        for method_function, method_name in tqdm(methods, desc=f"Methods for {dataset}", unit="method", leave=False):
+            # print(f"Evaluating dataset '{dataset}' using method '{method_name}'...")  # Debug log
             results = evaluate_method(dataset, dataset_path, method_function, method_name)
             all_results.extend(results)
 

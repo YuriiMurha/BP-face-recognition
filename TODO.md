@@ -1,4 +1,6 @@
-_10-Oct-24_
+# TODO list
+
+## 10-Oct-24
 
 - [x] Mention OpenCV `CascadeClassifier`
 - [x] Find other libraries and solutions
@@ -8,7 +10,7 @@ _10-Oct-24_
 
 ---
 
-_17-Oct-24_
+## 17-Oct-24
 
 - [x] Dataset chapter ✅ 2024-11-07
   - [x] vytvorenie svojho datasetu ✅ 2024-11-07
@@ -16,7 +18,7 @@ _17-Oct-24_
 
 ---
 
-_07-Nov-24_
+## 07-Nov-24
 
 - [x] vyhodnotenie existujucich riešeni na datasetoch
   - [x] napisanie kodu pre viacero metod
@@ -29,33 +31,59 @@ _07-Nov-24_
 
 ---
 
-_12-Dec-24_
+## 12-Dec-24
 
 - [x] Manually label new dataset ✅ 2024-12-12
 - [x] Commit code & thesis text to repository
 
 ---
 
-_25-Mar-25_
+## 25-Mar-25
 
-- [ ] Evaluate seccam_2
-  - [ ] FaceNet?
-- Implement deep learning
-- [ ] Save objects to `.pickle` format
-- [ ] Test deep learning
+- [X] Evaluate seccam_2
+<!-- - [ ] FaceNet -->
+- Implement deep learning:
+  1. [x] Create NN
+  2. [x] Train NN
+  3. [ ] Test NN
 
-_April_
+## End of April
+
+pouzit jednu najlepšiu metodu na detekciu, potom vlasnty model na klasifikaciu kazdeho najdeneho človeka, porovnavať s každym človekom v datasete, ak je to novy clovek, tak ho pridame do datasetu
+
+- [x] dat teoreticku cast do LaTeXu
+- [x] dopisať teoreticku časť a poslať na review
+  - [ ] Abstraknty netechnicky "Uvod" s popisom problemu ktory rieši tato praca, motivacia
+  - [ ] Pridať potom priklady komerčneho použitia ku prehľadu existujucich riešeni a metod
+
+<!-- - [ ] Diagramy porovnavania nemusia byt rozdelene podla subsetov, spomenuť to v texte -->
+
+- [x] čas rozpoznavania pridať ako taubľku
+
+---
+
+## May
+- Assets
+  - [x] Create and insert system architecture diagram (for thesis and documentation)
+  - [x] Add codebase workflow diagram (showing data flow between modules)
+  - [ ] Add sequence diagram for main application loop
+  - [ ] Add example screenshots for annotation and augmentation steps
+  - [ ] Summarize database schema and add example queries to documentation
+
+- [x] dopisať prakticku časť a poslať na review
+  - Write about the code in python notebooks
+    - [x] Preprocessing, augmentation
+    - [x] Deep Learning
 
 - Write documentation
   - [ ] User
   - [ ] System
-- Write about the code in python notebooks
-  - [ ] Preprocessing, augmentation
-  - [ ] Deep Learning
 
 ---
 
-**Finish**
+## Finish
 
-- [ ] Rename pictures in _/Files_ folder
-- [ ] Refactor text in LaTeX
+- [x] Rename pictures in _/Files_ folder
+- [x] Refactor text in LaTeX
+
+> Note: Evaluate augmented subsets, not raw images

@@ -1,0 +1,229 @@
+\documentclass[]{tukethesis}
+%% -------------------------------------------------------------------------
+%% UTF-8 encoding used. Use pdfcslatex to compile your document
+%% Tukethesis Class for Win XP and GNU/Linux
+%% -------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage{lmodern,cmap}
+%\usepackage{slovak}
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\tablename}{Tab.}
+\renewcommand{\refname}{Bibliography}
+\renewcommand{\listfigurename}{List of Figures}
+\renewcommand{\listtablename}{List of Tables}
+\renewcommand{\contentsname}{Contents}
+%%
+\usepackage{latexsym}
+\usepackage{dcolumn} % alignment on a 'decimal point' in tabular mode
+\usepackage{hhline}
+\usepackage{amsmath}
+\usepackage{nicefrac} % nice fractions
+\usepackage{upgreek} % e.g. $\upmu\mathrm{m}$ type micrometer (mu)
+\usepackage[final]{showkeys}%color%notref%notcite%final
+\usepackage[noprefix]{nomencl}
+\makeglossary % command to make *.glo file
+\usepackage{parskip}%
+%%
+%\usepackage[dvips]{graphicx}
+%\DeclareGraphicsExtensions{.eps, .mps}
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.mps}
+\graphicspath{{figures/}} % directory for figures
+%%
+%% numerical citations (vancouer style)
+%\usepackage[numbers]{natbib}
+%%
+%% author-year citations (harvard style) -- prefered !!!
+\usepackage{natbib} \citestyle{chicago}
+% -----------------------------------------------------------------
+%% tlač !!!
+\usepackage[pdftex,unicode=true,bookmarksnumbered=true,
+bookmarksopen=true,pdfmenubar=true,pdfview=Fit,linktocpage=true,
+pageanchor=true,bookmarkstype=toc,pdfpagemode=UseOutlines,
+pdfstartpage=1]{hyperref}
+\hypersetup{%
+baseurl={http://www.tuke.sk},
+pdfcreator={pdfcsLaTeX},
+pdfkeywords={recognition, camera, surveillance},
+pdftitle={Face Recognition with Camera Surveillance}, % potom sa upresni
+pdfauthor={Yurii Murha},
+pdfsubject={Bachelor's Thesis}
+} 
+%% -----------------------------------------------------------------
+%% START YOUR THESIS
+%% -----------------------------------------------------------------
+%%
+%% PLEASE SELECT YOUR PREFERED THESIS TYPE
+%%
+%% A Bachelor's degree is a first degree at college or university
+\bachelorthesis{Bachelor's Thesis}
+%%
+%% A Master's thesis is a second level college or university degree
+%\masterthesis{Master's Thesis}
+%% -----------------------------------------------------------------
+%% Ak praca nema 'podnazov' zakomentujte riadky \subtitle a \podnazov, 
+%% alebo polozky nechajte prazdne
+\author{Yurii Murha}
+\title{Face Recognition with Camera Surveillance}
+\subtitle{}
+% \abstrakte{Text abstraktu v~svetovom jazyku je potrebný pre integráciu
+% do medzinárodných informačných systémov. Ak nie je možné cudzojazyčnú
+% verziu abstraktu umiestniť na jednej strane so slovenským abstraktom,
+% je potrebné umiestniť ju na samostatnú stranu (cudzojazyčný abstrakt
+% nemožno deliť a~uvádzať na dvoch strabách).}
+\keywords{recognition, camera, surveillance}
+% \degree{}
+\university{Technical University of Košice}
+\faculty{Faculty of Electrical Engineering and Informatics}
+\facultyabbr{FEI}
+\department{Department of Cybernetics and Artificial Intelligence}
+\departmentabbr{KKUI}
+\fieldofstudy{5.2.13 Electronics}
+\studyprogramme{Intelligent Systems}
+\supervisor{Ing.~Ján~Magyar, PhD.}
+\consultanta{Ing.~Ján~Magyar, PhD.}
+\consultantb{}
+\dateofsubmission{April. 24. 2024} 
+\town{Košice}
+\abstrakte{Face recognition in surveillance systems represents a rapidly advancing field at the intersection of artificial intelligence, computer vision, and security technology. This thesis presents a comprehensive study of face detection and recognition methods, with a focus on their application in real-time camera surveillance. The work begins with an overview of the theoretical foundations, including classical approaches such as Eigenfaces, Fisherfaces, and Local Binary Patterns, as well as modern deep learning techniques like Convolutional Neural Networks (CNNs), Histogram of Oriented Gradients (HOG), and Deep Metric Learning. The thesis systematically compares open-source libraries and frameworks, including OpenCV, dlib, and TensorFlow, and evaluates their performance on custom datasets collected from webcams and security cameras. A custom dataset was created and manually annotated to reflect real-world conditions, and data augmentation was applied to improve model robustness. The practical part of the thesis details the development of a modular face recognition system, integrating detection, recognition, and database management components. Experimental results demonstrate the strengths and limitations of various algorithms in terms of accuracy, speed, and robustness to challenging conditions such as lighting, pose, and occlusion. The thesis also addresses ethical and privacy considerations relevant to the deployment of biometric systems. The findings contribute to the understanding of current capabilities and challenges in face recognition for surveillance, providing guidance for future research and practical implementation in security applications.}
+% \klucoveslova{Optimalizácia, záverečná práca, písanie}
+
+\begin{document}
+\renewcommand\theHfigure{\theHsection.\arabic{figure}}
+\renewcommand\theHtable{\theHsection.\arabic{table}}
+\bibliographystyle{dcu}
+%% input the 'First page of the Thesis'
+\firstpage
+
+%% input the 'Title page of the Thesis'
+\titlepage
+
+%% input the 'Metadatasheet of the Thesis'
+%\metadatasheet
+
+\errata % begin the 'Errata' 
+\kerrata
+
+\abstrakte % Abstract in English
+
+
+\endabstract % end of the Abstracts page
+
+%% input the 'Assign of the Thesis'
+\assignthesis
+
+%% input the 'Declaration' of the author
+\declaration
+% I hereby declare that this thesis is my own work and effort. Where
+% other sources of information have been used, they have been
+% acknowledged.
+%%
+% Niektorí autori metodických príručiek o~záverečných prácach sa
+% nazdávajú, že takéto vyhlásenie je zbytočné, nakoľko povinnosť
+% vypracovať záverečnú prácu samostatne, vyplýva študentovi zo zákona
+% a na autora práce sa vzťahuje autorský zákon.
+
+\acknowledgement % begin the 'Acknowledgement'
+I would like to express my sincere thanks to my supervisor Ing.~Ján Magyar, PhD, the main Supervisor. Special mention should go
+to Ing.~Ján Magyar, PhD for his constant, and constructive guidance
+throughout the study. To all other who gave a hand, I say thank you
+very much.
+\endacknowledgement
+
+\preface % begin the 'Preface'
+This thesis addresses the development and evaluation of face recognition systems for surveillance applications. The work was motivated by the increasing demand for intelligent, automated security solutions capable of real-time identification and monitoring. The main goal was to explore, implement, and compare state-of-the-art algorithms and practical approaches for face detection and recognition in real-world camera streams.
+
+The thesis was created as part of the Intelligent Systems study program at the Faculty of Electrical Engineering and Informatics, Technical University of Košice. The topic was chosen due to the growing importance of artificial intelligence and computer vision in modern security and public safety. The work combines theoretical research with practical implementation, including dataset creation, model training, and system integration.
+
+The main methods used include deep learning, data augmentation, and benchmarking of multiple face recognition libraries. The thesis also discusses ethical and privacy considerations relevant to deploying such systems in practice.
+\endpreface
+
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+\thispagestyle{empty}
+%\addcontentsline{toc}{section}{\numberline{}List of Figures}
+\listoffigures
+\newpage
+
+\thispagestyle{empty}
+%\addcontentsline{toc}{section}{\numberline{}List of Tables}
+\listoftables
+\newpage
+
+\thispagestyle{empty}
+%\addcontentsline{toc}{section}{\numberline{}List of Symbols and
+%Abbreviations}
+\printglossary % input the 'List of Symbols and Abbreviations'
+\newpage
+
+% Custom glossary for this thesis: Face Recognition in Surveillance Systems
+\section*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{section}{List of Symbols and Abbreviations}
+
+\begin{description}
+    \item[FRS] Facial Recognition Software
+    \item[AI] Artificial Intelligence
+    \item[IoU] Intersection over Union
+    \item[CSV] Comma-Separated Values
+    \item[JSON] JavaScript Object Notation
+    \item[RTSP] Real Time Streaming Protocol
+    \item[CD] Compact Disc
+    \item[GUI] Graphical User Interface
+    \item[API] Application Programming Interface
+    \item[GPU] Graphics Processing Unit
+    \item[CPU] Central Processing Unit
+    \item[GDPR] General Data Protection Regulation
+    \item[CCPA] California Consumer Privacy Act
+    \item[CPRA] California Privacy Rights Act
+    \item[MTCNN] Multi-task Cascaded Convolutional Networks
+    \item[HOG] Histogram of Oriented Gradients
+    \item[CNN] Convolutional Neural Network
+    \item[ROC] Receiver Operating Characteristic
+    \item[FAR] False Acceptance Rate
+    \item[FRR] False Rejection Rate
+    \item[EER] Equal Error Rate
+    \item[TPR] True Positive Rate
+    \item[FPR] False Positive Rate
+    \item[FN] False Negative
+    \item[TP] True Positive
+    \item[FP] False Positive
+    \item[TN] True Negative
+    \item[API] Application Programming Interface
+    \item[OpenCV] Open Source Computer Vision Library
+    \item[TensorFlow] Open-source machine learning framework
+    \item[Albumentations] Data augmentation library for images
+    \item[Labelme] Image annotation tool
+    \item[ResNet] Residual Neural Network
+    \item[FaceNet] Deep learning model for face recognition
+    \item[Rekognition] Amazon cloud-based image/video analysis service
+\end{description}
+
+\newpage
+%
+\include{introduction} % ano
+%
+\include{problemexpres} 
+%
+\include{analytical} % Literature Review
+%
+\include{mainpart} % 3-5 moja implementacia ako funguje riešenie
+%
+\include{conclusion} 
+%
+\include{bibliography}
+%
+\include{appendices}
+%
+\include{appendixa} % CD
+%
+\include{appendixb} % User
+%
+\include{appendixc} % System
+\bibliographystyle{plain}
+\bibliography{bib1}
+\end{document}
+
+%%

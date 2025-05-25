@@ -1,0 +1,37 @@
+\section*{Appendix B: Code Samples}
+\addcontentsline{toc}{section}{Appendix B: Code Samples}
+
+% Example code sample for face detection (OpenCV)
+\begin{verbatim}
+# Example Python code for face detection
+import cv2
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+img = cv2.imread('test.jpg')
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
+cv2.imshow('img', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+\end{verbatim}
+
+% Example code sample for dataset splitting
+\begin{verbatim}
+# Example Python code for splitting dataset into train/val/test
+import os, numpy as np
+all_images = os.listdir('images')
+np.random.shuffle(all_images)
+train_count = int(len(all_images) * 0.7)
+test_count = int(np.ceil(len(all_images) * 0.15))
+val_count = len(all_images) - train_count - test_count
+train_files = all_images[:train_count]
+test_files = all_images[train_count:train_count+test_count]
+val_files = all_images[train_count+test_count:]
+# Move files to appropriate folders as needed
+\end{verbatim}
+
+% Example citation of code in thesis:
+% See Appendix~\ref{appendixb} for code samples used in the implementation~\cite{opencv_library, numpy_library}.
+
+% Add more code samples as needed, referencing them in the main text.
