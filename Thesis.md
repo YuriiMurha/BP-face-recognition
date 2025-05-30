@@ -781,6 +781,67 @@ _Figure 3: Architecture of the deep learning model used for face detection and r
 
 > _Comment: Add a summary table of model hyperparameters and training settings if needed._
 
+### Model Architecture
+The FaceTracker model is built using the TensorFlow Functional API. It employs the EfficientNetB0 architecture as a backbone for feature extraction, which is pre-trained on the ImageNet dataset. The model is designed to handle object detection tasks, outputting both class probabilities and bounding box coordinates for up to 10 objects per image.
+
+#### Key Components:
+1. **Input Layer**: Accepts images resized to the largest dimensions among all dataset sources.
+2. **EfficientNetB0 Backbone**: Extracts high-level features from input images. The initial 50 layers are frozen to prevent overfitting.
+3. **Global Average Pooling**: Reduces the spatial dimensions of feature maps.
+4. **Dense Layers**: Includes a fully connected layer with 512 units and ReLU activation, followed by a Dropout layer (rate=0.5) to prevent overfitting.
+5. **Output Heads**:
+   - **Classification Head**: Outputs class probabilities for up to 10 objects using a softmax activation function.
+   - **Bounding Box Head**: Outputs bounding box coordinates normalized to [0,1] using a sigmoid activation function.
+
+### Model Hyperparameters
+
+The following table summarizes the key hyperparameters used in the training of the FaceTracker model:
+
+| **Hyperparameter**         | **Value**                          | **Description**                                                                 |
+|-----------------------------|------------------------------------|---------------------------------------------------------------------------------|
+| **Batch Size**             | 8                                  | Number of samples processed in one training step.                              |
+| **Learning Rate**          | 0.0001                             | Initial learning rate for the optimizer.                                       |
+| **Learning Rate Decay**    | 25% reduction per epoch            | Adjusts the learning rate dynamically during training.                         |
+| **Epochs**                 | 10                                 | Total number of training iterations over the dataset.                          |
+| **Optimizer**              | Adam                               | Adaptive learning rate optimizer.                                              |
+| **Dropout Rate**           | 0.5                                | Fraction of neurons dropped during training to prevent overfitting.            |
+| **Maximum Objects/Image**  | 10                                 | Maximum number of objects (faces) detected per image.                          |
+| **Input Image Sizes**      | Webcam: (480, 640) <br> Seccam: (1280, 800) <br> Seccam_2: (1280, 800) | Dimensions of input images for different camera sources. |
+
+### Training Techniques
+
+#### Optimizer
+The Adam optimizer is used with an Inverse Time Decay learning rate schedule. The learning rate is defined as:
+\[
+\text{lr}(t) = \frac{\text{initial\_lr}}{1 + \text{decay\_rate} \cdot \frac{t}{\text{decay\_steps}}}
+\]
+where:
+- \(\text{initial\_lr} = 0.0001\)
+- \(\text{decay\_steps}\) is the number of batches per epoch.
+- \(\text{decay\_rate}\) is set to achieve a 25% reduction in learning rate per epoch.
+
+The Adam optimizer is chosen for its adaptive learning rate capabilities, which are well-suited for complex models like EfficientNet.
+
+#### Loss Functions
+1. **Localization Loss**: Measures the mean squared error between predicted and true bounding box coordinates, weighted by the number of objects in each image:
+\[
+L_{\text{loc}} = \frac{1}{N} \sum_{i=1}^{N} \frac{1}{n_i} \sum_{j=1}^{n_i} \|y_{ij} - \hat{y}_{ij}\|^2
+\]
+where \(N\) is the batch size, \(n_i\) is the number of objects in image \(i\), and \(y_{ij}\) are the true coordinates.
+
+2. **Classification Loss**: Uses categorical cross-entropy to compare predicted class probabilities with one-hot encoded ground truth labels:
+\[
+L_{\text{cls}} = - \frac{1}{N} \sum_{i=1}^{N} \frac{1}{n_i} \sum_{j=1}^{n_i} \sum_{k=1}^{C} y_{ijk} \log(\hat{y}_{ijk})
+\]
+where \(C\) is the number of classes.
+
+#### Callbacks
+1. **Learning Rate Scheduler**: Adjusts the learning rate dynamically during training.
+2. **Early Stopping**: Monitors validation loss and stops training if no improvement is observed for a specified number of epochs.
+3. **Model Checkpointing**: Saves the best model based on validation performance.
+
+These techniques ensure efficient training and prevent overfitting, leading to a robust and generalizable model
+
 ---
 
 ## System Architecture and Integration

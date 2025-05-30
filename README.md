@@ -28,10 +28,29 @@ To run the code in this repository, follow these steps:
     ```bash
     git clone https://github.com/YuriiMurha/BP-face-recognition.git
     ```
-2. Install the required dependencies:
+
+2. Navigate to the project directory:
+    ```bash
+    cd BP-face-recognition
+    ```
+3. (Optional) Create a virtual environment to manage dependencies:
+    ```bash
+    python -m venv venv
+    ```
+4. Activate the virtual environment (if created):
+    ```bash
+    source venv/bin/activate  # On Linux/Mac
+    .\venv\Scripts\activate   # On Windows
+    ```
+5. Install the required dependencies:
     ```bash
     pip install -r requirements.txt
     ```
+6. Download the dataset and place it in the appropriate directory (if applicable).
 
+7. Run the main script to start the face recognition system:
+    ```bash
+    python ./src/main.py
+    ```
 ## Usage
 TBA
