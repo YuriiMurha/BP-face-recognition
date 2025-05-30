@@ -45,7 +45,7 @@
 - Implement deep learning:
   1. [x] Create NN
   2. [x] Train NN
-  3. [ ] Test NN
+  3. [x] Test NN
 
 ## End of April
 
@@ -53,8 +53,8 @@ pouzit jednu najlepšiu metodu na detekciu, potom vlasnty model na klasifikaciu 
 
 - [x] dat teoreticku cast do LaTeXu
 - [x] dopisať teoreticku časť a poslať na review
-  - [ ] Abstraknty netechnicky "Uvod" s popisom problemu ktory rieši tato praca, motivacia
-  - [ ] Pridať potom priklady komerčneho použitia ku prehľadu existujucich riešeni a metod
+  - [x] Abstraknty netechnicky "Uvod" s popisom problemu ktory rieši tato praca, motivacia
+  - [x] Pridať potom priklady komerčneho použitia ku prehľadu existujucich riešeni a metod
 
 <!-- - [ ] Diagramy porovnavania nemusia byt rozdelene podla subsetov, spomenuť to v texte -->
 
@@ -66,9 +66,9 @@ pouzit jednu najlepšiu metodu na detekciu, potom vlasnty model na klasifikaciu 
 - Assets
   - [x] Create and insert system architecture diagram (for thesis and documentation)
   - [x] Add codebase workflow diagram (showing data flow between modules)
-  - [ ] Add sequence diagram for main application loop
-  - [ ] Add example screenshots for annotation and augmentation steps
-  - [ ] Summarize database schema and add example queries to documentation
+  - [x] Add sequence diagram for main application loop
+  - [x] Add example screenshots for annotation and augmentation steps
+  - [x] Summarize database schema and add example queries to documentation
 
 - [x] dopisať prakticku časť a poslať na review
   - Write about the code in python notebooks
@@ -76,8 +76,8 @@ pouzit jednu najlepšiu metodu na detekciu, potom vlasnty model na klasifikaciu 
     - [x] Deep Learning
 
 - Write documentation
-  - [ ] User
-  - [ ] System
+  - [x] User
+  - [x] System
 
 ---
 
