@@ -5,7 +5,7 @@ import json
 
 # --- Configuration for Cropping ---
 INPUT_IMAGES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/datasets/augmented')
-OUTPUT_CROPPED_FACES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/datasets/cropped_faces')
+OUTPUT_CROPPED_FACES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/datasets/cropped')
 
 # Dataset types and dataset sources
 DATASET_TYPES = ["train", "test", "val"]
@@ -78,21 +78,35 @@ for dataset_source in DATASET_SOURCES:
                     xmin, ymin, xmax, ymax = map(int, bbox)
 
                     # Ensure coordinates are within image bounds
-                    xmin = max(0, xmin)
-                    ymin = max(0, ymin)
-                    xmax = min(img_bgr.shape[1], xmax)
-                    ymax = min(img_bgr.shape[0], ymax)
+                    xmin = max(0, int(bbox[0]))
+                    ymin = max(0, int(bbox[1]))
+                    xmax = min(img_bgr.shape[1], int(bbox[2]))
+                    ymax = min(img_bgr.shape[0], int(bbox[3]))
 
-                    # Add a small margin around the face (optional)
-                    margin_x = int(0.1 * (xmax - xmin))
-                    margin_y = int(0.1 * (ymax - ymin))
-                    xmin = max(0, xmin - margin_x)
-                    ymin = max(0, ymin - margin_y)
-                    xmax = min(img_bgr.shape[1], xmax + margin_x)
-                    ymax = min(img_bgr.shape[0], ymax + margin_y)
+                    # Check if the bounding box is valid (non-zero width and height)
+                    if xmax <= xmin or ymax <= ymin:
+                        print(f"Warning: Invalid bounding box {bbox} for image {img_path}. Skipping.")
+                        continue
 
+                    # # Add a small margin around the face (optional)
+                    # margin_x = int(0.1 * (xmax - xmin))
+                    # margin_y = int(0.1 * (ymax - ymin))
+
+                    # # Dynamically adjust coordinates with margins while staying within bounds
+                    # xmin = max(0, xmin - margin_x)
+                    # ymin = max(0, ymin - margin_y)
+                    # xmax = min(img_bgr.shape[1], xmax + margin_x)
+                    # ymax = min(img_bgr.shape[0], ymax + margin_y)
+
+                    # # Check again after adding margins
+                    # if xmax <= xmin or ymax <= ymin:
+                    #     print(f"Warning: Invalid bounding box after adding margins {bbox} for image {img_path}. Skipping.")
+                    #     continue
+
+                    # Crop the face
                     cropped_face = img_bgr[ymin:ymax, xmin:xmax]
 
+                    # Check if the cropped face is valid
                     if cropped_face.size == 0 or cropped_face.shape[0] < 1 or cropped_face.shape[1] < 1:
                         print(f"Warning: Empty or invalid crop from {img_path} for bbox {bbox}. Skipping.")
                         continue
@@ -100,14 +114,15 @@ for dataset_source in DATASET_SOURCES:
                     # Resize cropped face to the target size
                     cropped_face_resized = cv2.resize(cropped_face, (IMG_WIDTH, IMG_HEIGHT))
 
-                    # Create output directory for the label within the dataset structure
-                    output_subdir = os.path.join(OUTPUT_CROPPED_FACES_DIR, dataset_source, dataset_type, str(label))
-                    os.makedirs(output_subdir, exist_ok=True)
+                    # Create output directories for images and labels
+                    output_dir = os.path.join(OUTPUT_CROPPED_FACES_DIR, dataset_source, dataset_type)
+                    os.makedirs(output_dir, exist_ok=True)
 
                     # Save the cropped face using the original image name
-                    original_image_name = os.path.basename(img_path)
-                    output_filepath = os.path.join(output_subdir, original_image_name)
+                    cropped_image_name = f"{os.path.splitext(os.path.basename(img_path))[0]}.{label}.jpg"
+                    output_filepath = os.path.join(output_dir, cropped_image_name)
                     cv2.imwrite(output_filepath, cropped_face_resized)
+                    
                     processed_faces_count += 1
 
                     if processed_faces_count % 200 == 0:
