@@ -1,320 +1,169 @@
+% !TeX encoding=utf-8
 %%
-%% This is file `tukethesis.cls' v2.0, modified article.cls
+%% Toto je subor `feidippp.cls' verzia 1.2,
+%% modifikovany article.cls
 %%
-%% Authors:
-%% Ladislav Sevcovic -- <Ladislav.Sevcovic@tuke.sk>
-%% http://people.tuke.sk/ladislav.sevcovic/
-%% Jan Busa -- <Jan.Busa@tuke.sk>
-%% http://people.tuke.sk/jan.busa/
+%% Pripravili Jan Busa -- <Jan.Busa@tuke.sk>
+%% a Ladislav Sevcovic -- <Ladislav.Sevcovic@tuke.sk>
+%% ako sablonu pisania pouzivatelskej prirucky
+%% diplomovych prac na FEI TU v Kosiciach, Kosice 2005
 %%
-%% Designed to match the Bachelor's/Master's thesis requirements in
-%% the Technical University of Kosice, Slovakia.
+%% Pre pouzitie v OS Linux/UNIX upravil
+%% Pavol Dilung -- <dilung@neuron.tuke.sk>
 %%
-%% Copyright (c) 2012 Ladislav Sevcovic and Jan Busa
+%% Dilung: nepouzivat znaky narodnej abecedy (t.j. napr. znaky s dlznami a
+%% makcenmi) v styloch (.cls), pretoze rozne OS pouzivaju na kodovanie znakov
+%% obvykle ine znakove sady (napr. MS Windows CZ/SK puziva znakovu sadu CP-1250,
+%% Linux zasa sadu ISO-8859-*). Styly (.cls) su potom neprenositelne medzi
+%% roznymi OS
+%% Dilung: OS Linux/UNIX je "case sensitive" t.j. rozlisuje male a velke pismena
+%% v menach suborov/adresarov, odporucam teda dodrziavat TeX/LaTeX-ovsku 
+%% konvenciu a oznacovat mena suborov/adresarov vyhradne malymi pismenami.%%
 %%
-\NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{tukethesis}
-              [2012/04/22 v2.0 TUKE thesis class]
-
-\ClassInfo{tukethesis}
-  {Technical University of Kosice (official)\MessageBreak
-   Bachelor's/Master's thesis document class\@gobble}
-
+%% The original source files were:
+%%
+%% classes.dtx  (with options: `article')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
 
-\def\abstrakt#1{\gdef\@abstrakt{#1}}
-\def\@abstrakt{\@latex@warning@no@line{No \noexpand\abstrakt
-given}}
-
-\def\abstrakte#1{\gdef\@abstrakte{#1}}
-\def\@abstrakte{\@latex@warning@no@line{No \noexpand\abstrakte
-given}}
-
-\def\university#1{\gdef\@university{#1}}
-\def\@university{\@latex@warning@no@line{No \noexpand\university
-given}}
-
-\def\univerzita#1{\gdef\@univerzita{#1}}
-\def\@univerzita{\@latex@warning@no@line{No \noexpand\univerzita
-given}}
-
-\def\faculty#1{\gdef\@faculty{#1}}
-\def\@faculty{\@latex@warning@no@line{No \noexpand\faculty given}}
-
-\def\fakulta#1{\gdef\@fakulta{#1}}
-\def\@fakulta{\@latex@warning@no@line{No \noexpand\fakulta given}}
-
-\def\facultyabbr#1{\gdef\@facultyabbr{#1}}
-\def\@facultyabbr{\@latex@warning@no@line{No \noexpand\facultyabbr
-given}}
-
-\def\@department{\@latex@warning@no@line{No \noexpand\department
-given}}
-\def\department#1{\gdef\@department{#1}}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesClass{feidippp}
+              [1999/09/10 v1.4a
+ Standard LaTeX document class]
 
 \def\katedra#1{\gdef\@katedra{#1}}
 \def\@katedra{\@latex@warning@no@line{No \noexpand\katedra given}}
-
-\def\departmentabbr#1{\gdef\@departmentabbr{#1}}
-\def\@departmentabbr{\@latex@warning@no@line{
-No \noexpand\departmentabbr given}}
-
-\def\masterthesis#1{\gdef\@masterthesis{#1}}
-\def\@masterthesis{\@latex@warning@no@line{No \noexpand\masterthesis
-given}}
-
-\def\bachelorthesis#1{\gdef\@bachelorthesis{#1}}
-\def\@bachelorthesis{\@latex@warning@no@line{
-No \noexpand\bachelorthesis given}}
-
-\def\@fieldofstudy{\@latex@warning@no@line{No
-\noexpand\fieldofstudy given}}
-\def\fieldofstudy#1{\gdef\@fieldofstudy{#1}}
-
-\def\author#1{\gdef\@author{#1}}
-\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-
-\def\title#1{\gdef\@title{#1}}
-\def\@title{\@latex@warning@no@line{No \noexpand\title given}}
-
-\def\subtitle#1{\gdef\@subtitle{#1}}
-\def\@subtitle{\@latex@warning@no@line{No \noexpand\subtitle given}}
-
+\def\@department{\@latex@warning@no@line{No \noexpand\department given}}
+\def\department#1{\gdef\@department{#1}}
+\def\@odbor{\@latex@warning@no@line{No \noexpand\odbor given}}
+\def\odbor#1{\gdef\@odbor{#1}}
+\def\autor#1{\gdef\@autor{#1}}
+\def\@autor{\@latex@warning@no@line{No \noexpand\autor given}}
 \def\nazov#1{\gdef\@nazov{#1}}
 \def\@nazov{\@latex@warning@no@line{No \noexpand\nazov given}}
-
-\def\podnazov#1{\gdef\@podnazov{#1}}
-\def\@podnazov{\@latex@warning@no@line{No \noexpand\podnazov given}}
-
+\def\kratkynazov#1{\gdef\@kratkynazov{#1}}
+\def\@kratkynazov{\@latex@warning@no@line{No \noexpand\kratkynazov given}}
+\def\nazovprogramu#1{\gdef\@nazovprogramu{#1}}
+\def\@nazovprogramu{\@latex@warning@no@line{No \noexpand\nazovprogramu given}}
+\def\veduci#1{\gdef\@veduci{#1}}
+\def\@veduci{\@latex@warning@no@line{No \noexpand\veduci given}}
+\def\konzultant#1{\gdef\@konzultant{#1}}
+\def\@konzultant{\@latex@warning@no@line{No \noexpand\konzultant given}}
 \def\klucoveslova#1{\gdef\@klucoveslova{#1}}
-\def\@klucoveslova{\@latex@warning@no@line{No \noexpand\klucoveslova
-given}}
-
-\def\deanoffaculty#1{\gdef\@deanoffaculty{#1}}
-\def\@deanoffaculty{\@latex@warning@no@line{No \noexpand\deanoffaculty
-given}}
-
-\def\headofdepartment#1{\gdef\@headofdepartment{#1}}
-\def\@headofdepartment{\@latex@warning@no@line{No
-\noexpand\headofdepartment given}}
-
-\def\supervisor#1{\gdef\@supervisor{#1}}
-\def\@supervisor{\@latex@warning@no@line{No \noexpand\supervisor
-given}}
-
-\def\consultanta#1{\gdef\@consultanta{#1}}
-\def\@consultanta{\@latex@warning@no@line{No \noexpand\consultanta
-given}}
-
-\def\consultantb#1{\gdef\@consultantb{#1}}
-\def\@consultantb{\@latex@warning@no@line{No \noexpand\consultantb
-given}}
-
-\def\outlineofthesis#1{\gdef\@outlineofthesis{#1}}
-\def\@outlineofthesis{\@latex@warning@no@line{No
-\noexpand\outlineofthesis given}}
-
-\def\recommendedbiblio#1{\gdef\@recommendedbiblio{#1}}
-\def\@recommendedbiblio{\@latex@warning@no@line{No
-\noexpand\recommendedbiblio given}}
-
+\def\@klucoveslova{\@latex@warning@no@line{No \noexpand\klucoveslova given}}
 \def\keywords#1{\gdef\@keywords{#1}}
 \def\@keywords{\@latex@warning@no@line{No \noexpand\keywords given}}
+\def\datum#1{\gdef\@datum{#1}}
+\def\@datum{\@latex@warning@no@line{No \noexpand\datum given}}
 
-\def\categoryconspectus#1{\gdef\@categoryconspectus{#1}}
-\def\@categoryconspectus{\@latex@warning@no@line{No
-\noexpand\categoryconspectus given}}
-
-\def\studyprogramme#1{\gdef\@studyprogramme{#1}}
-\def\@studyprogramme{\@latex@warning@no@line{No
-\noexpand\studyprogramme given}}
-
-\def\languageofthesis#1{\gdef\@languageofthesis{#1}}
-\def\@languageofthesis{\@latex@warning@no@line{No
-\noexpand\languageofthesis given}}
-
-\def\degree#1{\gdef\@degree{#1}}
-\def\@degree{\@latex@warning@no@line{No \noexpand\degree given}}
-
-\def\town#1{\gdef\@town{#1}}
-\def\@town{\@latex@warning@no@line{No \noexpand\town given}}
-
-\def\dateofsubmission#1{\gdef\@dateofsubmission{#1}}
-\def\@dateofsubmission{\@latex@warning@no@line{No
-\noexpand\dateofsubmission given}}
-\def\vyberden#1.#2.#3:{#2}
-\def\vybermesiac#1.#2.#3:{#1}
-\def\vyberrok#1.#2.#3:{#3}
-\def\den{\expandafter\vyberden\@dateofsubmission:}
-\def\mesiac{\expandafter\vybermesiac\@dateofsubmission:}
-\def\rok{\expandafter\vyberrok\@dateofsubmission:}
-
-\def\dateofassign#1{\gdef\@dateofassign{#1}}
-\def\@dateofassign{\@latex@warning@no@line{No \noexpand\dateofassign
-given}}
 \def\vyberden#1.#2.#3:{#1}
 \def\vybermesiac#1.#2.#3:{#2}
 \def\vyberrok#1.#2.#3:{#3}
-\def\denzad{\expandafter\vyberden\@dateofassign:}
-\def\mesiaczad{\expandafter\vybermesiac\@dateofassign:}
-\def\rokzad{\expandafter\vyberrok\@dateofassign:}
+\def\den{\expandafter\vyberden\@datum:}
+\def\mesiac{\expandafter\vybermesiac\@datum:}
+\def\rok{\expandafter\vyberrok\@datum:}
 
-\def\dateofdefence#1{\gdef\@dateofdefence{#1}}
-\def\@dateofdefence{\@latex@warning@no@line{No \noexpand\dateofdefence
-given}}
-\def\vyberdenobh#1.#2.#3:{#1}
-\def\vybermesiacobh#1.#2.#3:{#2}
-\def\vyberrokobh#1.#2.#3:{#3}
-\def\denobh{\expandafter\vyberdenobh\@dateofdefence:}
-\def\mesiacobh{\expandafter\vybermesiacobh\@dateofdefence:}
-\def\rokobh{\expandafter\vyberrokobh\@dateofdefence:}
+\newcommand\titulnastrana{\thispagestyle{empty}%
 
-\def\numberofpages#1{\gdef\@numberofpages{#1}}
-\def\@numberofpages{\@latex@warning@no@line{No \noexpand\numberofpages
-given}}
+{\Large
+  \centerline{Technical University of Košice}
+  \centerline{Faculty of Electrical Engineering and Informatics}
+  \centerline{Department of Cybernetics and Artificial Intelligence}
 
-\def\extentofthesis#1{\gdef\@extentofthesis{#1}}
-\def\@extentofthesis{\@latex@warning@no@line{No
-\noexpand\extentofthesis given}}
-
-\newcommand\firstpage{\thispagestyle{empty}%
-{\Large \textbf{%
-  \centerline{\@university}\\[2mm]
-  \centerline{\@faculty}
 }
-}
-\vspace*{14em}
+
+ \vfil
 
   \begin{center}%
-    {\LARGE \textbf{\@title}}%
+    {\LARGE \textbf{\@nazov}}%
 
-  \bigskip
+    \bigskip
 
-  {\large \textbf{\@subtitle}}%
-
-  \bigskip
-
-  \large \textbf{\@masterthesis \@bachelorthesis}
+    {\Large Bachelor Thesis}
   \end{center}
 
-\vfill
+  \vfil
 
-{\Large \textbf{\rok}} \hfill {\Large \textbf{\@author}}
-\newpage
-}
-
-\newcommand\titlepage{\thispagestyle{empty}%
-{\Large
-\textbf{%
-  \centerline{\@university}\\[2mm]
-  \centerline{\@faculty}
-}
-}
-
- \vfill
-
- \begin{center}%
-    {\LARGE \textbf{\@title}}%
+\begin{center}%
+    {\LARGE \textbf{\@nazovprogramu}}%
 
     \bigskip
 
-    {\large \textbf{\@subtitle}}%
+    {\Large User Manual}
+  \end{center}
 
-    \bigskip
+  \vfil 
 
-    {\large \textbf{\@masterthesis \@bachelorthesis}}
+{\large 
+\noindent 
+\begin{tabular}[B]{l} 
+Supervisor: \\ \@veduci
+\end{tabular}
+\hfil
+\begin{tabular}[B]{l} 
+Author: \\ \@autor
+\end{tabular}
+\qquad
+\linebreak
 
- \end{center}
+\bigskip
 
- \vfill
-
-{\normalsize
 \noindent
-\begin{tabular}{p{.23\textwidth}p{.67\textwidth}}
-Study Programme:& \@studyprogramme \\
-Field of study:& \@fieldofstudy \\
-Department:& \@department~(\@departmentabbr) \\
-Supervisor:& \@supervisor \\
-Consultant(s):& \@consultanta \\
-\phantom{Consultant(s):}& \@consultantb
+\begin{tabular}[B]{l}
+Consultant: \\ \@konzultant
 \end{tabular}
 
 \vspace{2\baselineskip}
 
-{\Large \textbf{\@town \rok}} \hfill {\Large \textbf{\@author}}
-}
-\newpage
 
-\def\acknowledgement{\thispagestyle{empty}\vglue0pt\vfill%
-      \noindent\textbf{Acknowledgement}\par\bigskip}
-\def\endacknowledgement{\newpage}
-
-\def\errata{\thispagestyle{empty}%
-      \noindent{\Large\textbf{Errata}}\par\bigskip%
-      {\centering
-{\large\@title}\\\@author\\{\small\@town~\rok}\\\vspace{4em}}}
-\def\kerrata{\newpage}
-
-
-\def\abstrakt{\thispagestyle{empty}\vglue50pt%
-	\noindent\textbf{Abstrakt}\par\@abstrakt\\[5mm]
-	\noindent\textbf{K\v{l}\'u\v{c}ov\'e slov\'a}\\
-	\@klucoveslova}
-\def\abstrakte{\thispagestyle{empty}%
-	\noindent\textbf{Abstract}\par\@abstrakte\\[5mm]
-	\noindent\textbf{Keywords}\\
-	\@keywords}
-\def\endabstract{\newpage}
-
-\def\curriculumvitae{\newpage%\thispagestyle{empty}\vglue0pt\vfil%
-      \noindent\textbf{\Large Curriculum vitae}\par\bigskip}
-\def\endcurriculumvitae{\newpage}
-
-\def\assignthesis{\thispagestyle{empty}\bgroup\setlength\tabcolsep{0pt}
-\section*{Assign Thesis}
-\noindent
-Namiesto tejto strany vlo\v{z}te naskenovan\'e zadanie \'ulohy.
-Odpor\'u\v{c}ame skenova\v{t} s~rozl\'i\v{s}en\'im 200 a\v{z} 300~dpi,
-\v{c}ierno-bielo! V~jednej vytla\v{c}enej ZP mus\'i by\v{t}
-vlo\v{z}en\'y origin\'al zad\'avacieho listu!
-\newpage
+\centerline{Košice \rok}
 }
 
-\def\declaration{\thispagestyle{empty}\vglue0pt
-\vfill
-\noindent\textbf{Declaration}
+\pagebreak
+}
 
-\bigskip
-
-I hereby declare that this thesis is my own work and effort. Where
-other sources of information have been used, they have been
-acknowledged.
-%Vyhlasujem, \v{z}e som diplomov\'u pr\'acu vypracoval(a) samostatne
-%s~pou\v{z}it\'{\i}m uvedenej odbornej literat\'ury.
-
-\bigskip
-
-\noindent \@town,~\den\mesiac,\rok \hfill
-\begin{tabular}[t]{c}
-\hbox to 50mm {\dotfill} \\ \textit{\small Signature}
-\end{tabular}
-\newpage
-}}
-
-
-\def\preface{\thispagestyle{empty}
-\section*{Preface}}
-\def\endpreface{\newpage}
-
-\def\listofterms{\thispagestyle{empty}
-\section*{List of Terms}}
-\def\endlistofterms{\newpage}
-%%
-\paperheight=297truemm
-\paperwidth=210truemm
-%%
 \newif\if@restonecol
 \newif\if@titlepage
 \@titlepagefalse
@@ -422,7 +271,7 @@ acknowledged.
 \setlength\headheight{13\p@}   % 12
 \setlength\headsep   {40\p@}   % 25
 \setlength\topskip   {12\p@}
-\setlength\footskip{40\p@}  %30
+\setlength\footskip{40\p@}
 \if@compatibility \setlength\maxdepth{4\p@} \else
 \setlength\maxdepth{.5\topskip} \fi
 \if@compatibility
@@ -589,18 +438,13 @@ acknowledged.
 \renewcommand\dblfloatpagefraction{.5}
 
   \def\ps@headings{%
-%    \let\@oddfoot\@empty
-    \def\@oddfoot{\sffamily\begin{minipage}{1\textwidth}\hrule\vspace{
-0.25\baselineskip}\small
-    \center \thepage \linebreak
-    \end{minipage}}%
-    \def\@oddhead{\sffamily\begin{minipage}{1\textwidth}\small
-    \@facultyabbr\hfil \@departmentabbr\linebreak
-    \vspace{-0.5\baselineskip}\hrule\end{minipage}}%
-%    \def\@oddhead{\begin{minipage}{1\textwidth}\small
-%FEI TU v Ko\v{s}iciach\hfil Diplomov\'a pr\'aca\hfil
-%List~\v{c}.~\thepage\linebreak
-%     \vspace{-0.5\baselineskip}\hrule\end{minipage}}%
+    \def\@oddfoot{\begin{minipage}{1\textwidth}\small\hrule\setlength\tabcolsep{0pt}
+\begin{tabular}[b]{ll}TU Kosice --\phantom{i}& Faculty of Electrical Engineering and Informatics\\[-0.75em]
+&Katedra \@katedra\end{tabular}\hfil Strana~\thepage\linebreak
+     \vspace{-0.5\baselineskip}\end{minipage}}
+    \def\@oddhead{\begin{minipage}{1\textwidth}\small
+\@kratkynazov~--~Bachelor Thesis\hfil \@nazovprogramu~--~User Manual\linebreak
+     \vspace{-0.5\baselineskip}\hrule\end{minipage}}%
 %    \let\@mkboth\markboth
 %    \def\sectionmark##1{%
 %      \markright {\MakeUppercase{%
@@ -660,7 +504,7 @@ acknowledged.
       \fi
     \else
       \newpage
-      \global\@topnum\z@  % Prevents figures from going at top of page.
+      \global\@topnum\z@   % Prevents figures from going at top of page.
       \@maketitle
     \fi
     \thispagestyle{plain}\@thanks
@@ -708,7 +552,7 @@ acknowledged.
 \renewcommand \thepart {\@Roman\c@part}
 \renewcommand \thesection {\@arabic\c@section}
 \renewcommand\thesubsection   {\thesection.\@arabic\c@subsection}
-\renewcommand\thesubsubsection{\thesubsection.\@arabic\c@subsubsection}
+\renewcommand\thesubsubsection{\thesubsection .\@arabic\c@subsubsection}
 \renewcommand\theparagraph    {\thesubsubsection.\@arabic\c@paragraph}
 \renewcommand\thesubparagraph {\theparagraph.\@arabic\c@subparagraph}
 \newcommand\part{%
@@ -745,28 +589,27 @@ acknowledged.
      \nobreak
      \vskip 3ex
      \@afterheading}
-\newcommand\section{\setcounter{equation}{0}\@startsection
-{section}{1}{\z@}%
+\newcommand\section{\setcounter{equation}{0}\@startsection {section}{1}{\z@}%
 %% Vlozenie prikazu na nulovanie citaca rovnic v sekciach
                                    {-3.5ex \@plus -1ex \@minus -.2ex}%
                                    {2.3ex \@plus.2ex}%
                                    {\normalfont\Large\bfseries}}
 \newcommand\subsection{\@startsection{subsection}{2}{\z@}%
-                                   {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                   {1.5ex \@plus .2ex}%
-                                   {\normalfont\large\bfseries}}
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\large\bfseries}}
 \newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-                                   {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                   {1.5ex \@plus .2ex}%
-                                   {\normalfont\normalsize\bfseries}}
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
 \newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-                                   {3.25ex \@plus1ex \@minus.2ex}%
-                                   {-1em}%
-                                   {\normalfont\normalsize\bfseries}}
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                    {-1em}%
+                                    {\normalfont\normalsize\bfseries}}
 \newcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
-                                   {3.25ex \@plus1ex \@minus .2ex}%
-                                   {-1em}%
-                                   {\normalfont\normalsize\bfseries}}
+                                       {3.25ex \@plus1ex \@minus .2ex}%
+                                       {-1em}%
+                                      {\normalfont\normalsize\bfseries}}
 \if@twocolumn
   \setlength\leftmargini  {2em}
 \else
@@ -854,7 +697,7 @@ acknowledged.
                 \item\relax}
                {\endlist}
 \if@compatibility
-\newenvironment{ttitlepage}
+\newenvironment{titlepage}
     {%
       \if@twocolumn
         \@restonecoltrue\onecolumn
@@ -867,7 +710,7 @@ acknowledged.
     {\if@restonecol\twocolumn \else \newpage \fi
     }
 \else
-\newenvironment{ttitlepage}
+\newenvironment{titlepage}
     {%
       \if@twocolumn
         \@restonecoltrue\onecolumn
@@ -896,7 +739,7 @@ acknowledged.
 \setlength\fboxsep{3\p@}
 \setlength\fboxrule{.4\p@}
 \renewcommand \theequation {\@arabic\c@equation}
-\newcounter{figure}[section] %% Vynulovanie citaca obrazkov v sekciach
+\newcounter{figure}[section]      %% Vynulovanie citaca obrazkov v sekciach
 \renewcommand \thefigure {\@arabic\c@section\,--\,\@arabic\c@figure}
 \def\fps@figure{tbp}
 \def\ftype@figure{1}
@@ -908,7 +751,7 @@ acknowledged.
 \newenvironment{figure*}
                {\@dblfloat{figure}}
                {\end@dblfloat}
-\newcounter{table}[section] %% Vynulovanie citaca tabuliek v sekciach
+\newcounter{table}[section]       %% Vynulovanie citaca tabuliek v sekciach
 \renewcommand\thetable{\@arabic\c@section\,--\,\@arabic\c@table}
 \def\fps@table{tbp}
 \def\ftype@table{2}
@@ -1087,8 +930,7 @@ acknowledged.
 \pagestyle{headings}
 \renewcommand{\baselinestretch}{1.5}
 \def\theequation{\arabic{section}.\arabic{equation}}
-\def\ud{\mathrm{d}}
 
 \endinput
 %%
-%% End of file `tukethesis.cls'.
+%% End of file `feidippp.cls'.

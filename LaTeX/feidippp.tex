@@ -1,0 +1,193 @@
+% !TeX encoding=utf-8
+\documentclass[a4paper]{feidippp}
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png.,mps.,jpg}
+\graphicspath{{figures/}}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[slovak]{babel}
+
+\usepackage{lmodern}
+
+\usepackage{amsmath,amssymb,amsfonts}
+
+\def\figurename{Figure}
+\def\tabname{Table}
+
+
+
+%\usepackage[dvips]{graphicx}
+%\DeclareGraphicsExtensions{.eps}
+
+
+
+%\usepackage[pdftex]{hyperref}   %% tlac !!!
+\usepackage[pdftex,colorlinks,citecolor=magenta,bookmarksnumbered,unicode,pdftoolbar=true,pdfmenubar=true,pdfwindowui=true,bookmarksopen=true]{hyperref}
+\hypersetup{%
+baseurl={http://www.tuke.sk/sevcovic},
+pdfcreator={pdfcsLaTeX},
+pdfkeywords={User manual},
+pdftitle={Faces Recognition using Camera Footage},
+pdfauthor={Yurii Murha},
+pdfsubject={Bachelor Thesis},
+}
+% Citovanie podla mena autora a roku
+%\usepackage[numbers]{natbib}
+\usepackage{natbib} \citestyle{chicago}
+
+%\usepackage{mathptm} %\usepackage{times}
+
+\katedra{Department of Cybernetics and Artificial Intelligence}
+\department{Department of Cybernetics and Artificial Intelligence}
+\odbor{Computer Science}
+\autor{Yurii Murha}
+\veduci{~Ing.~Jan~Magyar,~PhD}
+\konzultant{~Ing.~Jan~Magyar,~PhD}
+\nazov{Face Recognition using Camera Footage}
+\kratkynazov{}
+\nazovprogramu{FaceClassifier}
+\title{Face Recognition using Camera Footage}
+\keywords{Face Recognition, Camera Footage, Python, OpenCV, Neural Networks}
+\datum{30.~05.~2025}
+
+\begin{document}
+\bibliographystyle{dcu}
+
+\titulnastrana
+
+\tableofcontents
+
+\newpage
+\setcounter{page}{1}
+\section{User Manual}
+
+This user manual provides step-by-step instructions on how to set up the environment, execute the provided scripts, and evaluate the results for the face recognition system.
+
+\subsection{Environment Setup}
+
+To run the project, follow these steps:
+
+\begin{enumerate}
+    \item \textbf{Clone the Repository:}
+    Download the project files by cloning the repository:
+    \begin{verbatim}
+    git clone https://github.com/YuriiMurha/BP-face-recognition.git
+    cd BP-face-recognition
+    \end{verbatim}
+
+    \item \textbf{Install Python and Dependencies:}
+    Ensure Python 3.8 or higher is installed. Create a virtual environment and install the required dependencies:
+    \begin{verbatim}
+    python -m venv venv
+    source venv/bin/activate  # On Linux/Mac
+    .\venv\Scripts\activate   # On Windows
+    pip install -r src/requirements.txt
+    \end{verbatim}
+
+    \item \textbf{Verify Installation:}
+    Confirm that all required libraries are installed by running:
+    \begin{verbatim}
+    pip list
+    \end{verbatim}
+    Ensure the versions match those listed in the `requirements.txt` file.
+\end{enumerate}
+
+\subsection{Running the Project}
+
+The project consists of multiple stages. Follow the steps below to execute each stage:
+
+\subsubsection{1. Collect Images Using \texttt{CreateDatasets.ipynb}}
+\begin{enumerate}
+    \item Open the `CreateDatasets.ipynb` file in Jupyter Notebook or VS Code.
+    \item Modify the \texttt{IMAGES\_PATH} variable to specify the directory where images will be saved.
+    \item Run the notebook to capture images using OpenCV. Ensure your camera is connected and accessible.
+    \item Verify that the images are saved in the specified directory.
+\end{enumerate}
+
+\subsubsection{2. Preprocess Images Using \texttt{Preprocessing.ipynb}}
+\begin{enumerate}
+    \item Open the `Preprocessing.ipynb` file in Jupyter Notebook or VS Code.
+    \item Define the dataset source (e.g., \texttt{webcam}, \texttt{seccam}, or \texttt{seccam\_2}) in the \texttt{dataset} variable.
+    \item Run the notebook to:
+    \begin{itemize}
+        \item Load and visualize images.
+        \item Partition the dataset into training, validation, and test subsets.
+        \item Apply data augmentation using Albumentations.
+    \end{itemize}
+    \item Verify that augmented images and labels are saved in the \texttt{data/datasets/augmented} directory.
+\end{enumerate}
+
+\subsubsection{3. Crop Faces Using \texttt{crop\_faces.py}}
+\begin{enumerate}
+    \item Run the script to crop faces from the augmented dataset:
+    \begin{verbatim}
+    python src/crop_faces.py
+    \end{verbatim}
+    \item The cropped faces will be saved in the \texttt{data/datasets/cropped} directory.
+    \item Check the console output for warnings or errors during processing.
+\end{enumerate}
+
+\subsubsection{4. Train the Model Using \texttt{DeepLearning.ipynb}}
+\begin{enumerate}
+    \item Open the `DeepLearning.ipynb` file in Jupyter Notebook or VS Code.
+    \item Set the \texttt{CURRENT\_DATASET\_NAME} variable to the desired dataset source.
+    \item Run the notebook to:
+    \begin{itemize}
+        \item Load and preprocess the cropped dataset.
+        \item Build and train a deep learning model using TensorFlow.
+        \item Save the trained model in the \texttt{models} directory.
+    \end{itemize}
+    \item Monitor training progress using TensorBoard:
+    \begin{verbatim}
+    tensorboard --logdir logs/fit
+    \end{verbatim}
+\end{enumerate}
+
+\subsubsection{5. Evaluate Methods Using \texttt{evaluate\_methods.py}}
+\begin{enumerate}
+    \item Run the script to evaluate face detection methods:
+    \begin{verbatim}
+    python src/tools/evaluate_methods.py
+    \end{verbatim}
+    \item The evaluation results will be saved as a CSV file in the \texttt{data} directory.
+    \item Plots comparing the performance of different methods will be saved in the \texttt{assets/plots} directory.
+\end{enumerate}
+
+\subsection{Troubleshooting}
+
+\begin{itemize}
+    \item Ensure all dependencies are installed correctly. Use \texttt{pip list} to verify versions.
+    \item Check the console output for error messages and resolve any issues with file paths or configurations.
+    \item For GPU-related issues, ensure TensorFlow is configured to use the GPU by running:
+    \begin{verbatim}
+    python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+    \end{verbatim}
+\end{itemize}
+
+\subsection{Conclusion}
+
+By following these steps, you can successfully set up the environment, preprocess the dataset, train a deep learning model, and evaluate face detection methods. For further assistance, refer to the system manual or contact the project maintainer.
+
+
+\newpage
+\addcontentsline{toc}{section}{\numberline{}Figures}
+\listoffigures
+
+\addcontentsline{toc}{section}{\numberline{}Tables}
+\listoftables
+
+
+\def\refname{References}
+\addcontentsline{toc}{section}{\numberline{}References}
+
+\begin{thebibliography}{999}
+    % https://www.tensorflow.org/api_docs
+    \bibitem{tensorflow_api} TensorFlow API Documentation. Available at: \url{https://www.tensorflow.org/api_docs}
+    % https://albumentations.ai/docs/
+    \bibitem{albumentations_docs} Albumentations Documentation. Available at: \url{https://albumentations.ai/docs/}
+\end{thebibliography}
+
+\end{document}
+
+

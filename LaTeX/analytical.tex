@@ -5,40 +5,41 @@ In this project, a combination of custom model creation and pre-built libraries 
 
 \subsection{Custom Model Creation}
 
-\textbf{OpenCV:} Used for image processing and face detection via Haar cascades, which are trained classifiers for detecting facial features.
+\textbf{OpenCV:} Used for image processing and face detection via Haar cascades, which are trained classifiers for detecting facial features~\cite{viola2001rapid}.
 
-\textbf{TensorFlow:} The deep learning model was built using TensorFlow, focusing on convolutional neural networks (CNNs) for feature extraction and classification.
+\textbf{TensorFlow:} The deep learning model was built using TensorFlow, focusing on convolutional neural networks (CNNs) for feature extraction and classification~\cite{tensorflow}.
 
-\textbf{Albumentations:} Applied for data augmentation, introducing variations such as brightness, contrast, rotation, and noise to improve model robustness.
+\textbf{Albumentations:} Applied for data augmentation, introducing variations such as brightness, contrast, rotation, and noise to improve model robustness~\cite{albumentations}.
 
-\textbf{Labelme:} Used for manual annotation of facial regions, providing high-quality labels for supervised training.
+\textbf{Labelme:} Used for manual annotation of facial regions, providing high-quality labels for supervised training~\cite{labelme}.
 
 \textbf{Algorithms:}
 \begin{itemize}
-    \item \textbf{Haar Cascades (OpenCV):} Real-time face detection using edge and feature detection.
+    \item \textbf{Haar Cascades (OpenCV):} Real-time face detection using edge and feature detection~\cite{viola2001rapid}.
     \item \textbf{Convolutional Neural Networks (TensorFlow):} Feature extraction and classification for face recognition.
-    \item \textbf{Data Augmentation:} Enhances dataset diversity and model generalization.
+    \item \textbf{Data Augmentation:} Enhances dataset diversity and model generalization~\cite{albumentations}.
+    \item \textbf{Local Binary Patterns (LBP):} A texture-based method for face recognition~\cite{ahonen2007lbp}.
 \end{itemize}
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.7\textwidth]{../Files/convolutional_network_architecture.png}
-    \caption{Architecture of the convolutional neural network used in the custom model.}
+    \caption{Architecture of the convolutional neural network.}
     \label{fig:cnn-architecture}
 \end{figure}
 
 \subsection{face-recognition Library}
 
-\textbf{dlib:} Provides face detection (HOG) and recognition (ResNet-34 based deep metric learning).
+\textbf{dlib:} Provides face detection (HOG) and recognition (ResNet-34 based deep metric learning)~\cite{dlib}.
 
-\textbf{face\_recognition:} Python wrapper for dlib, simplifying face detection and recognition.
+\textbf{face\_recognition:} Python wrapper for dlib, simplifying face detection and recognition~\cite{facerecognition}.
 
-\textbf{OpenCV:} Used for image preprocessing.
+\textbf{OpenCV:} Used for image preprocessing~\cite{opencv}.
 
 \textbf{Algorithms:}
 \begin{itemize}
-    \item \textbf{Histogram of Oriented Gradients (HOG):} Robust face detection across lighting conditions.
-    \item \textbf{Deep Metric Learning (ResNet-34):} Encodes faces into 128-dimensional vectors for comparison.
+    \item \textbf{Histogram of Oriented Gradients (HOG):} Robust face detection across lighting conditions~\cite{dalal2005hog}.
+    \item \textbf{Deep Metric Learning (ResNet-34):} Encodes faces into 128-dimensional vectors for comparison~\cite{schroff2015facenet}.
 \end{itemize}
 
 \begin{figure}[ht!]
@@ -50,27 +51,25 @@ In this project, a combination of custom model creation and pre-built libraries 
 
 \subsection{MTCNN (Multi-task Cascaded Convolutional Networks)}
 
-MTCNN is a deep learning-based framework for face detection and landmark localization, using a cascade of three neural networks (P-Net, R-Net, O-Net) for robust detection and alignment.
+MTCNN is a deep learning-based framework for face detection and landmark localization, using a cascade of three neural networks (P-Net, R-Net, O-Net) for robust detection and alignment \cite{zhang2016mtcnn}.
 
 \subsection{FaceNet}
 
-FaceNet maps faces into a Euclidean space using a deep CNN and triplet loss, enabling verification, clustering, and identification. It is implemented with TensorFlow or PyTorch and uses Inception networks for feature extraction.
+FaceNet maps faces into a Euclidean space using a deep CNN and triplet loss, enabling verification, clustering, and identification \cite{schroff2015facenet}. It is implemented with TensorFlow or PyTorch and uses Inception networks for feature extraction \cite{tensorflow}.
 
 \subsection{Amazon Rekognition}
 
-Amazon Rekognition is a cloud-based service for face detection, recognition, and analysis, using proprietary deep learning algorithms. It offers face comparison, attribute analysis, and is widely used in security and media applications.
+Amazon Rekognition is a cloud-based service for face detection, recognition, and analysis, using proprietary deep learning algorithms \cite{rekognition}. It offers face comparison, attribute analysis, and is widely used in security and media applications.
+
+\subsection{Ethical Considerations}
+
+The deployment of face recognition systems raises ethical concerns, including privacy violations and potential misuse \cite{ergun_2025_ethical}. Sustainability and fairness in AI-based surveillance systems are also critical \cite{sustainability_2025_ethical}.
 
 \subsection{References}
 \begin{itemize}
     \item Comparison of deep learning software: \url{https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software}
-    \item TensorFlow Documentation: \url{https://www.tensorflow.org/}
-    \item OpenCV Python Documentation: \url{https://docs.opencv.org/4.x/}
-    \item Albumentations Documentation: \url{https://albumentations.ai/docs/}
-    \item Face Recognition Documentation: \url{https://pypi.org/project/face-recognition/}
-    \item dlib Documentation: \url{http://dlib.net/}
     \item Zhang, K., et al. (2016). Joint face detection and alignment using multitask cascaded convolutional networks. IEEE Signal Processing Letters, 23(10), 1499-1503.
     \item Schroff, F., et al. (2015). FaceNet: A unified embedding for face recognition and clustering. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 815-823).
-    \item Amazon Rekognition Developer Guide: \url{https://docs.aws.amazon.com/rekognition/}
 \end{itemize}
 
 % =====================
@@ -88,12 +87,19 @@ Popular face recognition systems such as FaceNet and VGGFace rely on CNN archite
 \subsection{Eigenfaces}
 The Eigenface method is a classical approach based on Principal Component Analysis (PCA). Developed in the early 1990s~\cite{turk1991eigenfaces}, this method represents faces as linear combinations of a set of basis images known as ``eigenfaces.'' Each eigenface corresponds to a direction of maximal variance in the face dataset. The idea behind this method is to reduce the dimensionality of face data while retaining the most significant information that differentiates one face from another.
 
-To recognize a face using the Eigenface approach, an input image is projected onto the subspace spanned by the eigenfaces. The resulting projection is compared to stored projections of known faces in the database. Recognition is achieved by measuring the similarity between the input face's projection and the stored ones~\cite{alochana_study_2024}.
+To recognize a face using the Eigenface approach, an input image is projected onto the subspace spanned by the eigenfaces. The resulting projection is compared to stored projections of known faces in the database. Recognition is achieved by measuring the similarity between the input face's projection and the stored ones~\cite{alochana_study_2025}.
 
-Turk and Pentland reported recognition rates of 96\% for lighting variations, 85\% for orientation, and 64\% for scale variations on a dataset of 16 subjects~\cite{turk1991eigenfaces}. While fast and straightforward, Eigenfaces are highly sensitive to variations in lighting, pose, and occlusion, often requiring extensive preprocessing for image normalization to achieve optimal performance~\cite{alochana_study_2024, geeksforgeeks_ml_2021}.
+Turk and Pentland reported recognition rates of 96\% for lighting variations, 85\% for orientation, and 64\% for scale variations on a dataset of 16 subjects~\cite{turk1991eigenfaces}. While fast and straightforward, Eigenfaces are highly sensitive to variations in lighting, pose, and occlusion, often requiring extensive preprocessing for image normalization to achieve optimal performance~\cite{alochana_study_2025, geeksforgeeks_ml_2021}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Files/eigenfaces.png}
+    \caption{Example: Face detection result using Eigenfaces.}
+    \label{fig:eigenfaces-example}
+\end{figure}
 
 \subsection{Fisherfaces}
-Fisherfaces improve upon Eigenfaces by using Linear Discriminant Analysis (LDA) rather than PCA. While PCA focuses on maximizing the variance in the data, LDA aims to maximize the class separability, which makes Fisherfaces more robust to variations within the same class (such as different expressions of the same individual).
+Fisherfaces improve upon Eigenfaces by using Linear Discriminant Analysis (LDA) rather than PCA\cite{belhumeur1997fisherfaces}. While PCA focuses on maximizing the variance in the data, LDA aims to maximize the class separability, which makes Fisherfaces more robust to variations within the same class (such as different expressions of the same individual).
 
 The Fisherface approach projects the face data onto a subspace where the ratio of the between-class scatter to the within-class scatter is maximized. This results in a set of features that better discriminates between different individuals, even under varying lighting conditions or facial expressions.
 
@@ -115,6 +121,13 @@ Although Haar Cascades are primarily used for face detection, they can also be e
 The Histogram of Oriented Gradients (HOG) method is a feature extraction technique that captures the gradient orientation and intensity within an image. It is commonly used for object detection, including face recognition. The HOG algorithm divides the face into small cells and computes a histogram of gradient directions for each cell. These histograms are then concatenated to form a feature descriptor representing the face.
 
 HOG-based face recognition is robust to small variations in pose and lighting, and it is computationally efficient. However, its performance is generally lower than deep learning-based approaches like CNNs, especially when dealing with more complex, unconstrained face recognition tasks.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Files/histagram_of_oriented_gradients.png}
+    \caption{Example: Face detection result using Histogram of Oriented Gradients (HOG).}
+    \label{fig:hog-example}
+\end{figure}
 
 \subsection{Deep Metric Learning}
 Deep Metric Learning is an advanced technique used for face recognition tasks that involve face verification or identification. The core idea of metric learning is to map faces into an embedding space, where the distance between vectors represents the similarity between faces. The most well-known example of this approach is the FaceNet model, which uses a triplet loss function to ensure that faces of the same person are closer together in the embedding space than faces of different people.

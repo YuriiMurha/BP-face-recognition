@@ -1,0 +1,149 @@
+% !TeX encoding=utf-8
+\documentclass[a4paper]{feidipsp}
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsExtensions{.pdf}
+\graphicspath{{figures/}}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{amsmath,amsfonts,amssymb,latexsym}
+
+\def\figurename{Figure}
+\def\tabname{Table}
+
+%\usepackage[dvips]{graphicx}
+%\DeclareGraphicsExtensions{.eps}
+
+%\usepackage[pdftex]{hyperref}   %% tlac !!!
+\usepackage[pdftex,colorlinks,citecolor=magenta,bookmarksnumbered,unicode,pdftoolbar=true,pdfmenubar=true,pdfwindowui=true,bookmarksopen=true]{hyperref}
+\hypersetup{%
+baseurl={http://www.tuke.sk/sevcovic},
+pdfcreator={pdfcsLaTeX},
+pdfkeywords={System manual},
+pdftitle={Face Detection using Camera Footage},
+pdfauthor={Yurii Murha},
+pdfsubject={Bachelor Thesis}
+}
+
+% Citovanie podla mena autora a roku
+%\usepackage[numbers]{natbib}
+\usepackage{natbib} \citestyle{chicago}
+
+%\usepackage{mathptm} %\usepackage{times}
+\department{Department of Cybernetics and Artificial Intelligence}
+\odbor{Computer Science}
+\autor{Yurii Murha}
+\veduci{Ing.~Jan~Magyar,~PhD}
+\konzultant{Ing.~Jan~Magyar,~PhD}
+\nazov{Face Recognition Using Camera Footage}
+\kratkynazov{Face Recognition}
+\nazovprogramu{FaceClassifier}
+\keywords{Face Recognition, Python, OpenCV, Neural Network, TensorFlow, Face Detection}
+\title{Face Detection using Camera Footage}
+\keywords{Manipulator, Matlab, Simulink, Dynamics, kinematics, Control of dynamic systems}
+\datum{30.~05.~2025}
+
+
+
+\begin{document}
+\bibliographystyle{dcu}
+
+\titulnastrana
+
+\tableofcontents
+
+\newpage
+
+\setcounter{page}{1}
+
+\section{System Manual}
+
+This system manual provides detailed technical information about the face recognition project, including libraries, techniques, and methodologies used.
+
+\subsection{Libraries and Dependencies}
+
+The project relies on the following libraries and tools:
+
+\begin{itemize}
+    \item \textbf{TensorFlow (v2.19.0):} Used for building and training deep learning models.
+    \item \textbf{OpenCV (v4.11.0):} Used for image processing and face detection.
+    \item \textbf{Albumentations (v2.0.7):} Used for data augmentation.
+    \item \textbf{dlib (v19.24.6):} Provides face detection and recognition capabilities.
+    \item \textbf{Matplotlib (v3.10.1):} Used for visualizing data and results.
+    \item \textbf{Pandas (v2.2.3):} Used for data manipulation and analysis.
+    \item \textbf{TQDM (v4.67.1):} Used for progress bars during processing.
+    \item \textbf{Shapely (v2.1.0):} Used for calculating Intersection over Union (IoU) for bounding boxes.
+\end{itemize}
+
+Refer to the \texttt{requirements.txt} file for a complete list of dependencies and their versions.
+
+\subsection{Techniques and Methodologies}
+
+\subsubsection{1. Data Collection and Annotation}
+\begin{itemize}
+    \item Images are collected using OpenCV and saved in the \texttt{data/datasets/images} directory.
+    \item Annotation is performed using the Labelme tool, which generates JSON files containing bounding box information.
+\end{itemize}
+
+\subsubsection{2. Data Preprocessing and Augmentation}
+\begin{itemize}
+    \item Images are resized and normalized to ensure consistency.
+    \item Augmentation techniques include random cropping, flipping, brightness adjustment, and gamma correction.
+    \item Bounding boxes are adjusted to match augmented images.
+\end{itemize}
+
+\subsubsection{3. Face Detection and Recognition}
+\begin{itemize}
+    \item \textbf{Haar Cascades:} Used for real-time face detection based on edge detection.
+    \item \textbf{Histogram of Oriented Gradients (HOG):} Used for detecting facial structures.
+    \item \textbf{Convolutional Neural Networks (CNNs):} Used for feature extraction and classification.
+    \item \textbf{FaceNet:} Used for generating embeddings for face recognition.
+\end{itemize}
+
+\subsubsection{4. Model Training}
+\begin{itemize}
+    \item The model is built using TensorFlow's Functional API.
+    \item EfficientNetB0 is used as the backbone for feature extraction.
+    \item The model is trained using a combination of classification and regression losses.
+    \item Learning rate scheduling and dropout are used to prevent overfitting.
+\end{itemize}
+
+\subsubsection{5. Evaluation Metrics}
+\begin{itemize}
+    \item \textbf{Accuracy:} Measures the percentage of correctly detected faces.
+    \item \textbf{False Positives and False Negatives:} Evaluates the reliability of face detection.
+    \item \textbf{Intersection over Union (IoU):} Measures the overlap between predicted and ground truth bounding boxes.
+\end{itemize}
+
+\subsection{System Architecture}
+
+The system consists of the following components:
+\begin{enumerate}
+    \item \textbf{Data Collection:} Captures and annotates images.
+    \item \textbf{Preprocessing:} Normalizes and augments the dataset.
+    \item \textbf{Model Training:} Builds and trains a deep learning model.
+    \item \textbf{Evaluation:} Compares the performance of different face detection methods.
+\end{enumerate}
+
+\subsection{Conclusion}
+
+This system manual provides a comprehensive overview of the technical aspects of the project. For further details, refer to the thesis documentation or contact the project maintainer.
+
+\newpage
+\def\refname{References}
+\addcontentsline{toc}{section}{\numberline{}References}
+
+\begin{thebibliography}{999}
+
+\end{thebibliography}
+
+\addcontentsline{toc}{section}{\numberline{}List of Figures}
+\listoffigures
+
+\addcontentsline{toc}{section}{\numberline{}List of Tables}
+\listoftables
+
+\end{document}

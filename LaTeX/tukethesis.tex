@@ -32,10 +32,10 @@
 \graphicspath{{figures/}} % directory for figures
 %%
 %% numerical citations (vancouer style)
-%\usepackage[numbers]{natbib}
+\usepackage[numbers]{natbib}
 %%
-%% author-year citations (harvard style) -- prefered !!!
-\usepackage{natbib} \citestyle{chicago}
+% author-year citations (harvard style) -- prefered !!!
+% \usepackage{natbib} \citestyle{chicago}
 % -----------------------------------------------------------------
 %% tlač !!!
 \usepackage[pdftex,unicode=true,bookmarksnumbered=true,
@@ -45,8 +45,8 @@ pdfstartpage=1]{hyperref}
 \hypersetup{%
 baseurl={http://www.tuke.sk},
 pdfcreator={pdfcsLaTeX},
-pdfkeywords={recognition, camera, surveillance},
-pdftitle={Face Recognition with Camera Surveillance}, % potom sa upresni
+pdfkeywords={TensorFlow, Python, OpenCV, Face Recognition, Camera, Surveillance},
+pdftitle={Face Recognition in Camera Footage}, % potom sa upresni
 pdfauthor={Yurii Murha},
 pdfsubject={Bachelor's Thesis}
 } 
@@ -65,14 +65,14 @@ pdfsubject={Bachelor's Thesis}
 %% Ak praca nema 'podnazov' zakomentujte riadky \subtitle a \podnazov, 
 %% alebo polozky nechajte prazdne
 \author{Yurii Murha}
-\title{Face Recognition with Camera Surveillance}
+\title{Face Recognition in Camera Footage}
 \subtitle{}
 % \abstrakte{Text abstraktu v~svetovom jazyku je potrebný pre integráciu
 % do medzinárodných informačných systémov. Ak nie je možné cudzojazyčnú
 % verziu abstraktu umiestniť na jednej strane so slovenským abstraktom,
 % je potrebné umiestniť ju na samostatnú stranu (cudzojazyčný abstrakt
 % nemožno deliť a~uvádzať na dvoch strabách).}
-\keywords{recognition, camera, surveillance}
+\keywords{TensorFlow, Python, OpenCV, Face Recognition, Camera, Surveillance}
 % \degree{}
 \university{Technical University of Košice}
 \faculty{Faculty of Electrical Engineering and Informatics}
@@ -84,7 +84,7 @@ pdfsubject={Bachelor's Thesis}
 \supervisor{Ing.~Ján~Magyar, PhD.}
 \consultanta{Ing.~Ján~Magyar, PhD.}
 \consultantb{}
-\dateofsubmission{April. 24. 2024} 
+\dateofsubmission{May. 30. 2025} 
 \town{Košice}
 \abstrakte{Face recognition in surveillance systems represents a rapidly advancing field at the intersection of artificial intelligence, computer vision, and security technology. This thesis presents a comprehensive study of face detection and recognition methods, with a focus on their application in real-time camera surveillance. The work begins with an overview of the theoretical foundations, including classical approaches such as Eigenfaces, Fisherfaces, and Local Binary Patterns, as well as modern deep learning techniques like Convolutional Neural Networks (CNNs), Histogram of Oriented Gradients (HOG), and Deep Metric Learning. The thesis systematically compares open-source libraries and frameworks, including OpenCV, dlib, and TensorFlow, and evaluates their performance on custom datasets collected from webcams and security cameras. A custom dataset was created and manually annotated to reflect real-world conditions, and data augmentation was applied to improve model robustness. The practical part of the thesis details the development of a modular face recognition system, integrating detection, recognition, and database management components. Experimental results demonstrate the strengths and limitations of various algorithms in terms of accuracy, speed, and robustness to challenging conditions such as lighting, pose, and occlusion. The thesis also addresses ethical and privacy considerations relevant to the deployment of biometric systems. The findings contribute to the understanding of current capabilities and challenges in face recognition for surveillance, providing guidance for future research and practical implementation in security applications.}
 % \klucoveslova{Optimalizácia, záverečná práca, písanie}
@@ -111,7 +111,7 @@ pdfsubject={Bachelor's Thesis}
 \endabstract % end of the Abstracts page
 
 %% input the 'Assign of the Thesis'
-\assignthesis
+% \assignthesis
 
 %% input the 'Declaration' of the author
 \declaration
@@ -125,10 +125,12 @@ pdfsubject={Bachelor's Thesis}
 % a na autora práce sa vzťahuje autorský zákon.
 
 \acknowledgement % begin the 'Acknowledgement'
-I would like to express my sincere thanks to my supervisor Ing.~Ján Magyar, PhD, the main Supervisor. Special mention should go
-to Ing.~Ján Magyar, PhD for his constant, and constructive guidance
-throughout the study. To all other who gave a hand, I say thank you
-very much.
+I would like to express my sincere gratitude to Ing.~Ján Magyar, PhD, for his invaluable support and guidance in his dual role as both my supervisor and consultant. His constant and constructive feedback was instrumental throughout this study.
+\\
+I also want to thank Kanye West for his great songs that provided much-needed motivation for my Graduation.
+\\ 
+My special thanks also go to Arsen Markaryan for the mindset; 
+The Victory is gonna be ours!
 \endacknowledgement
 
 \preface % begin the 'Preface'

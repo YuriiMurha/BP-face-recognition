@@ -1,22 +1,21 @@
 %%
-%% This is file `tukethesis.cls' v2.0, modified article.cls
+%% Toto je subor `tukediphc.cls' verzia 2.0, modifikovany article.cls
 %%
-%% Authors:
+%% Pripravili:
 %% Ladislav Sevcovic -- <Ladislav.Sevcovic@tuke.sk>
 %% http://people.tuke.sk/ladislav.sevcovic/
 %% Jan Busa -- <Jan.Busa@tuke.sk>
-%% http://people.tuke.sk/jan.busa/
-%%
-%% Designed to match the Bachelor's/Master's thesis requirements in
-%% the Technical University of Kosice, Slovakia.
+%% http://people.tuke.sk/jan.busa/,
+%% ako sablonu pisania hlavnej casti kvalifikacnych prac
+%% na Technickej Univerzite v Kosiciach, Kosice 2010
 %%
 %% Copyright (c) 2012 Ladislav Sevcovic and Jan Busa
 %%
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{tukethesis}
+\ProvidesClass{tukediphc}
               [2012/04/22 v2.0 TUKE thesis class]
 
-\ClassInfo{tukethesis}
+\ClassInfo{tukediphc}
   {Technical University of Kosice (official)\MessageBreak
    Bachelor's/Master's thesis document class\@gobble}
 
@@ -32,199 +31,159 @@ given}}
 \def\@abstrakte{\@latex@warning@no@line{No \noexpand\abstrakte
 given}}
 
-\def\university#1{\gdef\@university{#1}}
-\def\@university{\@latex@warning@no@line{No \noexpand\university
-given}}
-
 \def\univerzita#1{\gdef\@univerzita{#1}}
 \def\@univerzita{\@latex@warning@no@line{No \noexpand\univerzita
 given}}
-
-\def\faculty#1{\gdef\@faculty{#1}}
-\def\@faculty{\@latex@warning@no@line{No \noexpand\faculty given}}
-
 \def\fakulta#1{\gdef\@fakulta{#1}}
 \def\@fakulta{\@latex@warning@no@line{No \noexpand\fakulta given}}
-
-\def\facultyabbr#1{\gdef\@facultyabbr{#1}}
-\def\@facultyabbr{\@latex@warning@no@line{No \noexpand\facultyabbr
+\def\skratkafakulty#1{\gdef\@skratkafakulty{#1}}
+\def\@skratkafakulty{\@latex@warning@no@line{No
+\noexpand\skratkafakulty given}}
+\def\university#1{\gdef\@university{#1}}
+\def\@university{\@latex@warning@no@line{No \noexpand\university
 given}}
-
+\def\faculty#1{\gdef\@faculty{#1}}
+\def\@faculty{\@latex@warning@no@line{No \noexpand\faculty given}}
+\def\dippraca#1{\gdef\@dippraca{#1}}
+\def\@dippraca{\@latex@warning@no@line{No \noexpand\dippraca given}}
+\def\bakpraca#1{\gdef\@bakpraca{#1}}
+\def\@bakpraca{\@latex@warning@no@line{No \noexpand\bakpraca given}}
+\def\katedra#1{\gdef\@katedra{#1}}
+\def\@katedra{\@latex@warning@no@line{No \noexpand\katedra given}}
+\def\skratkakatedry#1{\gdef\@skratkakatedry{#1}}
+\def\@skratkakatedry{\@latex@warning@no@line{No
+\noexpand\skratkakatedry given}}
 \def\@department{\@latex@warning@no@line{No \noexpand\department
 given}}
 \def\department#1{\gdef\@department{#1}}
-
-\def\katedra#1{\gdef\@katedra{#1}}
-\def\@katedra{\@latex@warning@no@line{No \noexpand\katedra given}}
-
-\def\departmentabbr#1{\gdef\@departmentabbr{#1}}
-\def\@departmentabbr{\@latex@warning@no@line{
-No \noexpand\departmentabbr given}}
-
-\def\masterthesis#1{\gdef\@masterthesis{#1}}
-\def\@masterthesis{\@latex@warning@no@line{No \noexpand\masterthesis
-given}}
-
-\def\bachelorthesis#1{\gdef\@bachelorthesis{#1}}
-\def\@bachelorthesis{\@latex@warning@no@line{
-No \noexpand\bachelorthesis given}}
-
-\def\@fieldofstudy{\@latex@warning@no@line{No
-\noexpand\fieldofstudy given}}
-\def\fieldofstudy#1{\gdef\@fieldofstudy{#1}}
-
-\def\author#1{\gdef\@author{#1}}
-\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-
-\def\title#1{\gdef\@title{#1}}
-\def\@title{\@latex@warning@no@line{No \noexpand\title given}}
-
-\def\subtitle#1{\gdef\@subtitle{#1}}
-\def\@subtitle{\@latex@warning@no@line{No \noexpand\subtitle given}}
-
+\def\@odbor{\@latex@warning@no@line{No \noexpand\odbor given}}
+\def\odbor#1{\gdef\@odbor{#1}}
+\def\autor#1{\gdef\@autor{#1}}
+\def\@autor{\@latex@warning@no@line{No \noexpand\autor given}}
 \def\nazov#1{\gdef\@nazov{#1}}
 \def\@nazov{\@latex@warning@no@line{No \noexpand\nazov given}}
-
 \def\podnazov#1{\gdef\@podnazov{#1}}
 \def\@podnazov{\@latex@warning@no@line{No \noexpand\podnazov given}}
-
+\def\title#1{\gdef\@title{#1}}
+\def\@title{\@latex@warning@no@line{No \noexpand\title given}}
+\def\subtitle#1{\gdef\@subtitle{#1}}
+\def\@subtitle{\@latex@warning@no@line{No \noexpand\subtitle given}}
+\def\dekan#1{\gdef\@dekan{#1}}
+\def\@dekan{\@latex@warning@no@line{No \noexpand\dekan given}}
+\def\veducikatedry#1{\gdef\@veducikatedry{#1}}
+\def\@veducikatedry{\@latex@warning@no@line{No \noexpand\veducikatedry
+given}}
+\def\veduciprace#1{\gdef\@veduciprace{#1}}
+\def\@veduciprace{\@latex@warning@no@line{No \noexpand\veduciprace
+given}}
+\def\konzultanta#1{\gdef\@konzultanta{#1}}
+\def\@konzultanta{\@latex@warning@no@line{No \noexpand\konzultanta
+given}}
+\def\konzultantb#1{\gdef\@konzultantb{#1}}
+\def\@konzultantb{\@latex@warning@no@line{No \noexpand\konzultantb
+given}}
 \def\klucoveslova#1{\gdef\@klucoveslova{#1}}
 \def\@klucoveslova{\@latex@warning@no@line{No \noexpand\klucoveslova
 given}}
-
-\def\deanoffaculty#1{\gdef\@deanoffaculty{#1}}
-\def\@deanoffaculty{\@latex@warning@no@line{No \noexpand\deanoffaculty
+\def\osnova#1{\gdef\@osnova{#1}}
+\def\@osnova{\@latex@warning@no@line{No \noexpand\osnova given}}
+\def\zoznamodplit#1{\gdef\@zoznamodplit{#1}}
+\def\@zoznamodplit{\@latex@warning@no@line{No \noexpand\zoznamodplit
 given}}
-
-\def\headofdepartment#1{\gdef\@headofdepartment{#1}}
-\def\@headofdepartment{\@latex@warning@no@line{No
-\noexpand\headofdepartment given}}
-
-\def\supervisor#1{\gdef\@supervisor{#1}}
-\def\@supervisor{\@latex@warning@no@line{No \noexpand\supervisor
-given}}
-
-\def\consultanta#1{\gdef\@consultanta{#1}}
-\def\@consultanta{\@latex@warning@no@line{No \noexpand\consultanta
-given}}
-
-\def\consultantb#1{\gdef\@consultantb{#1}}
-\def\@consultantb{\@latex@warning@no@line{No \noexpand\consultantb
-given}}
-
-\def\outlineofthesis#1{\gdef\@outlineofthesis{#1}}
-\def\@outlineofthesis{\@latex@warning@no@line{No
-\noexpand\outlineofthesis given}}
-
-\def\recommendedbiblio#1{\gdef\@recommendedbiblio{#1}}
-\def\@recommendedbiblio{\@latex@warning@no@line{No
-\noexpand\recommendedbiblio given}}
-
 \def\keywords#1{\gdef\@keywords{#1}}
 \def\@keywords{\@latex@warning@no@line{No \noexpand\keywords given}}
-
-\def\categoryconspectus#1{\gdef\@categoryconspectus{#1}}
-\def\@categoryconspectus{\@latex@warning@no@line{No
-\noexpand\categoryconspectus given}}
-
-\def\studyprogramme#1{\gdef\@studyprogramme{#1}}
-\def\@studyprogramme{\@latex@warning@no@line{No
-\noexpand\studyprogramme given}}
-
-\def\languageofthesis#1{\gdef\@languageofthesis{#1}}
-\def\@languageofthesis{\@latex@warning@no@line{No
-\noexpand\languageofthesis given}}
-
-\def\degree#1{\gdef\@degree{#1}}
-\def\@degree{\@latex@warning@no@line{No \noexpand\degree given}}
-
-\def\town#1{\gdef\@town{#1}}
-\def\@town{\@latex@warning@no@line{No \noexpand\town given}}
-
-\def\dateofsubmission#1{\gdef\@dateofsubmission{#1}}
-\def\@dateofsubmission{\@latex@warning@no@line{No
-\noexpand\dateofsubmission given}}
-\def\vyberden#1.#2.#3:{#2}
-\def\vybermesiac#1.#2.#3:{#1}
+\def\kategoria#1{\gdef\@kategoria{#1}}
+\def\@kategoria{\@latex@warning@no@line{No \noexpand\kategoria given}}
+\def\specializacia#1{\gdef\@specializacia{#1}}
+\def\@specializacia{\@latex@warning@no@line{No \noexpand\specializacia
+given}}
+\def\jazyk#1{\gdef\@jazyk{#1}}
+\def\@jazyk{\@latex@warning@no@line{No \noexpand\jazyk given}}
+\def\titul#1{\gdef\@titul{#1}}
+\def\@titul{\@latex@warning@no@line{No \noexpand\titul given}}
+\def\mesto#1{\gdef\@mesto{#1}}
+\def\@mesto{\@latex@warning@no@line{No \noexpand\mesto given}}
+\def\datumodovzdania#1{\gdef\@datumodovzdania{#1}}
+\def\@datumodovzdania{\@latex@warning@no@line{No
+\noexpand\datumodovzdania given}}
+\def\vyberden#1.#2.#3:{#1}
+\def\vybermesiac#1.#2.#3:{#2}
 \def\vyberrok#1.#2.#3:{#3}
-\def\den{\expandafter\vyberden\@dateofsubmission:}
-\def\mesiac{\expandafter\vybermesiac\@dateofsubmission:}
-\def\rok{\expandafter\vyberrok\@dateofsubmission:}
-
-\def\dateofassign#1{\gdef\@dateofassign{#1}}
-\def\@dateofassign{\@latex@warning@no@line{No \noexpand\dateofassign
+\def\den{\expandafter\vyberden\@datumodovzdania:}
+\def\mesiac{\expandafter\vybermesiac\@datumodovzdania:}
+\def\rok{\expandafter\vyberrok\@datumodovzdania:}
+\def\datumzadania#1{\gdef\@datumzadania{#1}}
+\def\@datumzadania{\@latex@warning@no@line{No \noexpand\datumzadania
 given}}
 \def\vyberden#1.#2.#3:{#1}
 \def\vybermesiac#1.#2.#3:{#2}
 \def\vyberrok#1.#2.#3:{#3}
-\def\denzad{\expandafter\vyberden\@dateofassign:}
-\def\mesiaczad{\expandafter\vybermesiac\@dateofassign:}
-\def\rokzad{\expandafter\vyberrok\@dateofassign:}
-
-\def\dateofdefence#1{\gdef\@dateofdefence{#1}}
-\def\@dateofdefence{\@latex@warning@no@line{No \noexpand\dateofdefence
+\def\denzad{\expandafter\vyberden\@datumzadania:}
+\def\mesiaczad{\expandafter\vybermesiac\@datumzadania:}
+\def\rokzad{\expandafter\vyberrok\@datumzadania:}
+\def\datumobhajoby#1{\gdef\@datumobhajoby{#1}}
+\def\@datumobhajoby{\@latex@warning@no@line{No \noexpand\datumobhajoby
 given}}
 \def\vyberdenobh#1.#2.#3:{#1}
 \def\vybermesiacobh#1.#2.#3:{#2}
 \def\vyberrokobh#1.#2.#3:{#3}
-\def\denobh{\expandafter\vyberdenobh\@dateofdefence:}
-\def\mesiacobh{\expandafter\vybermesiacobh\@dateofdefence:}
-\def\rokobh{\expandafter\vyberrokobh\@dateofdefence:}
-
-\def\numberofpages#1{\gdef\@numberofpages{#1}}
-\def\@numberofpages{\@latex@warning@no@line{No \noexpand\numberofpages
+\def\denobh{\expandafter\vyberdenobh\@datumobhajoby:}
+\def\mesiacobh{\expandafter\vybermesiacobh\@datumobhajoby:}
+\def\rokobh{\expandafter\vyberrokobh\@datumobhajoby:}
+\def\pocetstran#1{\gdef\@pocetstran{#1}}
+\def\@pocetstran{\@latex@warning@no@line{No \noexpand\pocetstran
+given}}
+\def\rozsahprace#1{\gdef\@rozsahprace{#1}}
+\def\@rozsahprace{\@latex@warning@no@line{No \noexpand\rozsahprace
 given}}
 
-\def\extentofthesis#1{\gdef\@extentofthesis{#1}}
-\def\@extentofthesis{\@latex@warning@no@line{No
-\noexpand\extentofthesis given}}
+\newcommand\prvastrana{\thispagestyle{empty}%
+{\Large \bf
+  \centerline{\@univerzita}
+  \vspace{2mm}
+  \centerline{\@fakulta}
 
-\newcommand\firstpage{\thispagestyle{empty}%
-{\Large \textbf{%
-  \centerline{\@university}\\[2mm]
-  \centerline{\@faculty}
-}
 }
 \vspace*{14em}
 
   \begin{center}%
-    {\LARGE \textbf{\@title}}%
+  {\LARGE \textbf{\@nazov}}%
 
   \bigskip
 
-  {\large \textbf{\@subtitle}}%
+  {\large \textbf{\@podnazov}}%
 
   \bigskip
 
-  \large \textbf{\@masterthesis \@bachelorthesis}
+  \large \textbf{\@dippraca \@bakpraca}
   \end{center}
 
 \vfill
 
-{\Large \textbf{\rok}} \hfill {\Large \textbf{\@author}}
+{\Large \noindent\textbf{\rok}} \hfill {\Large \textbf{\@autor}}
 \newpage
 }
 
-\newcommand\titlepage{\thispagestyle{empty}%
-{\Large
-\textbf{%
-  \centerline{\@university}\\[2mm]
-  \centerline{\@faculty}
-}
+\newcommand\titulnastrana{\thispagestyle{empty}%
+{\Large\bf
+  \centerline{\@univerzita}
+  \vspace{2mm}
+  \centerline{\@fakulta}
+
 }
 
  \vfill
 
  \begin{center}%
-    {\LARGE \textbf{\@title}}%
+    {\LARGE \bf{\@nazov}}%
 
     \bigskip
 
-    {\large \textbf{\@subtitle}}%
+    {\large \bf{\@podnazov}}%
 
     \bigskip
 
-    {\large \textbf{\@masterthesis \@bachelorthesis}}
+    {\large \bf{\@dippraca \@bakpraca}}
 
  \end{center}
 
@@ -232,85 +191,117 @@ given}}
 
 {\normalsize
 \noindent
-\begin{tabular}{p{.23\textwidth}p{.67\textwidth}}
-Study Programme:& \@studyprogramme \\
-Field of study:& \@fieldofstudy \\
-Department:& \@department~(\@departmentabbr) \\
-Supervisor:& \@supervisor \\
-Consultant(s):& \@consultanta \\
-\phantom{Consultant(s):}& \@consultantb
+\begin{tabular}{p{.24\textwidth}p{.66\textwidth}}
+Študijný program:& \@specializacia \\
+Študijný odbor:& \@odbor \\
+Školiace pracovisko:& \@katedra~(\@skratkakatedry) \\
+Školiteľ:& \@veduciprace \\
+Konzultant:& \@konzultanta \\
+%\phantom{Konzultant:}& \@konzultantb
 \end{tabular}
 
 \vspace{2\baselineskip}
 
-{\Large \textbf{\@town \rok}} \hfill {\Large \textbf{\@author}}
+{\Large \noindent\textbf{\@mesto\rok}} \hfill {\Large \textbf{\@autor}}
 }
 \newpage
 
-\def\acknowledgement{\thispagestyle{empty}\vglue0pt\vfill%
-      \noindent\textbf{Acknowledgement}\par\bigskip}
-\def\endacknowledgement{\newpage}
+\def\podakovanie{\thispagestyle{empty}\vglue0pt\vfill%
+      \noindent\textbf{Po\v{d}akovanie}\par\bigskip}
+\def\kpodakovania{\newpage}
 
 \def\errata{\thispagestyle{empty}%
-      \noindent{\Large\textbf{Errata}}\par\bigskip%
+      \noindent{\Large\textbf{Err\'ata}}\par\bigskip%
       {\centering
-{\large\@title}\\\@author\\{\small\@town~\rok}\\\vspace{4em}}}
+{\large\@nazov}\\\@autor\\{\small\@mesto~\rok}\\\vspace{4em}}}
 \def\kerrata{\newpage}
 
-
-\def\abstrakt{\thispagestyle{empty}\vglue50pt%
-	\noindent\textbf{Abstrakt}\par\@abstrakt\\[5mm]
-	\noindent\textbf{K\v{l}\'u\v{c}ov\'e slov\'a}\\
+\def\abstraktsk{\thispagestyle{empty}%
+	\noindent\textbf{Abstrakt v SJ}\par\@abstrakt\\[5mm]
+	\noindent\textbf{Kľúčové slová}\\
 	\@klucoveslova}
-\def\abstrakte{\thispagestyle{empty}%
-	\noindent\textbf{Abstract}\par\@abstrakte\\[5mm]
-	\noindent\textbf{Keywords}\\
+\def\abstrakteng{\thispagestyle{empty}\vglue50pt%
+	\noindent\textbf{Abstrakt v AJ}\par\@abstrakte\\[5mm]
+	\noindent\textbf{Kľúčové slová v AJ}\\
 	\@keywords}
-\def\endabstract{\newpage}
+\def\kabstrakt{\newpage}
 
 \def\curriculumvitae{\newpage%\thispagestyle{empty}\vglue0pt\vfil%
-      \noindent\textbf{\Large Curriculum vitae}\par\bigskip}
-\def\endcurriculumvitae{\newpage}
+	\noindent\textbf{\Large Curriculum vitae}\par\bigskip}
+\def\kcurriculumvitae{\newpage}
 
-\def\assignthesis{\thispagestyle{empty}\bgroup\setlength\tabcolsep{0pt}
-\section*{Assign Thesis}
+
+\def\analytickylist{\thispagestyle{empty}
+		\section*{Analytický list}
+	{\setlength\tabcolsep{0pt}
+	\noindent\begin{tabular}{p{0.29\textwidth}p{0.71\textwidth}}
+		Autor:& \@autor \\
+		Názov práce:& \@nazov \\
+%		Podnázov práce:& \@podnazov\\
+		Jazyk práce:& \@jazyk \\
+		Typ práce:& \@dippraca \@bakpraca \\
+		Počet strán:& \@pocetstran \\
+		Akademický titul:& \@titul \\
+		Univerzita:& \@univerzita \\
+		Fakulta:&\@fakulta~(\@skratkafakulty)\\
+		Katedra:&\@katedra~(\@skratkakatedry)\\
+		Študijný odbor:& \@odbor \\
+		Študijný program:& \@specializacia \\
+		Mesto:& \@mesto \\
+		Vedúci práce: &	\@veduciprace \\
+		Konzultant :& \@konzultanta \\
+%		& \@konzultantb \\
+		Dátum odovzdania:& \@datumodovzdania\\
+		Dátum obhajoby:& \@datumobhajoby \\
+		Kľúčové slová:& \@klucoveslova \\
+		Kategória:& \@kategoria \\
+		Citovanie práce:& \@autor: \@nazov. \@dippraca \@bakpraca. \@mesto:
+		\@univerzita, \@fakulta. \rok.  \@pocetstran~s.\\
+		Názov práce v AJ/NJ:& \@title \\
+%		Podnázov práce v AJ/NJ:& \@subtitle \\
+		Kľúčové slová v AJ/NJ:& \@keywords \\
+		%
+	\end{tabular}}
+	\newpage
+}
+
+
+
+\def\zadanieprace{\thispagestyle{empty}
+\section*{Zadanie práce}
 \noindent
-Namiesto tejto strany vlo\v{z}te naskenovan\'e zadanie \'ulohy.
-Odpor\'u\v{c}ame skenova\v{t} s~rozl\'i\v{s}en\'im 200 a\v{z} 300~dpi,
-\v{c}ierno-bielo! V~jednej vytla\v{c}enej ZP mus\'i by\v{t}
-vlo\v{z}en\'y origin\'al zad\'avacieho listu!
+Namiesto tejto strany vložte naskenované zadanie úlohy.
+Odporúčame skenovať s~rozlíšením 200 až 300~dpi,
+čierno-bielo! V~jednej vytlačenej ZP musí byť
+vložený originál zadávacieho listu!
 \newpage
 }
 
-\def\declaration{\thispagestyle{empty}\vglue0pt
+\def\cestnevyhlasenie{\thispagestyle{empty}\vglue0pt
 \vfill
-\noindent\textbf{Declaration}
+\noindent\textbf{\v{C}estn\'e vyhl\'asenie}
 
 \bigskip
 
-I hereby declare that this thesis is my own work and effort. Where
-other sources of information have been used, they have been
-acknowledged.
-%Vyhlasujem, \v{z}e som diplomov\'u pr\'acu vypracoval(a) samostatne
-%s~pou\v{z}it\'{\i}m uvedenej odbornej literat\'ury.
+Vyhlasujem, \v{z}e som cel\'u bakal\'arsku pr\'acu vypracoval(a) samostatne
+s~pou\v{z}it\'{\i}m uvedenej odbornej literat\'ury.
 
 \bigskip
 
-\noindent \@town,~\den\mesiac,\rok \hfill
-\begin{tabular}[t]{c}
-\hbox to 50mm {\dotfill} \\ \textit{\small Signature}
-\end{tabular}
+\noindent \@mesto~\den.\mesiac.\rok \hfill
+{\setlength\tabcolsep{0pt}\begin{tabular}[t]{c}
+\hbox to 50mm {\dotfill} \\ \textit{\small Vlastnoru\v{c}n\'y podpis}
+\end{tabular}}
 \newpage
 }}
 
+\def\predhovor{\thispagestyle{empty}
+\section*{Predhovor}}
+\def\kpredhovoru{\newpage}
 
-\def\preface{\thispagestyle{empty}
-\section*{Preface}}
-\def\endpreface{\newpage}
-
-\def\listofterms{\thispagestyle{empty}
-\section*{List of Terms}}
-\def\endlistofterms{\newpage}
+\def\slovnikterminov{\thispagestyle{empty}
+\section*{Slovník termínov}}
+\def\kslovnikterminov{\newpage}
 %%
 \paperheight=297truemm
 \paperwidth=210truemm
@@ -595,7 +586,7 @@ acknowledged.
     \center \thepage \linebreak
     \end{minipage}}%
     \def\@oddhead{\sffamily\begin{minipage}{1\textwidth}\small
-    \@facultyabbr\hfil \@departmentabbr\linebreak
+    \@skratkafakulty\hfil \@skratkakatedry\linebreak
     \vspace{-0.5\baselineskip}\hrule\end{minipage}}%
 %    \def\@oddhead{\begin{minipage}{1\textwidth}\small
 %FEI TU v Ko\v{s}iciach\hfil Diplomov\'a pr\'aca\hfil
@@ -854,7 +845,7 @@ acknowledged.
                 \item\relax}
                {\endlist}
 \if@compatibility
-\newenvironment{ttitlepage}
+\newenvironment{titlepage}
     {%
       \if@twocolumn
         \@restonecoltrue\onecolumn
@@ -867,7 +858,7 @@ acknowledged.
     {\if@restonecol\twocolumn \else \newpage \fi
     }
 \else
-\newenvironment{ttitlepage}
+\newenvironment{titlepage}
     {%
       \if@twocolumn
         \@restonecoltrue\onecolumn
@@ -1091,4 +1082,4 @@ acknowledged.
 
 \endinput
 %%
-%% End of file `tukethesis.cls'.
+%% End of file `tukediphc.cls'.

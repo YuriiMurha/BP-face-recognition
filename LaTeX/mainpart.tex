@@ -4,23 +4,23 @@
 
 \section{Dataset Creation and Preprocessing}
 
-The dataset for face recognition was constructed using images captured from webcams and security cameras. The process involved several key steps:
+The dataset for face recognition was constructed using images captured from webcams and security cameras \cite{kairos_secret_2018}. The process involved several key steps:
 
 \subsection{Image Acquisition}
 Images were collected at regular intervals from various camera sources to ensure diversity in lighting, angles, and environments.
 
 \subsection{Manual Annotation}
-The \texttt{labelme} tool was used to annotate facial regions in each image, producing JSON label files with bounding box or landmark information.
+The \texttt{labelme} tool was used to annotate facial regions in each image, producing JSON label files with bounding box or landmark information \cite{labelme}.
 
 \subsection{Dataset Organization}
 The dataset was structured into separate folders for images and labels, and partitioned into training, validation, and test sets.
 
 \subsection{Augmentation}
-Data augmentation was performed using the Albumentations library, applying random cropping, flipping, brightness/contrast adjustments, and color shifts to increase dataset diversity and model robustness.
+Data augmentation was performed using the Albumentations library, applying random cropping, flipping, brightness/contrast adjustments, and color shifts to increase dataset diversity and model robustness \cite{albumentations}.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.7\textwidth]{../Files/annotation_example.png}
+    \includegraphics[width=0.7\textwidth]{../Files/annotation_example.jpg}
     \caption{Example of manual face annotation using LabelMe.}
     \label{fig:annotation-example}
 \end{figure}
@@ -30,20 +30,20 @@ Utilities were provided to visualize raw and augmented images with bounding boxe
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.7\textwidth]{../Files/augmentation_example.png}
+    \includegraphics[width=0.7\textwidth]{../Files/augmentation_example.jpg}
     \caption{Example of image augmentation applied to a face dataset.}
     \label{fig:augmentation-example}
 \end{figure}
 
 \section{Deep Learning Model Development}
 
-The deep learning model for face detection and recognition was developed using TensorFlow's Keras API, with EfficientNetB0 or VGG16 as the backbone. The model outputs both face embeddings and bounding box coordinates.
+The deep learning model for face detection and recognition was developed using TensorFlow's Keras API, with EfficientNetB0 as the backbone \cite{tensorflow}. The model outputs class probabilities for face recognition tasks.
 
 \subsection{Data Pipeline}
-Images and labels were loaded, batched, and shuffled for efficient training. Augmented data was included to improve generalization.
+Images and labels were loaded, batched, and shuffled for efficient training. Augmented data was included to improve generalization. The data pipeline was designed to handle large datasets efficiently, leveraging TensorFlow's data API for parallel processing and prefetching.
 
 \subsection{Model Architecture}
-A convolutional neural network was defined, outputting both embeddings and bounding boxes. Custom loss functions for localization and classification were implemented, and the optimizer was configured with learning rate scheduling.
+A convolutional neural network was defined, outputting both embeddings and bounding boxes. Custom loss function for classification was implemented, and the optimizer was configured with learning rate scheduling \cite{schroff2015facenet}.
 
 \begin{figure}[ht!]
     \centering
@@ -66,11 +66,7 @@ The FaceTracker model is built using the TensorFlow Functional API. It employs t
     \item \textbf{EfficientNetB0 Backbone}: Extracts high-level features from input images. The initial 50 layers are frozen to prevent overfitting.
     \item \textbf{Global Average Pooling}: Reduces the spatial dimensions of feature maps.
     \item \textbf{Dense Layers}: Includes a fully connected layer with 512 units and ReLU activation, followed by a Dropout layer (rate=0.5) to prevent overfitting.
-    \item \textbf{Output Heads}:
-    \begin{itemize}
-        \item \textbf{Classification Head}: Outputs class probabilities for up to 10 objects using a softmax activation function.
-        \item \textbf{Bounding Box Head}: Outputs bounding box coordinates normalized to [0,1] using a sigmoid activation function.
-    \end{itemize}
+    \item \textbf{Classification Head}: Outputs class probabilities for up to 10 objects using a softmax activation function.
 \end{itemize}
 
 \subsubsection{Model Hyperparameters}
@@ -81,18 +77,25 @@ The following table summarizes the key hyperparameters used in the training of t
     \centering
     \caption{Summary of Model Hyperparameters}
     \label{tab:model-hyperparameters}
-    \begin{tabular}{|l|l|p{8cm}|}
+    \begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
         \hline
         \textbf{Hyperparameter} & \textbf{Value} & \textbf{Description} \\
         \hline
         Batch Size & 8 & Number of samples processed in one training step. \\
+        \hline
         Learning Rate & 0.0001 & Initial learning rate for the optimizer. \\
+        \hline
         Learning Rate Decay & 25\% reduction per epoch & Adjusts the learning rate dynamically during training. \\
+        \hline
         Epochs & 10 & Total number of training iterations over the dataset. \\
+        \hline
         Optimizer & Adam & Adaptive learning rate optimizer. \\
+        \hline
         Dropout Rate & 0.5 & Fraction of neurons dropped during training to prevent overfitting. \\
+        \hline
         Maximum Objects/Image & 10 & Maximum number of objects (faces) detected per image. \\
-        Input Image Sizes & Webcam: (480, 640) \\ Seccam: (1280, 800) \\ Seccam\_2: (1280, 800) & Dimensions of input images for different camera sources. \\
+        \hline
+        Input Image Sizes & Webcam: (480, 640) \newline Seccam: (1280, 800) \newline Seccam\_2: (1280, 800) & Dimensions of input images for different camera sources. \\
         \hline
     \end{tabular}
 \end{table}
@@ -113,14 +116,9 @@ where:
 
 The Adam optimizer is chosen for its adaptive learning rate capabilities, which are well-suited for complex models like EfficientNet.
 
-\paragraph{Loss Functions}
+\paragraph{Loss Function}
 \begin{enumerate}
-    \item \textbf{Localization Loss}: Measures the mean squared error between predicted and true bounding box coordinates, weighted by the number of objects in each image:
-    \[
-    L_{\text{loc}} = \frac{1}{N} \sum_{i=1}^{N} \frac{1}{n_i} \sum_{j=1}^{n_i} \|y_{ij} - \hat{y}_{ij}\|^2
-    \]
-    where \(N\) is the batch size, \(n_i\) is the number of objects in image \(i\), and \(y_{ij}\) are the true coordinates.
-
+    
     \item \textbf{Classification Loss}: Uses categorical cross-entropy to compare predicted class probabilities with one-hot encoded ground truth labels:
     \[
     L_{\text{cls}} = - \frac{1}{N} \sum_{i=1}^{N} \frac{1}{n_i} \sum_{j=1}^{n_i} \sum_{k=1}^{C} y_{ijk} \log(\hat{y}_{ijk})
@@ -166,15 +164,101 @@ The evaluation script \texttt{evaluate\_methods.py} benchmarks various face dete
     \end{tabular}
 \end{table}
 
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Files/webcam_result.jpg}
+    \caption{Detected faces on webcam input.}
+    \label{fig:webcam-result}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Files/seccam_result.jpg}
+    \caption{Detected faces on security camera input.}
+    \label{fig:seccam-result}
+\end{figure}
+
+\subsection{Results}
+
+The evaluation of face detection methods was conducted using the \texttt{evaluate\_methods.py} script. The methods evaluated include MTCNN, FaceRecognition, Dlib HOG, and Haar Cascades. The results are summarized in the following figures:
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/Accuracy.png}
+    \caption{Accuracy comparison of face detection methods.}
+    \label{fig:accuracy-comparison}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/Num faces detected.png}
+    \caption{Number of faces detected by each method.}
+    \label{fig:num-faces-detected}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/Detection time.png}
+    \caption{Detection time comparison for different methods.}
+    \label{fig:detection-time}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/Not found.png}
+    \caption{Number of faces not found by each method.}
+    \label{fig:not-found}
+\end{figure}
+
+These results provide a comprehensive comparison of the performance of the evaluated methods, highlighting their strengths and weaknesses in terms of accuracy and found faces.
+As we can see from the figures, FaceNet MTCNN outperforms other methods in terms of accuracy and number of faces detected. Dlib HOG shows some accuracy, which is way below the MTCNN method, but it is still faster than FaceNet. The FaceRecognition method detects too much false positives, which leads to a lower accuracy than the MTCNN method. The detection time for each method varies, with FaceRecognition being the fastest and FaceNet MTCNN being the slowest. Haar Cascade seems to be a compromise, though not an optimal one.
+\section{Experimental Results}
+
+\subsection{Training Performance}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/training_webcam.png}
+    \caption{Training performance on the webcam dataset. The model shows signs of overfitting as the loss plateaus.}
+    \label{fig:training-webcam}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/training_seccam.png}
+    \caption{Training performance on the first security camera dataset. Predictions are slightly worse but still impactful.}
+    \label{fig:training-seccam}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{../Files/training_seccam_2.png}
+    \caption{Training performance on the second security camera dataset. Accuracy barely improves due to low-quality data and high face similarity.}
+    \label{fig:training-seccam-2}
+\end{figure}
+
+\subsection{Summary}
+The training results highlight the challenges of dataset quality and overfitting:
+\begin{itemize}
+    \item The webcam dataset model appears overfitted, as indicated by the plateaued loss.
+    \item The first security camera dataset yields slightly worse predictions but demonstrates meaningful improvements.
+    \item The second security camera dataset struggles to improve accuracy due to low-quality data and high face similarity.
+\end{itemize}
+
 \section{System Architecture and Integration}
 
 The practical implementation of the face recognition system is designed with modularity and extensibility in mind. The architecture is composed of several core modules, each responsible for a distinct aspect of the application workflow:
-\begin{itemize}
-    \item \textbf{Camera Module (\texttt{camera.py}):} Handles real-time video capture and face detection from a camera stream.
-    \item \textbf{Model Module (\texttt{model.py}):} Provides face detection and recognition capabilities, including embedding extraction and evaluation.
-    \item \textbf{Database Module (\texttt{database.py}):} Manages persistent storage of face embeddings and detection logs, supporting both PostgreSQL and CSV-based backends.
-    \item \textbf{Main Application (\texttt{main.py}):} Orchestrates the end-to-end attendance system, integrating camera input, face recognition, and database operations.
-\end{itemize}
+\textbf{Camera Module (\texttt{camera.py}):} Handles real-time video capture and face detection from a camera stream.
+\textbf{Model Module (\texttt{model.py}):} Provides face detection and recognition capabilities, including embedding extraction and evaluation.
+\textbf{Database Module (\texttt{database.py}):} Manages persistent storage of face embeddings and detection logs, supporting both PostgreSQL and CSV-based backends.
+\textbf{Main Application (\texttt{main.py}):} Orchestrates the end-to-end attendance system, integrating camera input, face recognition, and database operations.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Files/codebase_workflow.png}
+    \caption{Codebase workflow illustrating the interaction between modules.}
+    \label{fig:codebase-workflow}
+\end{figure}
 
 \begin{figure}[ht!]
     \centering
@@ -218,10 +302,4 @@ The \texttt{AttendanceApp} class serves as the entry point for the real-time fac
 
 This modular design ensures that each component can be developed, tested, and maintained independently, while facilitating integration into a cohesive application.
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{../Files/main_app_flow.png}
-    \caption{Main loop of the attendance system integrating camera, model, and database modules.}
-    \label{fig:main-app-flow}
-\end{figure}
 
