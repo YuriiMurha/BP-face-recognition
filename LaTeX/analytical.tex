@@ -1,5 +1,5 @@
 % =====================
-\section{Tools and Libraries for Face Recognition}
+\section{Tools and Libraries for Face Recognition\cite{wikipedia_deep_learning_software}}
 
 In this project, a combination of custom model creation and pre-built libraries was utilized for face detection and recognition. This section provides an overview and comparison of the main tools and algorithms employed.
 
@@ -51,7 +51,19 @@ In this project, a combination of custom model creation and pre-built libraries 
 
 \subsection{MTCNN (Multi-task Cascaded Convolutional Networks)}
 
-MTCNN is a deep learning-based framework for face detection and landmark localization, using a cascade of three neural networks (P-Net, R-Net, O-Net) for robust detection and alignment \cite{zhang2016mtcnn}.
+MTCNN is a deep learning-based framework for face detection and landmark localization, using a cascade of three neural networks (P-Net, R-Net, O-Net) for robust detection and alignment \cite{zhang2016mtcnn}. 
+
+% 1. **Proposal Network (P-Net)**: The first stage scans the image and proposes candidate windows that likely contain faces.
+% 2. **Refine Network (R-Net)**: The second stage refines these proposals by rejecting a significant portion of false positives.
+% 3. **Output Network (O-Net)**: The final stage refines the detected boxes, predicts facial landmarks, and outputs a final decision.
+
+\begin{numbers}
+    \item \textbf{P-Net (Proposal Network):} Scans the image at multiple scales to propose candidate face regions.
+    \item \textbf{R-Net (Refine Network):} Refines the proposals by filtering out false positives and adjusting bounding boxes.
+    \item \textbf{O-Net (Output Network):} Further refines the results, predicts facial landmarks, and outputs final detections.
+\end{numbers}
+
+The networks use a combination of classification and regression tasks, sharing the same convolutional layers. MTCNN is typically built with deep learning libraries such as TensorFlow or PyTorch and is often employed in face detection pipelines for further tasks like face alignment. Common usecases are face detection and landmark localization.
 
 \subsection{FaceNet}
 
@@ -64,13 +76,6 @@ Amazon Rekognition is a cloud-based service for face detection, recognition, and
 \subsection{Ethical Considerations}
 
 The deployment of face recognition systems raises ethical concerns, including privacy violations and potential misuse \cite{ergun_2025_ethical}. Sustainability and fairness in AI-based surveillance systems are also critical \cite{sustainability_2025_ethical}.
-
-\subsection{References}
-\begin{itemize}
-    \item Comparison of deep learning software: \url{https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software}
-    \item Zhang, K., et al. (2016). Joint face detection and alignment using multitask cascaded convolutional networks. IEEE Signal Processing Letters, 23(10), 1499-1503.
-    \item Schroff, F., et al. (2015). FaceNet: A unified embedding for face recognition and clustering. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 815-823).
-\end{itemize}
 
 % =====================
 \section{Methods and Algorithms for Face Recognition}
@@ -140,4 +145,4 @@ This technique enables robust face recognition by transforming the problem into 
 3D face recognition is typically combined with 2D methods to enhance performance. Although more accurate, the requirement for specialized sensors makes this approach less practical for everyday applications compared to 2D methods.
 
 \subsection{Viola-Jones Algorithm}
-Introduced in 2001, the Viola-Jones algorithm revolutionized real-time object detection, particularly for faces~\cite{wijaya_trends_2025}. It employs Haar-like features, an integral image for rapid computation, an AdaBoost classifier for feature selection, and a cascaded structure to efficiently discard non-face regions~\cite{wijaya_trends_2025}. While widely adopted due to its speed and simplicity, this framework exhibits limitations in detecting faces that are significantly occluded, improperly oriented (e.g., profile views), or subjected to substantial variations in lighting conditions~\cite{researchgate_evaluation_2023, wijaya_trends_2025}. Its training process can also be computationally intensive and time-consuming~\cite{researchgate_evaluation_2023}.
+Introduced in 2001, the Viola-Jones algorithm revolutionized real-time object detection, particularly for faces. It employs Haar-like features, an integral image for rapid computation, an AdaBoost classifier for feature selection, and a cascaded structure to efficiently discard non-face regions~\cite{viola2001rapid}. While widely adopted due to its speed and simplicity, this framework exhibits limitations in detecting faces that are significantly occluded, improperly oriented (e.g., profile views), or subjected to substantial variations in lighting conditions. Its training process can also be computationally intensive and time-consuming.

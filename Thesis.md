@@ -908,6 +908,24 @@ _Figure X: Main loop of the attendance system integrating camera, model, and dat
 
 ---
 
+# Experimental Results
+
+## Training Performance
+
+![Training performance on the webcam dataset. The model shows signs of overfitting as the loss plateaus.](Files/training_webcam.png){ width=100% }
+
+![Training performance on the first security camera dataset. Predictions are slightly worse but still impactful.](Files/training_seccam.png){ width=100% }
+
+![Training performance on the second security camera dataset. Accuracy barely improves due to low-quality data and high face similarity.](Files/training_seccam_2.png){ width=100% }
+
+### Summary
+The training results highlight the challenges of dataset quality and overfitting:
+- The webcam dataset model appears overfitted, as indicated by the plateaued loss.
+- The first security camera dataset yields slightly worse predictions but demonstrates meaningful improvements.
+- The second security camera dataset struggles to improve accuracy due to low-quality data and high face similarity.
+
+---
+
 # References
 
 This section provides a comprehensive list of all sources cited within this thesis, formatted in BibTeX.

@@ -77,6 +77,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # IPython
 profile_default/
@@ -167,3 +168,34 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+# Gemini
+.gemini/
+.geminiignore
+GEMINI.md
+
+# Linter
+.ruff_cache/
+
+# Project Data
+data/datasets/
+data/logs/
+*.jpg
+*.png
+*.h5
+*.keras
+*.log
+*.sqlite
+
+# Dummy/Temporary Files
+dummy_assets/
+dummy_deep_learning_csvs/
+dummy_deep_learning_plots/
+dummy_method_evaluation.md
+Files/
+Merged Thesis Document.markdown
+codebase structure migration.md
+*.pdf
+requirements.txt
+*.zip
+*.7z

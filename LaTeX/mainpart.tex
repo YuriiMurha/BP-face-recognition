@@ -216,24 +216,27 @@ As we can see from the figures, FaceNet MTCNN outperforms other methods in terms
 
 \subsection{Training Performance}
 
+The training performance of the face recognition model was evaluated on three datasets: webcam, first security camera (seccam), and second security camera (seccam\_2). The training process involved monitoring loss and accuracy metrics over multiple epochs.
+The training results are presented in the following figures, which show the loss and accuracy curves for each dataset:
+
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{../Files/training_webcam.png}
-    \caption{Training performance on the webcam dataset. The model shows signs of overfitting as the loss plateaus.}
+    \caption{Training performance on the webcam dataset.}
     \label{fig:training-webcam}
 \end{figure}
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{../Files/training_seccam.png}
-    \caption{Training performance on the first security camera dataset. Predictions are slightly worse but still impactful.}
+    \caption{Training performance on the first security camera dataset.}
     \label{fig:training-seccam}
 \end{figure}
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{../Files/training_seccam_2.png}
-    \caption{Training performance on the second security camera dataset. Accuracy barely improves due to low-quality data and high face similarity.}
+    \caption{Training performance on the second security camera dataset.}
     \label{fig:training-seccam-2}
 \end{figure}
 
@@ -255,7 +258,7 @@ The practical implementation of the face recognition system is designed with mod
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.7\textwidth]{../Files/codebase_workflow.png}
+    \includegraphics[width=0.5\textwidth]{../Files/codebase_workflow.png}
     \caption{Codebase workflow illustrating the interaction between modules.}
     \label{fig:codebase-workflow}
 \end{figure}

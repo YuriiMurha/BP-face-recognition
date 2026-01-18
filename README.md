@@ -1,56 +1,101 @@
 # Bachelor Thesis: Face Recognition Using Surveillance Systems
 
 ## Overview
-This repository contains the code, data, and documentation for my bachelor thesis on **Face Recognition Using Surveillance Systems**. The thesis explores the implementation and effectiveness of face recognition technology in surveillance systems, leveraging deep learning algorithms to enhance security and monitoring capabilities.
+This repository contains the code, data, and documentation for my bachelor thesis on **Face Recognition Using Surveillance Systems**. The project explores the implementation and effectiveness of face recognition technology in surveillance environments, leveraging deep learning algorithms to enhance security and monitoring capabilities.
 
-## Table of Contents
-- Introduction
-- Methodology
-- Installation
-- Usage
-- Contributing
-- License
-- Contact
+## Features
+- **Real-time Face Detection & Recognition**: Integrated webcam and security camera stream processing.
+- **Multiple Detection Methods**: Benchmarks for Haar Cascades, Dlib HOG, MTCNN, and FaceNet.
+- **Custom Deep Learning Model**: A CNN-based FaceTracker using EfficientNetB0 as a backbone.
+- **Modular Architecture**: Decoupled camera, model, and database components.
+- **Robust Development**: Managed with `uv` for dependencies and `nox` for testing/linting.
+- **Hybrid Storage**: Support for both PostgreSQL and CSV-based storage for embeddings and logs.
+- **Comprehensive Evaluation**: Scripts for benchmarking accuracy, detection time, and false positives.
 
-## Introduction
-The thesis investigates the use of face recognition technology in surveillance systems. It aims to provide a comprehensive understanding of how these systems can be used to improve security and monitor public spaces effectively.
+## Technology Stack
+- **Language**: Python 3.x
+- **Dependency Management**: uv
+- **Automation**: nox, Makefile
+- **Deep Learning**: TensorFlow, Keras
+- **Computer Vision**: OpenCV, MTCNN, face_recognition (dlib)
+- **Data Augmentation**: Albumentations
+- **Database**: PostgreSQL
 
-## Methodology
-The project utilizes deep learning algorithms, specifically Convolutional Neural Networks (CNNs), to detect and recognize faces in real-time. The methodology section covers:
-- Data Collection: Gathering a diverse dataset of facial images.
-- Preprocessing: Normalizing and augmenting the data.
-- Model Training: Training the CNN model.
-- Evaluation: Assessing the model's performance on test data.
+## Project Structure
+```
+BP-face-recognition/
+├── assets/                  # Plots, diagrams, and static assets
+├── data/                    # Datasets and training logs
+├── notebooks/               # Jupyter notebooks for visualization
+├── src/
+│   ├── main.py              # Main application entry point
+│   ├── config/              # Configuration (settings.py)
+│   ├── data/                # Data augmentation and processing
+│   ├── database/            # Database storage logic
+│   ├── evaluation/          # Benchmarking scripts
+│   ├── models/              # Neural networks and detection methods
+│   ├── tests/               # Unit tests
+│   └── utils/               # Helper functions
+├── LaTeX/                   # Thesis source files
+├── noxfile.py               # Automation config
+├── pyproject.toml           # Project dependencies
+├── Makefile                 # Command shortcuts
+└── README.md                # Project documentation
+```
 
 ## Installation
-To run the code in this repository, follow these steps:
+
+### Prerequisites
+- Python 3.9+
+- [uv](https://github.com/astral-sh/uv) (recommended) or pip
+- Visual Studio C++ Build Tools (Windows only, required for `dlib`)
+
+### Setup
 1. Clone the repository:
     ```bash
     git clone https://github.com/YuriiMurha/BP-face-recognition.git
-    ```
-
-2. Navigate to the project directory:
-    ```bash
     cd BP-face-recognition
     ```
-3. (Optional) Create a virtual environment to manage dependencies:
-    ```bash
-    python -m venv venv
-    ```
-4. Activate the virtual environment (if created):
-    ```bash
-    source venv/bin/activate  # On Linux/Mac
-    .\venv\Scripts\activate   # On Windows
-    ```
-5. Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-6. Download the dataset and place it in the appropriate directory (if applicable).
 
-7. Run the main script to start the face recognition system:
+2. Sync dependencies using `make` (uses `uv`):
     ```bash
-    python ./src/main.py
+    make setup
     ```
+    *Alternatively, using vanilla `uv`:*
+    ```bash
+    uv sync
+    ```
+
 ## Usage
-TBA
+
+### 1. Attendance System (Real-time)
+To start the real-time face recognition system:
+```bash
+make run
+# or: uv run src/main.py
+```
+
+### 2. Development & Testing
+Run unit tests and linting to ensure code quality:
+```bash
+make test
+make lint
+```
+
+### 3. Data Processing
+Data preparation logic has been moved from notebooks to scripts:
+- **Splitting**: `src/evaluation/split_datasets.py`
+- **Cropping**: `src/utils/crop_faces.py`
+- **Augmentation**: `src/data/augmentation.py`
+
+### 4. Evaluation
+To benchmark the different detection methods:
+```bash
+make evaluate
+```
+
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+Yurii Murha - [GitHub](https://github.com/YuriiMurha)

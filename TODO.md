@@ -1,89 +1,30 @@
-# TODO list
+# TODO
 
-## 10-Oct-24
+## Priority 1: Git Repository Recovery
+- [ ] **Backup**: Manually backup the entire project folder.
+- [ ] **Reset**: Run `git reset --mixed origin/main` to undo bloated commits.
+- [ ] **Verify Ignore**: Ensure `.gitignore` correctly excludes `data/datasets` and `wheels/`.
+- [ ] **Re-Stage**: Selectively add code and config files (`src/`, `pyproject.toml`, etc.).
+- [ ] **Commit**: Create a clean commit without large binaries.
+- [ ] **Push**: Sync with remote (`git pull --rebase` then `git push`).
 
-- [x] Mention OpenCV `CascadeClassifier`
-- [x] Find other libraries and solutions
-  - [Copilot search](https://copilot.microsoft.com/sl/eC5JSOibCkS)
-  - [Comparison_of_deep_learning_software](https://en.wikipedia.org/wiki/Comparison_of_deep_learning_software)
-- [x] Theorethical part - Face detection methods (CNN etc.)
+## Priority 2: Environment Verification
+- [ ] **Resolve dlib**: Investigate `dlib` build failure on Windows.
 
----
+## Priority 3: Static Analysis & Type Safety
+- [ ] **Run Initial Check**: Run `nox -s type_check` to identify baseline errors.
+- [ ] **Configure Mypy**: Create configuration (in `pyproject.toml`) to handle missing imports (e.g., `cv2`, `tensorflow`, `mtcnn`).
+- [ ] **Fix Type Errors**:
+    - [ ] `src/config/`
+    - [ ] `src/models/`
+    - [ ] `src/database/`
+    - [ ] `src/evaluation/`
 
-## 17-Oct-24
+## Priority 4: Functionality Verification (Smoke Tests) [LATER]
+- [ ] **Data Pipeline**: Run `src/data/augmentation.py` to verify path resolution and augmentation logic.
+- [ ] **Dataset Loading**: Run `src/models/dataset_loader.py` to ensure datasets load correctly from new paths.
+- [ ] **Main Application**: Run `src/main.py` to verify camera access, detector initialization, and database connection.
 
-- [x] Dataset chapter ✅ 2024-11-07
-  - [x] vytvorenie svojho datasetu ✅ 2024-11-07
-  - [ ] ~~použitije custom datasetu pre rôzne metody~~
-
----
-
-## 07-Nov-24
-
-- [x] vyhodnotenie existujucich riešeni na datasetoch
-  - [x] napisanie kodu pre viacero metod
-    - `face-recognition`
-    - OpenCV Haar Cascades
-    - Dlib Histogram of Gradients
-    - Keras FaceNet
-  - [x] graf alebo tabulka s porovnanim presnosti rozpoznavania tvari poznych reiseni
-- [x] doplniť sec cam dataset obrazkami študentov
-
----
-
-## 12-Dec-24
-
-- [x] Manually label new dataset ✅ 2024-12-12
-- [x] Commit code & thesis text to repository
-
----
-
-## 25-Mar-25
-
-- [X] Evaluate seccam_2
-<!-- - [ ] FaceNet -->
-- Implement deep learning:
-  1. [x] Create NN
-  2. [x] Train NN
-  3. [x] Test NN
-
-## End of April
-
-pouzit jednu najlepšiu metodu na detekciu, potom vlasnty model na klasifikaciu kazdeho najdeneho človeka, porovnavať s každym človekom v datasete, ak je to novy clovek, tak ho pridame do datasetu
-
-- [x] dat teoreticku cast do LaTeXu
-- [x] dopisať teoreticku časť a poslať na review
-  - [x] Abstraknty netechnicky "Uvod" s popisom problemu ktory rieši tato praca, motivacia
-  - [x] Pridať potom priklady komerčneho použitia ku prehľadu existujucich riešeni a metod
-
-<!-- - [ ] Diagramy porovnavania nemusia byt rozdelene podla subsetov, spomenuť to v texte -->
-
-- [x] čas rozpoznavania pridať ako taubľku
-
----
-
-## May
-- Assets
-  - [x] Create and insert system architecture diagram (for thesis and documentation)
-  - [x] Add codebase workflow diagram (showing data flow between modules)
-  - [x] Add sequence diagram for main application loop
-  - [x] Add example screenshots for annotation and augmentation steps
-  - [x] Summarize database schema and add example queries to documentation
-
-- [x] dopisať prakticku časť a poslať na review
-  - Write about the code in python notebooks
-    - [x] Preprocessing, augmentation
-    - [x] Deep Learning
-
-- Write documentation
-  - [x] User
-  - [x] System
-
----
-
-## Finish
-
-- [x] Rename pictures in _/Files_ folder
-- [x] Refactor text in LaTeX
-
-> Note: Evaluate augmented subsets, not raw images
+## Priority 5: Thesis Integration [LATER]
+- [ ] **Evaluation Scripts**: Ensure `src/evaluation/evaluate_methods.py` runs and saves results.
+- [ ] **Assets**: Verify plots are saved to `assets/plots` for LaTeX integration.

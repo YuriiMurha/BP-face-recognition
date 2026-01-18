@@ -1,0 +1,241 @@
+method,subset,image,num_faces_detected,false_positives,not_found,detection_time,accuracy
+Haar Cascade,test,4598b7e9-83ac-11ee-b027-9cfeff47d2fa.jpg,0,0,1,1.3261651992797852,0.0
+Haar Cascade,test,46f2719c-83ac-11ee-a728-9cfeff47d2fa.jpg,0,0,1,0.11350393295288086,0.0
+Haar Cascade,test,4860544a-83ac-11ee-b85c-9cfeff47d2fa.jpg,1,0,0,0.1428673267364502,1.0
+Haar Cascade,test,4a0be73b-83ac-11ee-b293-9cfeff47d2fa.jpg,0,0,1,0.16457128524780273,0.0
+Haar Cascade,test,4ac2bd8b-83ac-11ee-94e3-9cfeff47d2fa.jpg,0,0,1,0.13318443298339844,0.0
+Haar Cascade,train,45743621-83ac-11ee-9222-9cfeff47d2fa.jpg,0,0,1,0.1274700164794922,0.0
+Haar Cascade,train,45fe4272-83ac-11ee-974f-9cfeff47d2fa.jpg,0,0,1,0.10361242294311523,0.0
+Haar Cascade,train,463b6955-83ac-11ee-9b8f-9cfeff47d2fa.jpg,0,0,1,0.09382510185241699,0.0
+Haar Cascade,train,467ae200-83ac-11ee-903f-9cfeff47d2fa.jpg,0,0,1,0.08817768096923828,0.0
+Haar Cascade,train,46b563de-83ac-11ee-8c6a-9cfeff47d2fa.jpg,0,0,1,0.08802437782287598,0.0
+Haar Cascade,train,476c87ed-83ac-11ee-a88d-9cfeff47d2fa.jpg,1,0,0,0.0960395336151123,1.0
+Haar Cascade,train,47a94336-83ac-11ee-8a48-9cfeff47d2fa.jpg,2,1,0,0.1521921157836914,1.0
+Haar Cascade,train,47e60921-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,0.13623547554016113,1.0
+Haar Cascade,train,482399c5-83ac-11ee-b18d-9cfeff47d2fa.jpg,1,0,0,0.15249991416931152,1.0
+Haar Cascade,train,489d1547-83ac-11ee-b751-9cfeff47d2fa.jpg,0,0,1,0.1300365924835205,0.0
+Haar Cascade,train,48da29b8-83ac-11ee-9494-9cfeff47d2fa.jpg,0,0,1,0.10394906997680664,0.0
+Haar Cascade,train,49175421-83ac-11ee-8e37-9cfeff47d2fa.jpg,0,0,1,0.10402202606201172,0.0
+Haar Cascade,train,4954300a-83ac-11ee-a1c8-9cfeff47d2fa.jpg,0,0,1,0.07963752746582031,0.0
+Haar Cascade,train,4991b5d6-83ac-11ee-8469-9cfeff47d2fa.jpg,1,0,0,0.08824014663696289,1.0
+Haar Cascade,train,49ceec8d-83ac-11ee-90e4-9cfeff47d2fa.jpg,1,0,0,0.13663196563720703,1.0
+Haar Cascade,train,4a487da2-83ac-11ee-bcf1-9cfeff47d2fa.jpg,0,0,1,0.16847681999206543,0.0
+Haar Cascade,train,4a860d1b-83ac-11ee-a56c-9cfeff47d2fa.jpg,0,0,1,0.11592364311218262,0.0
+Haar Cascade,train,4b3d3fac-83ac-11ee-9e01-9cfeff47d2fa.jpg,0,0,1,0.07957744598388672,0.0
+Haar Cascade,train,4b79b37b-83ac-11ee-842c-9cfeff47d2fa.jpg,0,0,1,0.08005118370056152,0.0
+Haar Cascade,train,4bb6abdf-83ac-11ee-a54b-9cfeff47d2fa.jpg,0,0,1,0.07981300354003906,0.0
+Haar Cascade,train,4bf429da-83ac-11ee-bcd6-9cfeff47d2fa.jpg,0,0,1,0.07801342010498047,0.0
+Haar Cascade,val,45c0a15d-83ac-11ee-a84e-9cfeff47d2fa.jpg,0,0,1,0.14466094970703125,0.0
+Haar Cascade,val,472f2539-83ac-11ee-9ed0-9cfeff47d2fa.jpg,1,1,1,0.11214184761047363,0.0
+Haar Cascade,val,47e60922-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,0.1379709243774414,1.0
+Haar Cascade,val,4affc784-83ac-11ee-9909-9cfeff47d2fa.jpg,1,1,1,0.2036752700805664,0.0
+Dlib HOG,test,4598b7e9-83ac-11ee-b027-9cfeff47d2fa.jpg,0,0,1,0.9117300510406494,0.0
+Dlib HOG,test,46f2719c-83ac-11ee-a728-9cfeff47d2fa.jpg,0,0,1,0.899512529373169,0.0
+Dlib HOG,test,4860544a-83ac-11ee-b85c-9cfeff47d2fa.jpg,1,0,0,0.8711278438568115,1.0
+Dlib HOG,test,4a0be73b-83ac-11ee-b293-9cfeff47d2fa.jpg,1,1,1,0.9100298881530762,0.0
+Dlib HOG,test,4ac2bd8b-83ac-11ee-94e3-9cfeff47d2fa.jpg,0,0,1,0.8860907554626465,0.0
+Dlib HOG,train,45743621-83ac-11ee-9222-9cfeff47d2fa.jpg,0,0,1,0.8443317413330078,0.0
+Dlib HOG,train,45fe4272-83ac-11ee-974f-9cfeff47d2fa.jpg,0,0,1,0.8611457347869873,0.0
+Dlib HOG,train,463b6955-83ac-11ee-9b8f-9cfeff47d2fa.jpg,0,0,1,0.8624129295349121,0.0
+Dlib HOG,train,467ae200-83ac-11ee-903f-9cfeff47d2fa.jpg,0,0,1,0.868645191192627,0.0
+Dlib HOG,train,46b563de-83ac-11ee-8c6a-9cfeff47d2fa.jpg,0,0,1,0.8357357978820801,0.0
+Dlib HOG,train,476c87ed-83ac-11ee-a88d-9cfeff47d2fa.jpg,1,0,0,0.8470876216888428,1.0
+Dlib HOG,train,47a94336-83ac-11ee-8a48-9cfeff47d2fa.jpg,1,0,0,0.8534214496612549,1.0
+Dlib HOG,train,47e60921-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,0.8600893020629883,1.0
+Dlib HOG,train,482399c5-83ac-11ee-b18d-9cfeff47d2fa.jpg,0,0,1,0.8250796794891357,0.0
+Dlib HOG,train,489d1547-83ac-11ee-b751-9cfeff47d2fa.jpg,0,0,1,0.8609158992767334,0.0
+Dlib HOG,train,48da29b8-83ac-11ee-9494-9cfeff47d2fa.jpg,0,0,1,0.85036301612854,0.0
+Dlib HOG,train,49175421-83ac-11ee-8e37-9cfeff47d2fa.jpg,0,0,1,0.847076416015625,0.0
+Dlib HOG,train,4954300a-83ac-11ee-a1c8-9cfeff47d2fa.jpg,0,0,1,0.9308257102966309,0.0
+Dlib HOG,train,4991b5d6-83ac-11ee-8469-9cfeff47d2fa.jpg,1,0,0,0.8554172515869141,1.0
+Dlib HOG,train,49ceec8d-83ac-11ee-90e4-9cfeff47d2fa.jpg,1,0,0,0.8574810028076172,1.0
+Dlib HOG,train,4a487da2-83ac-11ee-bcf1-9cfeff47d2fa.jpg,0,0,1,0.8492581844329834,0.0
+Dlib HOG,train,4a860d1b-83ac-11ee-a56c-9cfeff47d2fa.jpg,0,0,1,0.9084832668304443,0.0
+Dlib HOG,train,4b3d3fac-83ac-11ee-9e01-9cfeff47d2fa.jpg,0,0,1,0.8647022247314453,0.0
+Dlib HOG,train,4b79b37b-83ac-11ee-842c-9cfeff47d2fa.jpg,0,0,1,0.8294031620025635,0.0
+Dlib HOG,train,4bb6abdf-83ac-11ee-a54b-9cfeff47d2fa.jpg,0,0,1,0.8447606563568115,0.0
+Dlib HOG,train,4bf429da-83ac-11ee-bcd6-9cfeff47d2fa.jpg,1,1,1,0.8523266315460205,0.0
+Dlib HOG,val,45c0a15d-83ac-11ee-a84e-9cfeff47d2fa.jpg,0,0,1,0.9294226169586182,0.0
+Dlib HOG,val,472f2539-83ac-11ee-9ed0-9cfeff47d2fa.jpg,1,0,0,0.8870038986206055,1.0
+Dlib HOG,val,47e60922-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,0.8299703598022461,1.0
+Dlib HOG,val,4affc784-83ac-11ee-9909-9cfeff47d2fa.jpg,0,0,1,0.8363649845123291,0.0
+FaceNet,test,4598b7e9-83ac-11ee-b027-9cfeff47d2fa.jpg,0,0,1,4.5511205196380615,0.0
+FaceNet,test,46f2719c-83ac-11ee-a728-9cfeff47d2fa.jpg,1,0,0,2.5768587589263916,1.0
+FaceNet,test,4860544a-83ac-11ee-b85c-9cfeff47d2fa.jpg,1,0,0,2.6428070068359375,1.0
+FaceNet,test,4a0be73b-83ac-11ee-b293-9cfeff47d2fa.jpg,1,0,0,2.5835344791412354,1.0
+FaceNet,test,4ac2bd8b-83ac-11ee-94e3-9cfeff47d2fa.jpg,1,0,0,2.4934282302856445,1.0
+FaceNet,train,45743621-83ac-11ee-9222-9cfeff47d2fa.jpg,1,0,0,2.614264965057373,1.0
+FaceNet,train,45fe4272-83ac-11ee-974f-9cfeff47d2fa.jpg,0,0,1,2.5757970809936523,0.0
+FaceNet,train,463b6955-83ac-11ee-9b8f-9cfeff47d2fa.jpg,1,0,0,2.5859827995300293,1.0
+FaceNet,train,467ae200-83ac-11ee-903f-9cfeff47d2fa.jpg,1,0,0,2.589789867401123,1.0
+FaceNet,train,46b563de-83ac-11ee-8c6a-9cfeff47d2fa.jpg,1,1,1,2.6434290409088135,0.0
+FaceNet,train,476c87ed-83ac-11ee-a88d-9cfeff47d2fa.jpg,1,0,0,2.6914620399475098,1.0
+FaceNet,train,47a94336-83ac-11ee-8a48-9cfeff47d2fa.jpg,1,0,0,2.642580270767212,1.0
+FaceNet,train,47e60921-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,2.567734956741333,1.0
+FaceNet,train,482399c5-83ac-11ee-b18d-9cfeff47d2fa.jpg,1,0,0,2.7250983715057373,1.0
+FaceNet,train,489d1547-83ac-11ee-b751-9cfeff47d2fa.jpg,2,1,0,2.506983757019043,1.0
+FaceNet,train,48da29b8-83ac-11ee-9494-9cfeff47d2fa.jpg,0,0,1,2.4670543670654297,0.0
+FaceNet,train,49175421-83ac-11ee-8e37-9cfeff47d2fa.jpg,0,0,1,2.3911380767822266,0.0
+FaceNet,train,4954300a-83ac-11ee-a1c8-9cfeff47d2fa.jpg,1,1,1,2.5249369144439697,0.0
+FaceNet,train,4991b5d6-83ac-11ee-8469-9cfeff47d2fa.jpg,1,0,0,2.500507116317749,1.0
+FaceNet,train,49ceec8d-83ac-11ee-90e4-9cfeff47d2fa.jpg,1,0,0,2.645557403564453,1.0
+FaceNet,train,4a487da2-83ac-11ee-bcf1-9cfeff47d2fa.jpg,1,0,0,2.5969929695129395,1.0
+FaceNet,train,4a860d1b-83ac-11ee-a56c-9cfeff47d2fa.jpg,0,0,1,2.524759292602539,0.0
+FaceNet,train,4b3d3fac-83ac-11ee-9e01-9cfeff47d2fa.jpg,0,0,1,2.419339418411255,0.0
+FaceNet,train,4b79b37b-83ac-11ee-842c-9cfeff47d2fa.jpg,0,0,1,2.362973213195801,0.0
+FaceNet,train,4bb6abdf-83ac-11ee-a54b-9cfeff47d2fa.jpg,1,0,0,2.624009847640991,1.0
+FaceNet,train,4bf429da-83ac-11ee-bcd6-9cfeff47d2fa.jpg,1,0,0,2.8285927772521973,1.0
+FaceNet,val,45c0a15d-83ac-11ee-a84e-9cfeff47d2fa.jpg,0,0,1,2.576259136199951,0.0
+FaceNet,val,472f2539-83ac-11ee-9ed0-9cfeff47d2fa.jpg,1,0,0,2.6468024253845215,1.0
+FaceNet,val,47e60922-83ac-11ee-8188-9cfeff47d2fa.jpg,1,0,0,2.6032555103302,1.0
+FaceNet,val,4affc784-83ac-11ee-9909-9cfeff47d2fa.jpg,1,1,1,2.5821616649627686,0.0
+Face Recognition,test,4598b7e9-83ac-11ee-b027-9cfeff47d2fa.jpg,0,0,1,0.07610273361206055,0.0
+Face Recognition,test,46f2719c-83ac-11ee-a728-9cfeff47d2fa.jpg,0,0,1,0.07613396644592285,0.0
+Face Recognition,test,4860544a-83ac-11ee-b85c-9cfeff47d2fa.jpg,0,0,1,0.07607865333557129,0.0
+Face Recognition,test,4a0be73b-83ac-11ee-b293-9cfeff47d2fa.jpg,0,0,1,0.08786129951477051,0.0
+Face Recognition,test,4ac2bd8b-83ac-11ee-94e3-9cfeff47d2fa.jpg,0,0,1,0.0881502628326416,0.0
+Face Recognition,train,45743621-83ac-11ee-9222-9cfeff47d2fa.jpg,0,0,1,0.08067941665649414,0.0
+Face Recognition,train,45fe4272-83ac-11ee-974f-9cfeff47d2fa.jpg,0,0,1,0.08210325241088867,0.0
+Face Recognition,train,463b6955-83ac-11ee-9b8f-9cfeff47d2fa.jpg,0,0,1,0.08588910102844238,0.0
+Face Recognition,train,467ae200-83ac-11ee-903f-9cfeff47d2fa.jpg,0,0,1,0.07619857788085938,0.0
+Face Recognition,train,46b563de-83ac-11ee-8c6a-9cfeff47d2fa.jpg,0,0,1,0.06943082809448242,0.0
+Face Recognition,train,476c87ed-83ac-11ee-a88d-9cfeff47d2fa.jpg,0,0,1,0.08073878288269043,0.0
+Face Recognition,train,47a94336-83ac-11ee-8a48-9cfeff47d2fa.jpg,0,0,1,0.08842325210571289,0.0
+Face Recognition,train,47e60921-83ac-11ee-8188-9cfeff47d2fa.jpg,0,0,1,0.07242608070373535,0.0
+Face Recognition,train,482399c5-83ac-11ee-b18d-9cfeff47d2fa.jpg,0,0,1,0.07188177108764648,0.0
+Face Recognition,train,489d1547-83ac-11ee-b751-9cfeff47d2fa.jpg,0,0,1,0.08256196975708008,0.0
+Face Recognition,train,48da29b8-83ac-11ee-9494-9cfeff47d2fa.jpg,0,0,1,0.08058881759643555,0.0
+Face Recognition,train,49175421-83ac-11ee-8e37-9cfeff47d2fa.jpg,0,0,1,0.07227516174316406,0.0
+Face Recognition,train,4954300a-83ac-11ee-a1c8-9cfeff47d2fa.jpg,0,0,1,0.06407499313354492,0.0
+Face Recognition,train,4991b5d6-83ac-11ee-8469-9cfeff47d2fa.jpg,0,0,1,0.09728598594665527,0.0
+Face Recognition,train,49ceec8d-83ac-11ee-90e4-9cfeff47d2fa.jpg,0,0,1,0.08043551445007324,0.0
+Face Recognition,train,4a487da2-83ac-11ee-bcf1-9cfeff47d2fa.jpg,0,0,1,0.0646359920501709,0.0
+Face Recognition,train,4a860d1b-83ac-11ee-a56c-9cfeff47d2fa.jpg,0,0,1,0.08048319816589355,0.0
+Face Recognition,train,4b3d3fac-83ac-11ee-9e01-9cfeff47d2fa.jpg,0,0,1,0.08423948287963867,0.0
+Face Recognition,train,4b79b37b-83ac-11ee-842c-9cfeff47d2fa.jpg,0,0,1,0.08075618743896484,0.0
+Face Recognition,train,4bb6abdf-83ac-11ee-a54b-9cfeff47d2fa.jpg,0,0,1,0.08886432647705078,0.0
+Face Recognition,train,4bf429da-83ac-11ee-bcd6-9cfeff47d2fa.jpg,0,0,1,0.07311177253723145,0.0
+Face Recognition,val,45c0a15d-83ac-11ee-a84e-9cfeff47d2fa.jpg,0,0,1,0.07225966453552246,0.0
+Face Recognition,val,472f2539-83ac-11ee-9ed0-9cfeff47d2fa.jpg,0,0,1,0.0721278190612793,0.0
+Face Recognition,val,47e60922-83ac-11ee-8188-9cfeff47d2fa.jpg,0,0,1,0.08388209342956543,0.0
+Face Recognition,val,4affc784-83ac-11ee-9909-9cfeff47d2fa.jpg,0,0,1,0.07255172729492188,0.0
+Haar Cascade,test,f47812f7-8335-11ee-8266-9cfeff47d2fa.jpg,0,0,1,0.04023122787475586,0.0
+Haar Cascade,test,f6002dd6-8335-11ee-b9ec-9cfeff47d2fa.jpg,1,0,0,0.03201103210449219,1.0
+Haar Cascade,test,f69e6a64-8335-11ee-9c58-9cfeff47d2fa.jpg,0,0,1,0.03299427032470703,0.0
+Haar Cascade,test,f7d8de00-8335-11ee-b6bf-9cfeff47d2fa.jpg,1,1,1,0.03658652305603027,0.0
+Haar Cascade,test,f9134bf5-8335-11ee-b735-9cfeff47d2fa.jpg,0,0,1,0.03199601173400879,0.0
+Haar Cascade,train,f3d9f09a-8335-11ee-9a89-9cfeff47d2fa.jpg,0,0,1,0.016326904296875,0.0
+Haar Cascade,train,f429962b-8335-11ee-a62b-9cfeff47d2fa.jpg,0,0,1,0.03197669982910156,0.0
+Haar Cascade,train,f4c656f6-8335-11ee-af95-9cfeff47d2fa.jpg,1,0,0,0.03103470802307129,1.0
+Haar Cascade,train,f5627bbe-8335-11ee-b71c-9cfeff47d2fa.jpg,0,0,1,0.037199974060058594,0.0
+Haar Cascade,train,f5b06725-8335-11ee-8d05-9cfeff47d2fa.jpg,0,0,1,0.03200054168701172,0.0
+Haar Cascade,train,f6501105-8335-11ee-b53a-9cfeff47d2fa.jpg,0,0,1,0.02786993980407715,0.0
+Haar Cascade,train,f6ec124d-8335-11ee-aa67-9cfeff47d2fa.jpg,0,0,1,0.0245821475982666,0.0
+Haar Cascade,train,f73c51d3-8335-11ee-9934-9cfeff47d2fa.jpg,0,0,1,0.0239717960357666,0.0
+Haar Cascade,train,f78a7d1d-8335-11ee-b9c8-9cfeff47d2fa.jpg,0,0,1,0.03220558166503906,0.0
+Haar Cascade,train,f826b619-8335-11ee-ba0b-9cfeff47d2fa.jpg,0,0,1,0.0316777229309082,0.0
+Haar Cascade,train,f8c53c90-8335-11ee-9f1c-9cfeff47d2fa.jpg,0,0,1,0.032059669494628906,0.0
+Haar Cascade,train,f96353c8-8335-11ee-9289-9cfeff47d2fa.jpg,1,1,1,0.032468318939208984,0.0
+Haar Cascade,train,fa00ffc5-8335-11ee-b02e-9cfeff47d2fa.jpg,0,0,1,0.02886676788330078,0.0
+Haar Cascade,train,fa51943f-8335-11ee-8eed-9cfeff47d2fa.jpg,0,0,1,0.03212118148803711,0.0
+Haar Cascade,train,faf2e6a3-8335-11ee-932a-9cfeff47d2fa.jpg,0,0,1,0.03218650817871094,0.0
+Haar Cascade,train,fb42e89d-8335-11ee-819a-9cfeff47d2fa.jpg,0,0,1,0.03200840950012207,0.0
+Haar Cascade,train,fb935431-8335-11ee-94da-9cfeff47d2fa.jpg,1,0,0,0.032021284103393555,1.0
+Haar Cascade,train,fbe21232-8335-11ee-9efb-9cfeff47d2fa.jpg,1,0,0,0.03754281997680664,1.0
+Haar Cascade,train,fc3278a3-8335-11ee-8393-9cfeff47d2fa.jpg,1,1,1,0.03196001052856445,0.0
+Haar Cascade,train,fc84be21-8335-11ee-b45a-9cfeff47d2fa.jpg,0,0,1,0.02429962158203125,0.0
+Haar Cascade,train,fcd4c992-8335-11ee-8b82-9cfeff47d2fa.jpg,1,1,1,0.03202462196350098,0.0
+Haar Cascade,val,f5148e3a-8335-11ee-b233-9cfeff47d2fa.jpg,1,1,1,0.03216433525085449,0.0
+Haar Cascade,val,f875155f-8335-11ee-9c28-9cfeff47d2fa.jpg,1,0,0,0.032396793365478516,1.0
+Haar Cascade,val,f9b101ac-8335-11ee-9f75-9cfeff47d2fa.jpg,1,0,0,0.03247475624084473,1.0
+Haar Cascade,val,faa2682e-8335-11ee-816f-9cfeff47d2fa.jpg,0,0,1,0.03240633010864258,0.0
+Dlib HOG,test,f47812f7-8335-11ee-8266-9cfeff47d2fa.jpg,1,0,0,0.2409071922302246,1.0
+Dlib HOG,test,f6002dd6-8335-11ee-b9ec-9cfeff47d2fa.jpg,0,0,1,0.2872655391693115,0.0
+Dlib HOG,test,f69e6a64-8335-11ee-9c58-9cfeff47d2fa.jpg,0,0,1,0.29125118255615234,0.0
+Dlib HOG,test,f7d8de00-8335-11ee-b6bf-9cfeff47d2fa.jpg,0,0,1,0.2808570861816406,0.0
+Dlib HOG,test,f9134bf5-8335-11ee-b735-9cfeff47d2fa.jpg,0,0,1,0.2740213871002197,0.0
+Dlib HOG,train,f3d9f09a-8335-11ee-9a89-9cfeff47d2fa.jpg,0,0,1,0.2736546993255615,0.0
+Dlib HOG,train,f429962b-8335-11ee-a62b-9cfeff47d2fa.jpg,1,0,0,0.2656114101409912,1.0
+Dlib HOG,train,f4c656f6-8335-11ee-af95-9cfeff47d2fa.jpg,1,0,0,0.2975783348083496,1.0
+Dlib HOG,train,f5627bbe-8335-11ee-b71c-9cfeff47d2fa.jpg,0,0,1,0.29767441749572754,0.0
+Dlib HOG,train,f5b06725-8335-11ee-8d05-9cfeff47d2fa.jpg,0,0,1,0.2889368534088135,0.0
+Dlib HOG,train,f6501105-8335-11ee-b53a-9cfeff47d2fa.jpg,0,0,1,0.28902173042297363,0.0
+Dlib HOG,train,f6ec124d-8335-11ee-aa67-9cfeff47d2fa.jpg,0,0,1,0.30503296852111816,0.0
+Dlib HOG,train,f73c51d3-8335-11ee-9934-9cfeff47d2fa.jpg,0,0,1,0.2619798183441162,0.0
+Dlib HOG,train,f78a7d1d-8335-11ee-b9c8-9cfeff47d2fa.jpg,0,0,1,0.27323341369628906,0.0
+Dlib HOG,train,f826b619-8335-11ee-ba0b-9cfeff47d2fa.jpg,0,0,1,0.25781679153442383,0.0
+Dlib HOG,train,f8c53c90-8335-11ee-9f1c-9cfeff47d2fa.jpg,0,0,1,0.25789809226989746,0.0
+Dlib HOG,train,f96353c8-8335-11ee-9289-9cfeff47d2fa.jpg,1,0,0,0.2924835681915283,1.0
+Dlib HOG,train,fa00ffc5-8335-11ee-b02e-9cfeff47d2fa.jpg,0,0,1,0.27555179595947266,0.0
+Dlib HOG,train,fa51943f-8335-11ee-8eed-9cfeff47d2fa.jpg,0,0,1,0.2806124687194824,0.0
+Dlib HOG,train,faf2e6a3-8335-11ee-932a-9cfeff47d2fa.jpg,0,0,1,0.3055996894836426,0.0
+Dlib HOG,train,fb42e89d-8335-11ee-819a-9cfeff47d2fa.jpg,0,0,1,0.29495763778686523,0.0
+Dlib HOG,train,fb935431-8335-11ee-94da-9cfeff47d2fa.jpg,1,0,0,0.297133207321167,1.0
+Dlib HOG,train,fbe21232-8335-11ee-9efb-9cfeff47d2fa.jpg,1,0,0,0.2649867534637451,1.0
+Dlib HOG,train,fc3278a3-8335-11ee-8393-9cfeff47d2fa.jpg,1,1,1,0.2771003246307373,0.0
+Dlib HOG,train,fc84be21-8335-11ee-b45a-9cfeff47d2fa.jpg,0,0,1,0.27138328552246094,0.0
+Dlib HOG,train,fcd4c992-8335-11ee-8b82-9cfeff47d2fa.jpg,0,0,1,0.26677751541137695,0.0
+Dlib HOG,val,f5148e3a-8335-11ee-b233-9cfeff47d2fa.jpg,0,0,1,0.2773628234863281,0.0
+Dlib HOG,val,f875155f-8335-11ee-9c28-9cfeff47d2fa.jpg,1,0,0,0.24729204177856445,1.0
+Dlib HOG,val,f9b101ac-8335-11ee-9f75-9cfeff47d2fa.jpg,1,0,0,0.27804017066955566,1.0
+Dlib HOG,val,faa2682e-8335-11ee-816f-9cfeff47d2fa.jpg,0,0,1,0.29793381690979004,0.0
+FaceNet,test,f47812f7-8335-11ee-8266-9cfeff47d2fa.jpg,1,0,0,2.4155516624450684,1.0
+FaceNet,test,f6002dd6-8335-11ee-b9ec-9cfeff47d2fa.jpg,1,0,0,2.244443655014038,1.0
+FaceNet,test,f69e6a64-8335-11ee-9c58-9cfeff47d2fa.jpg,2,1,0,2.1380746364593506,1.0
+FaceNet,test,f7d8de00-8335-11ee-b6bf-9cfeff47d2fa.jpg,1,1,1,2.139739751815796,0.0
+FaceNet,test,f9134bf5-8335-11ee-b735-9cfeff47d2fa.jpg,2,1,0,2.3257663249969482,1.0
+FaceNet,train,f3d9f09a-8335-11ee-9a89-9cfeff47d2fa.jpg,0,0,1,2.2311038970947266,0.0
+FaceNet,train,f429962b-8335-11ee-a62b-9cfeff47d2fa.jpg,1,0,0,2.1505322456359863,1.0
+FaceNet,train,f4c656f6-8335-11ee-af95-9cfeff47d2fa.jpg,1,0,0,2.264918804168701,1.0
+FaceNet,train,f5627bbe-8335-11ee-b71c-9cfeff47d2fa.jpg,1,0,0,2.222323179244995,1.0
+FaceNet,train,f5b06725-8335-11ee-8d05-9cfeff47d2fa.jpg,1,0,0,2.5009517669677734,1.0
+FaceNet,train,f6501105-8335-11ee-b53a-9cfeff47d2fa.jpg,0,0,1,2.6092166900634766,0.0
+FaceNet,train,f6ec124d-8335-11ee-aa67-9cfeff47d2fa.jpg,0,0,1,2.2978415489196777,0.0
+FaceNet,train,f73c51d3-8335-11ee-9934-9cfeff47d2fa.jpg,0,0,1,2.693732738494873,0.0
+FaceNet,train,f78a7d1d-8335-11ee-b9c8-9cfeff47d2fa.jpg,1,1,1,2.3376643657684326,0.0
+FaceNet,train,f826b619-8335-11ee-ba0b-9cfeff47d2fa.jpg,1,0,0,2.4977569580078125,1.0
+FaceNet,train,f8c53c90-8335-11ee-9f1c-9cfeff47d2fa.jpg,1,0,0,2.354537010192871,1.0
+FaceNet,train,f96353c8-8335-11ee-9289-9cfeff47d2fa.jpg,2,1,0,2.3808863162994385,1.0
+FaceNet,train,fa00ffc5-8335-11ee-b02e-9cfeff47d2fa.jpg,1,0,0,2.2120721340179443,1.0
+FaceNet,train,fa51943f-8335-11ee-8eed-9cfeff47d2fa.jpg,0,0,1,2.707490921020508,0.0
+FaceNet,train,faf2e6a3-8335-11ee-932a-9cfeff47d2fa.jpg,0,0,1,2.823007822036743,0.0
+FaceNet,train,fb42e89d-8335-11ee-819a-9cfeff47d2fa.jpg,0,0,1,2.3006420135498047,0.0
+FaceNet,train,fb935431-8335-11ee-94da-9cfeff47d2fa.jpg,1,0,0,2.3354010581970215,1.0
+FaceNet,train,fbe21232-8335-11ee-9efb-9cfeff47d2fa.jpg,1,0,0,2.1333653926849365,1.0
+FaceNet,train,fc3278a3-8335-11ee-8393-9cfeff47d2fa.jpg,2,1,0,2.305987596511841,1.0
+FaceNet,train,fc84be21-8335-11ee-b45a-9cfeff47d2fa.jpg,0,0,1,2.4231698513031006,0.0
+FaceNet,train,fcd4c992-8335-11ee-8b82-9cfeff47d2fa.jpg,0,0,1,2.363157033920288,0.0
+FaceNet,val,f5148e3a-8335-11ee-b233-9cfeff47d2fa.jpg,2,1,0,2.303309202194214,1.0
+FaceNet,val,f875155f-8335-11ee-9c28-9cfeff47d2fa.jpg,1,0,0,2.4229111671447754,1.0
+FaceNet,val,f9b101ac-8335-11ee-9f75-9cfeff47d2fa.jpg,1,0,0,2.5507445335388184,1.0
+FaceNet,val,faa2682e-8335-11ee-816f-9cfeff47d2fa.jpg,0,0,1,2.272460460662842,0.0
+Face Recognition,test,f47812f7-8335-11ee-8266-9cfeff47d2fa.jpg,1,1,1,0.022063016891479492,0.0
+Face Recognition,test,f6002dd6-8335-11ee-b9ec-9cfeff47d2fa.jpg,0,0,1,0.023996829986572266,0.0
+Face Recognition,test,f69e6a64-8335-11ee-9c58-9cfeff47d2fa.jpg,0,0,1,0.029277563095092773,0.0
+Face Recognition,test,f7d8de00-8335-11ee-b6bf-9cfeff47d2fa.jpg,0,0,1,0.024085044860839844,0.0
+Face Recognition,test,f9134bf5-8335-11ee-b735-9cfeff47d2fa.jpg,0,0,1,0.02399754524230957,0.0
+Face Recognition,train,f3d9f09a-8335-11ee-9a89-9cfeff47d2fa.jpg,0,0,1,0.028035402297973633,0.0
+Face Recognition,train,f429962b-8335-11ee-a62b-9cfeff47d2fa.jpg,1,1,1,0.024095773696899414,0.0
+Face Recognition,train,f4c656f6-8335-11ee-af95-9cfeff47d2fa.jpg,1,1,1,0016515493392944336,0.0
+Face Recognition,train,f5627bbe-8335-11ee-b71c-9cfeff47d2fa.jpg,0,0,1,0.024131298065185547,0.0
+Face Recognition,train,f5b06725-8335-11ee-8d05-9cfeff47d2fa.jpg,0,0,1,0.02405834197998047,0.0
+Face Recognition,train,f6501105-8335-11ee-b53a-9cfeff47d2fa.jpg,0,0,1,0.015034914016723633,0.0
+Face Recognition,train,f6ec124d-8335-11ee-aa67-9cfeff47d2fa.jpg,0,0,1,0.024007558822631836,0.0
+Face Recognition,train,f73c51d3-8335-11ee-9934-9cfeff47d2fa.jpg,0,0,1,0.024152517318725586,0.0
+Face Recognition,train,f78a7d1d-8335-11ee-b9c8-9cfeff47d2fa.jpg,0,0,1,0.021053791046142578,0.0
+Face Recognition,train,f826b619-8335-11ee-ba0b-9cfeff47d2fa.jpg,0,0,1,0.024033308029174805,0.0
+Face Recognition,train,f8c53c90-8335-11ee-9f1c-9cfeff47d2fa.jpg,0,0,1,0.023998022079467773,0.0
+Face Recognition,train,f96353c8-8335-11ee-9289-9cfeff47d2fa.jpg,1,1,1,0.016867876052856445,0.0
+Face Recognition,train,fa00ffc5-8335-11ee-b02e-9cfeff47d2fa.jpg,0,0,1,0.024076223373413086,0.0
+Face Recognition,train,fa51943f-8335-11ee-8eed-9cfeff47d2fa.jpg,0,0,1,0.02398395538330078,0.0
+Face Recognition,train,faf2e6a3-8335-11ee-932a-9cfeff47d2fa.jpg,0,0,1,0.02425074577331543,0.0
+Face Recognition,train,fb42e89d-8335-11ee-819a-9cfeff47d2fa.jpg,0,0,1,0.024109840393066406,0.0
+Face Recognition,train,fb935431-8335-11ee-94da-9cfeff47d2fa.jpg,1,1,1,0.023996591567993164,0.0
+Face Recognition,train,fbe21232-8335-11ee-9efb-9cfeff47d2fa.jpg,1,1,1,0.024235248565673828,0.0
+Face Recognition,train,fc3278a3-8335-11ee-8393-9cfeff47d2fa.jpg,1,1,1,0.02407550811767578,0.0
+Face Recognition,train,fc84be21-8335-11ee-b45a-9cfeff47d2fa.jpg,0,0,1,0.032294273376464844,0.0
+Face Recognition,train,fcd4c992-8335-11ee-8b82-9cfeff47d2fa.jpg,0,0,1,0.027889013290405273,0.0
+Face Recognition,val,f5148e3a-8335-11ee-b233-9cfeff47d2fa.jpg,0,0,1,0.027495384216308594,0.0
+Face Recognition,val,f875155f-8335-11ee-9c28-9cfeff47d2fa.jpg,1,1,1,0.02298426628112793,0.0
+Face Recognition,val,f9b101ac-8335-11ee-9f75-9cfeff47d2fa.jpg,1,1,1,0.02399611473083496,0.0
+Face Recognition,val,faa2682e-8335-11ee-816f-9cfeff47d2fa.jpg,0,0,1,0.014400243759155273,0.0
