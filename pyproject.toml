@@ -64,7 +64,10 @@ module = [
     "tqdm.*",
     "sklearn.*",
     "dlib.*",
-    "face_recognition.*"
+    "face_recognition.*",
+    "shapely.*",
+    "keras.*",
+    "bp_face_recognition.models.methods.*"
 ]
 ignore_missing_imports = true
 
