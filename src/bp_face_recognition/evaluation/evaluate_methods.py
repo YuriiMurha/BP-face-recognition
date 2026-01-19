@@ -3,10 +3,12 @@ import json
 import csv
 import time
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from shapely.geometry import box
 from concurrent.futures import ThreadPoolExecutor
+from sklearn.metrics import precision_recall_curve, average_precision_score
 
 from bp_face_recognition.config.settings import settings
 from bp_face_recognition.models.methods.haar_cascade import HaarCascadeDetector
@@ -140,11 +142,17 @@ def process_image(
 
         start_time = time.time()
         # Handle both class instances and old functions for now
-        if hasattr(detector_instance, "detect"):
+        if hasattr(detector_instance, "detect_with_confidence"):
+            boxes_conf = detector_instance.detect_with_confidence(image)
+            boxes = [b for b, c in boxes_conf]
+            confidences = [c for b, c in boxes_conf]
+        elif hasattr(detector_instance, "detect"):
             boxes = detector_instance.detect(image)
+            confidences = [1.0] * len(boxes)
         else:
             # Fallback for old functions if needed
             boxes, _ = detector_instance(image)
+            confidences = [1.0] * len(boxes)
         detection_time = time.time() - start_time
 
         # Convert detected boxes to [x1, y1, x2, y2]
@@ -162,9 +170,13 @@ def process_image(
             get_ground_truth_faces(labels_file) if os.path.exists(labels_file) else []
         )
 
-        accuracy, false_positives, not_found, precision, recall, f1 = evaluate_accuracy(
-            detected_boxes, ground_truth_faces
+        accuracy, false_positives, not_found, precision, recall, f1, matches = (
+            evaluate_accuracy(detected_boxes, ground_truth_faces)
         )
+
+        # Collect data for PR curves: (confidence, is_true_positive)
+        # matches is a list of bools corresponding to detected_boxes
+        pr_data = list(zip(confidences, matches))
 
         return {
             "method": method_name,
@@ -179,6 +191,8 @@ def process_image(
             "precision": precision,
             "recall": recall,
             "f1_score": f1,
+            "pr_data": pr_data,
+            "num_gt": len(ground_truth_faces),
         }
     except Exception as e:
         print(f"Error processing {image_file} with {method_name}: {e}")
@@ -199,14 +213,22 @@ def calculate_iou(boxA, boxB):
 def evaluate_accuracy(detected_faces, ground_truth_faces, iou_threshold=0.5):
     matched = 0
     gt_matched = [False] * len(ground_truth_faces)
+    det_matches = [False] * len(detected_faces)
 
-    for det_face in detected_faces:
-        for i, gt_face in enumerate(ground_truth_faces):
-            if not gt_matched[i]:
-                if calculate_iou(det_face, gt_face) >= iou_threshold:
-                    matched += 1
-                    gt_matched[i] = True
-                    break
+    for i, det_face in enumerate(detected_faces):
+        best_iou = 0
+        best_gt_idx = -1
+        for j, gt_face in enumerate(ground_truth_faces):
+            if not gt_matched[j]:
+                iou = calculate_iou(det_face, gt_face)
+                if iou >= iou_threshold and iou > best_iou:
+                    best_iou = iou
+                    best_gt_idx = j
+
+        if best_gt_idx != -1:
+            matched += 1
+            gt_matched[best_gt_idx] = True
+            det_matches[i] = True
 
     total_gt = len(ground_truth_faces)
     total_detected = len(detected_faces)
@@ -222,7 +244,7 @@ def evaluate_accuracy(detected_faces, ground_truth_faces, iou_threshold=0.5):
         else 0
     )
 
-    return accuracy, false_positives, not_found, precision, recall, f1
+    return accuracy, false_positives, not_found, precision, recall, f1, det_matches
 
 
 def get_ground_truth_faces(label_file):
@@ -236,11 +258,17 @@ def get_ground_truth_faces(label_file):
 def save_results_to_csv(results, output_file):
     if not results:
         return
-    keys = results[0].keys()
+    # Exclude pr_data from CSV as it's a list of tuples
+    results_for_csv = []
+    for r in results:
+        csv_row = {k: v for k, v in r.items() if k != "pr_data"}
+        results_for_csv.append(csv_row)
+
+    keys = results_for_csv[0].keys()
     with open(output_file, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=keys)
         writer.writeheader()
-        writer.writerows(results)
+        writer.writerows(results_for_csv)
 
 
 def plot_results(results):
@@ -265,6 +293,41 @@ def plot_results(results):
 
         plt.savefig(assets_path / f"{title}.png")
         plt.close()
+
+    # Plot PR Curves
+    plt.figure(figsize=(10, 8))
+    for method_name in df["method"].unique():
+        method_df = df[df["method"] == method_name]
+        all_pr_data = []
+        total_gt = 0
+        for _, row in method_df.iterrows():
+            all_pr_data.extend(row["pr_data"])
+            total_gt += row["num_gt"]
+
+        if not all_pr_data:
+            continue
+
+        # Sort by confidence descending
+        all_pr_data.sort(key=lambda x: x[0], reverse=True)
+        confidences, matches = zip(*all_pr_data)
+
+        # Manual calculation for Option B
+        tps = np.cumsum(matches)
+        fps = np.cumsum([not m for m in matches])
+        precisions = tps / (tps + fps)
+        recalls = tps / total_gt if total_gt > 0 else np.zeros_like(tps)
+
+        # Fallback to sklearn for validation/smoothness if needed,
+        # but manual gives us more control over total_gt
+        plt.plot(recalls, precisions, label=f"{method_name}")
+
+    plt.title("Precision-Recall Curves")
+    plt.xlabel("Recall")
+    plt.ylabel("Precision")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(assets_path / "PR_Curves.png")
+    plt.close()
 
 
 def summarize_method_performance(results):
