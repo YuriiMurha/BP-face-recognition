@@ -85,6 +85,7 @@ def process_datasets():
                 unit="img",
                 leave=False,
             ):
+                label_path = "Unknown"
                 try:
                     # Load image
                     img_bgr = cv2.imread(img_path)

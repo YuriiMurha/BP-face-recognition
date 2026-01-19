@@ -1,32 +1,30 @@
 .PHONY: setup install run evaluate lint clean test
 
 # Python executable
-PYTHON = python
+PYTHON = uv run python
+PYTHONPATH = src
 
 setup:
-	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install uv
 	uv sync
 
 install:
 	uv sync
 
 run:
-	$(PYTHON) src/main.py
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/main.py
 
 evaluate:
-	$(PYTHON) src/evaluation/evaluate_methods.py
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/evaluation/evaluate_methods.py
 
 lint:
-	nox -s lint
+	uv run nox -s lint
 
 type-check:
-	nox -s type_check
+	uv run nox -s type_check
 
 clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type f -name "*.pyc" -delete
-	rm -rf .nox
+	if exist .nox rmdir /s /q .nox
+	for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d"
 
 test:
-	nox -s tests
+	uv run nox -s tests
