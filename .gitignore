@@ -179,10 +179,12 @@ GEMINI.md
 
 # Maintenance and Workspace tracking
 .maintenance/
+.opencode/
 
 # Project Data
 data/datasets/
 data/logs/
+assets/reports/
 *.jpg
 *.png
 *.h5
