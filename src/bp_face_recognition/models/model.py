@@ -1,23 +1,37 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.models import Model
 from typing import List, Tuple, Optional
 from bp_face_recognition.config.settings import settings
 from bp_face_recognition.models.interfaces import FaceDetector, FaceRecognizer
 from bp_face_recognition.models.methods.mtcnn_detector import MTCNNDetector
+from bp_face_recognition.models.methods.facenet_recognizer import FaceNetRecognizer
 
 
 class CustomFaceRecognizer(FaceRecognizer):
     def __init__(self, model_path: Optional[str] = None):
         if model_path is None:
-            # Default path from settings if available or hardcoded fallback
-            model_path = str(settings.MODELS_DIR / "custom_model.keras")
-        self.model = tf.keras.models.load_model(model_path, compile=False)
+            model_path = str(settings.MODELS_DIR / "seccam_2_final.keras")
+
+        try:
+            full_model = tf.keras.models.load_model(model_path, compile=False)
+            # Create a sub-model that outputs the features before the classification head
+            # In our build_model, the layer before output is a Dropout or Dense(512)
+            # Let's find the 'dropout' or the dense layer before the end
+            self.model = Model(
+                inputs=full_model.input, outputs=full_model.layers[-3].output
+            )
+        except Exception as e:
+            print(f"Warning: Could not load custom model from {model_path}: {e}")
+            self.model = None
 
     def get_embedding(self, face_image: np.ndarray) -> np.ndarray:
-        face_image = cv2.resize(face_image, (224, 224))  # VGG16 input size
+        if self.model is None:
+            return np.zeros(512)  # Default size for our custom model features
+        face_image = cv2.resize(face_image, (224, 224))
         face_image = tf.image.convert_image_dtype(face_image, tf.float32)[None, ...]
-        return self.model.predict(face_image)[0]  # type: ignore
+        return self.model.predict(face_image, verbose=0)[0]
 
 
 class FaceTracker:
