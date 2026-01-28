@@ -178,7 +178,9 @@ GEMINI.md
 .ruff_cache/
 
 # Maintenance and Workspace tracking
-.maintenance/
+# .maintenance/
+
+# OpenCode
 .opencode/
 
 # Project Data
