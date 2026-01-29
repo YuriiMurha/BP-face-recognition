@@ -1,0 +1,1 @@
+"""Detector integration tests package."""
