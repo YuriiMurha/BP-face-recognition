@@ -28,6 +28,7 @@ dependencies = [
     "tabulate>=0.9.0",
     "onnxruntime-gpu>=1.23.2",
     "tf2onnx>=1.8.4",
+    "mediapipe>=0.10.0",
 ]
 
 [project.optional-dependencies]
@@ -79,4 +80,5 @@ ignore_missing_imports = true
 [dependency-groups]
 dev = [
     "nox",
+    "pytest>=9.0.2",
 ]
