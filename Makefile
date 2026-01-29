@@ -1,4 +1,4 @@
-.PHONY: setup install run evaluate lint clean test
+.PHONY: setup install run evaluate lint clean test quantize test-quantization test-mediapipe test-all benchmark
 
 # Python executable
 PYTHON = uv run python
@@ -28,6 +28,9 @@ init-dataset:
 register:
 	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/register_person.py $(name) $(dir) --db $(db)
 
+sample-uncertain:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/active_learning_sampler.py --input $(input) $(if $(lower),--lower $(lower),) $(if $(upper),--upper $(upper),)
+
 train:
 	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/models/train.py --dataset seccam_2 --epochs 10
 
@@ -43,3 +46,24 @@ clean:
 
 test:
 	uv run nox -s tests
+
+test-quantization:
+	uv run nox -s test_quantization
+
+test-mediapipe:
+	uv run nox -s test_mediapipe
+
+test-integration:
+	uv run nox -s test_integration
+
+test-all:
+	uv run nox -s test_quantization test_mediapipe test_integration tests
+
+benchmark-tests:
+	uv run python -m pytest src/bp_face_recognition/tests/unit/test_quantization.py src/bp_face_recognition/tests/integration/test_mediapipe_real.py
+
+quantize:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/quantize_model.py --model "$(model)" --type "$(type)" $(if $(dataset),--dataset $(dataset),) $(if $(output),--output $(output),)
+
+benchmark:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/benchmark_quantization_mediapipe.py
