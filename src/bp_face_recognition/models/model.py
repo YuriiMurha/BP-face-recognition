@@ -6,7 +6,6 @@ from typing import List, Tuple, Optional
 from bp_face_recognition.config.settings import settings
 from bp_face_recognition.models.interfaces import FaceDetector, FaceRecognizer
 from bp_face_recognition.models.methods.mtcnn_detector import MTCNNDetector
-from bp_face_recognition.models.methods.facenet_recognizer import FaceNetRecognizer
 
 
 class CustomFaceRecognizer(FaceRecognizer):
@@ -16,12 +15,22 @@ class CustomFaceRecognizer(FaceRecognizer):
 
         try:
             full_model = tf.keras.models.load_model(model_path, compile=False)
-            # Create a sub-model that outputs the features before the classification head
-            # In our build_model, the layer before output is a Dropout or Dense(512)
-            # Let's find the 'dropout' or the dense layer before the end
-            self.model = Model(
-                inputs=full_model.input, outputs=full_model.layers[-3].output
-            )
+
+            # Try to get the embedding layer by name (modern approach)
+            try:
+                embedding_layer = full_model.get_layer("face_embedding")
+                self.model = Model(
+                    inputs=full_model.input, outputs=embedding_layer.output
+                )
+            except ValueError:
+                # Fallback to index-based for legacy models
+                print(
+                    f"Warning: Layer 'face_embedding' not found in {model_path}. Falling back to index-based extraction."
+                )
+                self.model = Model(
+                    inputs=full_model.input, outputs=full_model.layers[-3].output
+                )
+
         except Exception as e:
             print(f"Warning: Could not load custom model from {model_path}: {e}")
             self.model = None
