@@ -150,7 +150,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "albumentations", specifier = ">=1.3.0" },
-    { name = "dlib", path = "wheels/dlib-19.24.1-cp311-cp311-win_amd64.whl" },
+    { name = "dlib" },
     { name = "face-recognition", specifier = ">=1.3.0" },
     { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "matplotlib", specifier = ">=3.7.0" },
@@ -376,10 +376,8 @@ wheels = [
 [[package]]
 name = "dlib"
 version = "19.24.1"
-source = { path = "wheels/dlib-19.24.1-cp311-cp311-win_amd64.whl" }
-wheels = [
-    { filename = "dlib-19.24.1-cp311-cp311-win_amd64.whl", hash = "sha256:6f1a5ee167975d7952b28e0ce4495f1d9a77644761cf5720fb66d7c6188ae496" },
-]
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ec/e3/4fed0fb511a88a46365c2da493b73081a5e1a21960bdb18089b27cbc768b/dlib-19.24.1.tar.gz", hash = "sha256:e8d3ca047d525eeb36cc47bce45ed0562dab40b0b8f5fa171600dde2fec509c0", size = 3242702, upload-time = "2023-03-23T01:43:20.541Z" }
 
 [[package]]
 name = "executing"
