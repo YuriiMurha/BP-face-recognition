@@ -1,4 +1,4 @@
-.PHONY: setup install run evaluate lint clean test quantize test-quantization test-mediapipe test-all benchmark
+.PHONY: setup install run evaluate lint clean test quantize test-quantization test-mediapipe test-all benchmark train train-comparison validate-training
 
 # Python executable
 PYTHON = uv run python
@@ -28,11 +28,20 @@ init-dataset:
 register:
 	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/register_person.py $(name) $(dir) --db $(db)
 
+train:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) experiments/train.py $(args)
+
+train-comparison:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) scripts/run_training_comparison.py
+
+validate-training:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) scripts/validate_training_setup.py
+
 sample-uncertain:
 	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/active_learning_sampler.py --input $(input) $(if $(lower),--lower $(lower),) $(if $(upper),--upper $(upper),)
 
 train:
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/models/train.py --dataset seccam_2 --epochs 10
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py $(args)
 
 lint:
 	uv run nox -s lint
@@ -67,3 +76,12 @@ quantize:
 
 benchmark:
 	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/benchmark_quantization_mediapipe.py
+
+benchmark-model:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) scripts/benchmark_models.py --action test
+
+benchmark-report:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) scripts/benchmark_models.py --action report
+
+benchmark-compare:
+	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) scripts/benchmark_models.py --action compare
