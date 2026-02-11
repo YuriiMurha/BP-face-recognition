@@ -1,0 +1,109 @@
+# Vision Models Configuration
+# This file defines available detection and recognition models with their configurations
+
+detectors:
+  mediapipe_v1:
+    class: "vision.detection.mediapipe.MediaPipeDetector"
+    model_file: "vision/detection/models/blaze_face_short_range.tflite"
+    version: "1.0"
+    description: "MediaPipe BlazeFace detection with GPU acceleration support"
+    default_config:
+      min_detection_confidence: 0.5
+      use_gpu: false
+      auto_gpu_detection: true
+  
+  mtcnn_v1:
+    class: "vision.detection.mtcnn.MTCNNDetector"
+    version: "1.0"
+    description: "Multi-task Cascaded Convolutional Networks"
+    default_config:
+      thresholds: [0.6, 0.7, 0.8]
+      min_face_size: 20
+  
+  haar_v1:
+    class: "vision.detection.haar_cascade.HaarCascadeDetector"
+    version: "1.0"
+    description: "OpenCV Haar Cascade classifier"
+    default_config:
+      scale_factor: 1.1
+      min_neighbors: 5
+      min_size: [30, 30]
+  
+  dlib_hog_v1:
+    class: "vision.detection.dlib_hog.DlibHOGDetector"
+    version: "1.0"
+    description: "dlib Histogram of Oriented Gradients detector"
+    default_config:
+      upsample_times: 1
+  
+  face_recognition_lib_v1:
+    class: "vision.detection.face_recognition_lib.FaceRecognitionLibDetector"
+    version: "1.0"
+    description: "Python face_recognition library detector"
+    default_config:
+      model: "hog"
+
+recognizers:
+  facenet_v1:
+    class: "vision.recognition.facenet.FaceNetRecognizer"
+    model_file: "vision/recognition/models/facenet_keras.h5"
+    version: "1.0"
+    description: "FaceNet model for face embedding extraction"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+  
+  custom_cnn_v1:
+    class: "vision.recognition.custom_cnn.CustomFaceRecognizer"
+    model_file: "vision/recognition/models/seccam_2_final.keras"
+    version: "1.0"
+    description: "Custom CNN trained on seccam dataset"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  tflite_v1:
+    class: "vision.recognition.tflite.TFLiteRecognizer"
+    model_file: "vision/recognition/models/seccam_2_final.tflite"
+    version: "1.0"
+    description: "TFLite optimized version of custom CNN"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+
+# Global settings
+global:
+  default_detector: "mediapipe_v1"
+  default_recognizer: "custom_cnn_v1"
+  auto_fallback: true
+  max_retry_attempts: 3
+  log_level: "INFO"
+
+# Environment-specific configurations
+environments:
+  production:
+    detector: "mediapipe_v1"
+    recognizer: "tflite_v1"
+    use_gpu: true
+    
+  development:
+    detector: "mediapipe_v1"
+    recognizer: "custom_cnn_v1"
+    use_gpu: false
+    
+  testing:
+    detector: "dlib_hog_v1"
+    recognizer: "facenet_v1"
+    use_gpu: false
+    
+  wsl_gpu:
+    detector: "mediapipe_v1"
+    recognizer: "custom_cnn_v1"
+    use_gpu: true
+
+# Performance optimization settings
+optimization:
+  enable_quantization: false
+  quantization_type: "dynamic_range"
+  enable_gpu_acceleration: true
+  fallback_on_gpu_error: true
