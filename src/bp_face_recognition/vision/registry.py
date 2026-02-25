@@ -8,6 +8,8 @@ face detection and recognition models dynamically based on YAML/JSON configurati
 import importlib
 import inspect
 import logging
+import platform
+import os
 from pathlib import Path
 from typing import Dict, Any, Optional, Type, Union
 import yaml
@@ -134,9 +136,7 @@ class ModelRegistry:
             logger.error(f"Failed to import {class_path}: {e}")
             raise
         except AttributeError as e:
-            logger.error(
-                f"Class '{class_name}' not found in module '{module_path}': {e}"
-            )
+            logger.error(f"Failed to import class from {class_path}: {e}")
             raise
 
     def get_detector(self, name: str, **kwargs) -> FaceDetector:
@@ -252,6 +252,105 @@ class ModelRegistry:
     def get_optimization_settings(self) -> Dict[str, Any]:
         """Get performance optimization settings."""
         return self.config.get("optimization", {})
+
+    def get_environment_config(self, env_name: str) -> Dict[str, Any]:
+        """
+        Get environment-specific configuration.
+
+        Args:
+            env_name: Environment name from config (e.g., "wsl_production")
+
+        Returns:
+            Dict[str, Any]: Environment configuration or empty dict if not found
+        """
+        environments = self.config.get("environments", {})
+        if env_name not in environments:
+            logger.warning(
+                f"Environment '{env_name}' not found. Using global defaults."
+            )
+            return self.get_global_settings()
+
+        return environments[env_name]
+
+    def detect_environment(self) -> str:
+        """
+        Automatically detect the best environment profile based on system configuration.
+
+        Returns:
+            str: Recommended environment name
+        """
+        # Check if environment is explicitly set
+        env_override = os.getenv("ENVIRONMENT")
+        if env_override and env_override in self.config.get("environments", {}):
+            logger.info(f"Using explicitly set environment: {env_override}")
+            return env_override
+
+        # Auto-detection logic
+        system = platform.system()
+
+        # Check for WSL2
+        if system == "Linux" and os.path.exists("/proc/version"):
+            try:
+                with open("/proc/version", "r") as f:
+                    version_info = f.read().lower()
+                    if "microsoft" in version_info:
+                        # WSL2 detected - check for GPU
+                        if self._check_gpu_available():
+                            logger.info("WSL2 with GPU detected - using wsl_production")
+                            return "wsl_production"
+                        else:
+                            logger.info(
+                                "WSL2 without GPU detected - using wsl_development"
+                            )
+                            return "wsl_development"
+            except Exception as e:
+                logger.warning(f"Failed to detect WSL2: {e}")
+
+        # Windows detection
+        elif system == "Windows":
+            logger.info("Windows detected - using windows_production")
+            return "windows_production"
+
+        # Fallback
+        logger.info("Unknown system - using testing environment")
+        return "testing"
+
+    def _check_gpu_available(self) -> bool:
+        """
+        Check if GPU is available for TensorFlow inference.
+
+        Returns:
+            bool: True if GPU is available
+        """
+        try:
+            import tensorflow as tf
+
+            return len(tf.config.list_physical_devices("GPU")) > 0
+        except ImportError:
+            logger.warning("TensorFlow not available for GPU detection")
+            return False
+        except Exception as e:
+            logger.warning(f"GPU detection failed: {e}")
+            return False
+
+    def get_current_environment_config(self) -> Dict[str, Any]:
+        """
+        Get configuration for current detected environment.
+
+        Returns:
+            Dict[str, Any]: Environment-specific configuration
+        """
+        env_name = self.detect_environment()
+        env_config = self.get_environment_config(env_name)
+
+        # Merge with global settings
+        global_config = self.get_global_settings()
+        merged_config = {**global_config, **env_config}
+
+        logger.info(
+            f"Using environment '{env_name}' with config: {list(merged_config.keys())}"
+        )
+        return merged_config
 
 
 # Global registry instance

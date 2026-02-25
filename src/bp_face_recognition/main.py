@@ -1,14 +1,22 @@
 import cv2
 import logging
+from bp_face_recognition.services.pipeline_service import PipelineService
 from bp_face_recognition.database.database import FaceDatabase
-from bp_face_recognition.models.recognition_service import RecognitionService
+from bp_face_recognition.services.database_service import DatabaseService
 from bp_face_recognition.config.settings import settings
 
 
 class AttendanceApp:
     def __init__(self, camera_id=0, threshold=0.6, db_type="csv"):
-        self.service = RecognitionService(
-            threshold=threshold, database=FaceDatabase(db_type=db_type)
+        # Create database first
+        face_db = FaceDatabase(db_type=db_type)
+        db_service = DatabaseService(database=face_db)
+
+        self.service = PipelineService(
+            detector_type="mediapipe_v1",
+            recognizer_type="efficientnetb0_webcam_gpu_quantized",
+            recognition_threshold=threshold,
+            database_service=db_service,
         )
         self.cap = cv2.VideoCapture(camera_id)
 
@@ -48,7 +56,17 @@ class AttendanceApp:
                 break
 
             # 1. Pure Recognition Logic
-            results = self.service.process_frame(frame)
+            result = self.service.process_image(frame)
+            results = []
+            if result.get("success") and result.get("recognition_result"):
+                for face in result["recognition_result"].get("faces", []):
+                    if "box" in face:
+                        results.append(
+                            {
+                                "box": face["box"],
+                                "label": face.get("identity", "Unknown"),
+                            }
+                        )
 
             # 2. UI/Visualization Logic
             processed_frame = self.draw_results(frame, results)

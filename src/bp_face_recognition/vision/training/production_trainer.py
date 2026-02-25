@@ -88,29 +88,101 @@ class TrainingLogger:
         return phase_time
 
 
-def load_dataset(dataset_name, subset, batch_size=32, logger=None):
-    """Load face recognition dataset."""
-    base_path = settings.CROPPED_DIR / dataset_name / subset
+def discover_datasets(data_dir=None):
+    """Discover all available datasets in the data directory.
 
-    if not base_path.exists():
-        raise FileNotFoundError(f"Dataset subset not found: {base_path}")
+    Args:
+        data_dir: Base data directory (defaults to AUGMENTED_DIR)
 
-    # Get all image files
-    image_files = list(base_path.glob("*.jpg"))
+    Returns:
+        List of dataset names that have train/val splits
+    """
+    if data_dir is None:
+        data_dir = settings.AUGMENTED_DIR
+
+    datasets = []
+    if not data_dir.exists():
+        return datasets
+
+    for item in data_dir.iterdir():
+        if item.is_dir():
+            # Check if it has train/val splits
+            train_path = item / "train"
+            val_path = item / "val"
+            if train_path.exists() and val_path.exists():
+                datasets.append(item.name)
+
+    return sorted(datasets)
+
+
+def load_dataset(dataset_name, subset, batch_size=32, logger=None, use_augmented=True):
+    """Load face recognition dataset.
+
+    Args:
+        dataset_name: Name of the dataset
+        subset: 'train', 'val', or 'test'
+        batch_size: Batch size for loading
+        logger: Optional logger instance
+        use_augmented: If True, use augmented data; otherwise use cropped
+    """
+    if use_augmented:
+        base_path = settings.AUGMENTED_DIR / dataset_name / subset
+        # Augmented data has images/ and labels/ subdirectories
+        images_path = base_path / "images"
+        labels_path = base_path / "labels"
+
+        if not base_path.exists():
+            raise FileNotFoundError(f"Dataset subset not found: {base_path}")
+
+        # Get all image files from images/ subdirectory
+        image_files = list(images_path.glob("*.jpg")) if images_path.exists() else []
+        if not image_files:
+            # Try from base_path directly (fallback)
+            image_files = list(base_path.glob("*.jpg"))
+
+        # Load labels from JSON files
+        label_map = {}
+        if labels_path.exists():
+            import json
+
+            for label_file in labels_path.glob("*.json"):
+                with open(label_file, "r") as f:
+                    label_data = json.load(f)
+                    # Get the image filename from the JSON
+                    img_filename = label_data.get("image", "")
+                    if img_filename:
+                        # Extract label from shapes
+                        shapes = label_data.get("shapes", [])
+                        if shapes:
+                            label_map[img_filename] = int(shapes[0].get("label", 0))
+    else:
+        base_path = settings.CROPPED_DIR / dataset_name / subset
+        images_path = base_path
+        labels_path = None
+
+        if not base_path.exists():
+            raise FileNotFoundError(f"Dataset subset not found: {base_path}")
+
+        # Get all image files - cropped data has labels in filename (uuid.label.jpg)
+        image_files = list(base_path.glob("*.jpg"))
+        label_map = {}
+
     if not image_files:
         raise ValueError(f"No images found in {base_path}")
 
     if logger:
         logger.log(f"Found {len(image_files)} images in {subset} set")
 
-    def load_and_preprocess(image_path):
+    def load_and_preprocess(image_path, is_augmented=False, label_map=None):
         # Load image
         image = tf.io.read_file(image_path)
         image = tf.image.decode_jpeg(image, channels=3)
         image = tf.image.convert_image_dtype(image, tf.float32)
 
-        # Extract label from filename - simplified approach
-        # Use Python string operations instead of TensorFlow for this
+        # Resize to model input size (224x224 for EfficientNet)
+        image = tf.image.resize(image, [224, 224])
+
+        # Extract label
         path_str = (
             image_path.numpy().decode("utf-8")
             if hasattr(image_path, "numpy")
@@ -118,53 +190,87 @@ def load_dataset(dataset_name, subset, batch_size=32, logger=None):
         )
         filename = os.path.basename(path_str)
 
-        # Extract person ID from filename (format: uuid.person_id.jpg)
-        parts = filename.split(".")
-        if len(parts) >= 3:
-            label_str = parts[-2]  # Person ID is second to last
+        if is_augmented and label_map:
+            # Use label from JSON map
+            label = label_map.get(filename, 0)
         else:
-            # Fallback for malformed filenames
-            import re
+            # Extract person ID from filename (format: uuid.person_id.jpg)
+            parts = filename.split(".")
+            if len(parts) >= 3:
+                label_str = parts[-2]  # Person ID is second to last
+            else:
+                import re
 
-            match = re.search(r"(\d+)", filename)
-            label_str = match.group(1) if match else "0"
+                match = re.search(r"(\d+)", filename)
+                label_str = match.group(1) if match else "0"
 
-        try:
-            label = int(label_str)
-        except ValueError:
-            label = 0
+            try:
+                label = int(label_str)
+            except ValueError:
+                label = 0
 
         return image, label
 
-    # Create dataset
-    dataset = tf.data.Dataset.list_files(str(base_path / "*.jpg"))
+    # Create dataset - use correct path based on data type
+    if use_augmented and images_path.exists():
+        file_pattern = str(images_path / "*.jpg")
+    else:
+        file_pattern = str(base_path / "*.jpg")
+
+    dataset = tf.data.Dataset.list_files(file_pattern)
     if subset == "train":
         dataset = dataset.shuffle(1000)
 
-    dataset = dataset.map(load_and_preprocess, num_parallel_calls=tf.data.AUTOTUNE)
+    # Use lambda to capture the variables
+    dataset = dataset.map(
+        lambda x: load_and_preprocess(x, use_augmented, label_map),
+        num_parallel_calls=tf.data.AUTOTUNE,
+    )
     dataset = dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
 
     return dataset
 
 
-def get_num_classes(dataset_name):
+def get_num_classes(dataset_name, use_augmented=True):
     """Count unique person labels in dataset."""
+    import json
+
     max_label = 0
 
-    for subset in ["train", "val", "test"]:
-        subset_path = settings.CROPPED_DIR / dataset_name / subset
-        if not subset_path.exists():
-            continue
-
-        for img_file in subset_path.glob("*.jpg"):
-            try:
-                # Extract label from filename format: uuid.person.jpg
-                label = int(img_file.name.split(".")[-2])
-                max_label = max(max_label, label)
-            except (IndexError, ValueError):
+    # Try augmented first (has labels in JSON)
+    if use_augmented:
+        for subset in ["train", "val", "test"]:
+            labels_path = settings.AUGMENTED_DIR / dataset_name / subset / "labels"
+            if not labels_path.exists():
                 continue
 
-    return max_label + 1
+            for label_file in labels_path.glob("*.json"):
+                try:
+                    with open(label_file, "r") as f:
+                        label_data = json.load(f)
+                        shapes = label_data.get("shapes", [])
+                        if shapes:
+                            label = int(shapes[0].get("label", 0))
+                            max_label = max(max_label, label)
+                except (ValueError, KeyError, json.JSONDecodeError):
+                    continue
+
+    # If no augmented data, try cropped (labels in filename)
+    if max_label == 0:
+        for subset in ["train", "val", "test"]:
+            subset_path = settings.CROPPED_DIR / dataset_name / subset
+            if not subset_path.exists():
+                continue
+
+            for img_file in subset_path.glob("*.jpg"):
+                try:
+                    # Extract label from filename format: uuid.person.jpg
+                    label = int(img_file.name.split(".")[-2])
+                    max_label = max(max_label, label)
+                except (IndexError, ValueError):
+                    continue
+
+    return max_label + 1 if max_label > 0 else 2  # At least 2 classes
 
 
 def build_model(num_classes, backbone="EfficientNetB0", input_shape=(224, 224, 3)):
@@ -209,6 +315,7 @@ class ProductionTrainer:
         batch_size=32,
         learning_rate=1e-3,
         fine_tune=True,
+        use_augmented=True,
     ):
         self.dataset_name = dataset_name
         self.backbone = backbone
@@ -216,12 +323,15 @@ class ProductionTrainer:
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.fine_tune = fine_tune
+        self.use_augmented = use_augmented
 
         # Initialize logger
         self.logger = TrainingLogger(backbone, dataset_name)
 
         # Get dataset info
-        self.num_classes = get_num_classes(dataset_name)
+        self.num_classes = get_num_classes(
+            dataset_name, use_augmented=self.use_augmented
+        )
         self.logger.log(f"Dataset: {dataset_name}, Classes: {self.num_classes}")
 
         # Build model
@@ -324,9 +434,19 @@ class ProductionTrainer:
 
         # Load datasets
         train_ds = load_dataset(
-            self.dataset_name, "train", self.batch_size, self.logger
+            self.dataset_name,
+            "train",
+            self.batch_size,
+            self.logger,
+            use_augmented=self.use_augmented,
         )
-        val_ds = load_dataset(self.dataset_name, "val", self.batch_size, self.logger)
+        val_ds = load_dataset(
+            self.dataset_name,
+            "val",
+            self.batch_size,
+            self.logger,
+            use_augmented=self.use_augmented,
+        )
 
         # Phase 1: Train top layers
         phase1_start = self.logger.start_phase("Training Top Layers")
@@ -403,12 +523,26 @@ class ProductionTrainer:
 
 def main():
     """Main training function with CLI interface."""
+    # Discover available datasets
+    available_datasets = discover_datasets()
+
     parser = argparse.ArgumentParser(
         description="Production Face Recognition Model Training"
     )
 
     # Dataset arguments
-    parser.add_argument("--dataset", type=str, default="seccam_2", help="Dataset name")
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default=None,
+        help=f"Dataset name (auto-discovered: {', '.join(available_datasets) if available_datasets else 'none'}). Omit to train all.",
+    )
+    parser.add_argument(
+        "--use-augmented",
+        type=bool,
+        default=True,
+        help="Use augmented data (default: True)",
+    )
 
     # Model architecture arguments
     parser.add_argument(
@@ -447,29 +581,70 @@ def main():
     if args.force_cpu:
         os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-    # Create trainer
-    trainer = ProductionTrainer(
-        dataset_name=args.dataset,
-        backbone=args.backbone,
-        epochs=args.epochs,
-        batch_size=args.batch_size,
-        learning_rate=args.learning_rate,
-        fine_tune=not args.no_fine_tune,
-    )
+    # Determine which datasets to train
+    datasets_to_train = []
+    if args.dataset:
+        # Specific dataset requested
+        if args.dataset in available_datasets:
+            datasets_to_train = [args.dataset]
+        else:
+            print(f"Error: Dataset '{args.dataset}' not found.")
+            print(f"Available datasets: {available_datasets}")
+            return 1
+    else:
+        # Train all available datasets
+        datasets_to_train = available_datasets
+        if not datasets_to_train:
+            print("Error: No datasets found in augmented directory.")
+            print(f"Looking in: {settings.AUGMENTED_DIR}")
+            return 1
 
-    # Start training
-    try:
-        model_path, results = trainer.train()
-        print(f"\nTraining completed successfully!")
-        print(f"Model: {model_path}")
-        print(f"Accuracy: {results['performance_metrics']['final_val_accuracy']:.4f}")
+    print(f"Training on {len(datasets_to_train)} dataset(s): {datasets_to_train}")
+    print(f"Using augmented data: {args.use_augmented}")
 
-    except Exception as e:
-        print(f"Training failed: {e}")
-        import traceback
+    # Train on each dataset
+    all_results = []
+    for dataset_name in datasets_to_train:
+        print(f"\n{'='*60}")
+        print(f"Training on dataset: {dataset_name}")
+        print(f"{'='*60}")
 
-        traceback.print_exc()
-        return 1
+        # Create trainer
+        trainer = ProductionTrainer(
+            dataset_name=dataset_name,
+            backbone=args.backbone,
+            epochs=args.epochs,
+            batch_size=args.batch_size,
+            learning_rate=args.learning_rate,
+            fine_tune=not args.no_fine_tune,
+            use_augmented=args.use_augmented,
+        )
+
+        # Start training
+        try:
+            model_path, results = trainer.train()
+            print(f"\nTraining completed successfully!")
+            print(f"Model: {model_path}")
+            print(
+                f"Accuracy: {results['performance_metrics']['final_val_accuracy']:.4f}"
+            )
+            all_results.append(
+                {"dataset": dataset_name, "model_path": model_path, "results": results}
+            )
+        except Exception as e:
+            print(f"Training failed for {dataset_name}: {e}")
+            import traceback
+
+            traceback.print_exc()
+            continue
+
+    print(f"\n{'='*60}")
+    print(f"Training Summary:")
+    print(f"{'='*60}")
+    for r in all_results:
+        print(
+            f"  {r['dataset']}: {r['results']['performance_metrics']['final_val_accuracy']:.4f}"
+        )
 
     return 0
 
