@@ -44,29 +44,168 @@ detectors:
       model: "hog"
 
 recognizers:
-  facenet_v1:
-    class: "vision.recognition.facenet.FaceNetRecognizer"
-    model_file: "vision/recognition/models/facenet_keras.h5"
+  efficientnetb0_baseline:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_baseline_v1.0.keras"
     version: "1.0"
-    description: "FaceNet model for face embedding extraction"
-    default_config:
-      input_size: [160, 160]
-      normalize: true
-  
-  custom_cnn_v1:
-    class: "vision.recognition.custom_cnn.CustomFaceRecognizer"
-    model_file: "vision/recognition/models/seccam_2_final.keras"
-    version: "1.0"
-    description: "Custom CNN trained on seccam dataset"
+    description: "EfficientNetB0 baseline model - 76.67% accuracy, 19.8MB"
+    metadata:
+      accuracy: 0.7667
+      model_size: "19.8MB"
+      training_dataset: "seccam_2"
+      training_platform: "CPU"
+      quantization: "none"
+      purpose: "production_research"
     default_config:
       input_size: [224, 224]
       normalize: true
   
-  tflite_v1:
-    class: "vision.recognition.tflite.TFLiteRecognizer"
-    model_file: "vision/recognition/models/seccam_2_final.tflite"
+  efficientnetb0_quantized:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_quantized_v1.0.tflite"
     version: "1.0"
-    description: "TFLite optimized version of custom CNN"
+    description: "EfficientNetB0 quantized model - ~75% accuracy, 5.0MB (73.6% compression)"
+    metadata:
+      accuracy: 0.75
+      model_size: "5.0MB"
+      compression_ratio: "73.6%"
+      training_dataset: "seccam_2"
+      training_platform: "CPU"
+      quantization: "dynamic_range"
+      purpose: "production_optimized"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_best:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_best_v1.0.keras"
+    version: "1.0"
+    description: "EfficientNetB0 best checkpoint - ~78% accuracy, 54MB"
+    metadata:
+      accuracy: 0.78
+      model_size: "54MB"
+      training_dataset: "seccam_2"
+      training_platform: "CPU"
+      quantization: "none"
+      checkpoint_type: "best_validation"
+      purpose: "benchmark_research"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  facenet_baseline_comparison:
+    class: "vision.recognition.facenet.FaceNetRecognizer"
+    model_file: "vision/recognition/models/facenet_keras_baseline_comparison_v0.1.h5"
+    version: "0.1"
+    description: "FaceNet model for performance comparison - 88MB"
+    metadata:
+      accuracy: "pretrained_baseline"
+      model_size: "88MB"
+      purpose: "baseline_comparison"
+      training_dataset: "pretrained"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+  
+  # GPU-trained models (Feb 2026)
+  efficientnetb0_webcam_gpu:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_webcam_gpu_final.keras"
+    version: "1.0"
+    description: "EfficientNetB0 webcam model - GPU trained, 100% accuracy, 24MB"
+    metadata:
+      accuracy: 1.0
+      model_size: "24MB"
+      training_dataset: "webcam"
+      training_platform: "GPU"
+      quantization: "none"
+      purpose: "production_gpu"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_webcam_gpu_quantized:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_webcam_gpu_final_float16.tflite"
+    version: "1.0"
+    description: "EfficientNetB0 webcam model - GPU trained, float16 quantized, 9.4MB (62% compression)"
+    metadata:
+      accuracy: 1.0
+      model_size: "9.4MB"
+      compression_ratio: "62%"
+      training_dataset: "webcam"
+      training_platform: "GPU"
+      quantization: "float16"
+      purpose: "realtime"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_seccam_2_gpu:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_seccam_2_gpu_final.keras"
+    version: "1.0"
+    description: "EfficientNetB0 seccam_2 model - GPU trained, 100% accuracy, 24MB (15 classes)"
+    metadata:
+      accuracy: 1.0
+      model_size: "24MB"
+      training_dataset: "seccam_2"
+      training_platform: "GPU"
+      quantization: "none"
+      num_classes: 15
+      purpose: "production_gpu"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_seccam_2_gpu_quantized:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_seccam_2_gpu_final_float16.tflite"
+    version: "1.0"
+    description: "EfficientNetB0 seccam_2 model - GPU trained, float16 quantized, 9.4MB (62% compression)"
+    metadata:
+      accuracy: 1.0
+      model_size: "9.4MB"
+      compression_ratio: "62%"
+      training_dataset: "seccam_2"
+      training_platform: "GPU"
+      quantization: "float16"
+      num_classes: 15
+      purpose: "realtime"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_seccam_gpu:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_seccam_gpu_final.keras"
+    version: "1.0"
+    description: "EfficientNetB0 seccam model - GPU trained, 100% accuracy, 24MB"
+    metadata:
+      accuracy: 1.0
+      model_size: "24MB"
+      training_dataset: "seccam"
+      training_platform: "GPU"
+      quantization: "none"
+      purpose: "production_gpu"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+  
+  efficientnetb0_seccam_gpu_quantized:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_seccam_gpu_final_float16.tflite"
+    version: "1.0"
+    description: "EfficientNetB0 seccam model - GPU trained, float16 quantized, 9.4MB (62% compression)"
+    metadata:
+      accuracy: 1.0
+      model_size: "9.4MB"
+      compression_ratio: "62%"
+      training_dataset: "seccam"
+      training_platform: "GPU"
+      quantization: "float16"
+      purpose: "realtime"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -74,32 +213,93 @@ recognizers:
 # Global settings
 global:
   default_detector: "mediapipe_v1"
-  default_recognizer: "custom_cnn_v1"
+  default_recognizer: "efficientnetb0_webcam_gpu_quantized"  # GPU-trained, quantized for realtime
   auto_fallback: true
   max_retry_attempts: 3
   log_level: "INFO"
+  auto_environment_detection: true
 
 # Environment-specific configurations
 environments:
-  production:
+  # Core Profiles
+  wsl_development:
     detector: "mediapipe_v1"
-    recognizer: "tflite_v1"
+    recognizer: "efficientnetb0_baseline"
     use_gpu: true
+    auto_gpu_detection: true
+    log_level: "DEBUG"
     
-  development:
+  wsl_production:
     detector: "mediapipe_v1"
-    recognizer: "custom_cnn_v1"
+    recognizer: "efficientnetb0_quantized"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "INFO"
+    
+  windows_development:
+    detector: "haar_v1"
+    recognizer: "facenet_baseline_comparison"
     use_gpu: false
+    auto_gpu_detection: false
+    log_level: "DEBUG"
+    
+  windows_production:
+    detector: "mediapipe_v1"
+    recognizer: "efficientnetb0_quantized"
+    use_gpu: false
+    auto_gpu_detection: false
+    log_level: "INFO"
+    
+  # Specialized Profiles
+  benchmarking:
+    detector: "dlib_hog_v1"
+    recognizer: "efficientnetb0_best"
+    use_gpu: false
+    auto_gpu_detection: false
+    log_level: "INFO"
     
   testing:
-    detector: "dlib_hog_v1"
-    recognizer: "facenet_v1"
+    detector: "haar_v1"
+    recognizer: "facenet_baseline_comparison"
     use_gpu: false
+    auto_gpu_detection: false
+    log_level: "DEBUG"
     
-  wsl_gpu:
+  performance_demo:
     detector: "mediapipe_v1"
-    recognizer: "custom_cnn_v1"
+    recognizer: "efficientnetb0_best"
     use_gpu: true
+    auto_gpu_detection: true
+    log_level: "WARNING"
+    
+  research:
+    detector: "mediapipe_v1"
+    recognizer: "efficientnetb0_baseline"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "INFO"
+    
+  # Specialized for real-time face recognition (Feb 2026)
+  realtime:
+    detector: "mediapipe_v1"
+    recognizer: "efficientnetb0_webcam_gpu_quantized"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "WARNING"
+    
+  realtime_seccam_2:
+    detector: "mediapipe_v1"
+    recognizer: "efficientnetb0_seccam_2_gpu_quantized"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "WARNING"
+    
+  realtime_seccam:
+    detector: "mediapipe_v1"
+    recognizer: "efficientnetb0_seccam_gpu_quantized"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "WARNING"
 
 # Performance optimization settings
 optimization:
