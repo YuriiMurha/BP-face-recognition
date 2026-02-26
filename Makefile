@@ -1,7 +1,6 @@
-.PHONY: setup install run evaluate lint clean test train train-cpu train-wsl verify-wsl
+.PHONY: setup install run train train-cpu test lint type-check clean evaluate benchmark
 
 # Configurable Variables
-# Change these to match your setup
 WSL_WORKDIR ?= d:/Coding/Personal/BP-face-recognition
 WSL_DISTRO ?= Ubuntu-22.04
 PYTHON = uv run python
@@ -16,13 +15,13 @@ setup:
 install: setup
 
 run: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/main.py
+	$(PYTHON) src/bp_face_recognition/main.py
 
 train: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py $(args)
+	$(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py $(args)
 
 train-cpu: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py --force-cpu $(args)
+	$(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py --force-cpu $(args)
 
 # WSL Training Commands
 # Use --dataset <name> to train on specific dataset, or omit to train all available datasets
@@ -46,7 +45,6 @@ train-wsl-quick:
 
 # Train EfficientNetB0 on all available datasets (auto-discovered from augmented folder)
 # Uses augmented data by default - set use_augmented=false to use cropped data
-# Note: Fine-tuning disabled by default for augmented data due to GPU memory constraints
 train-all-datasets:
 	@echo "Training EfficientNetB0 on all available datasets (auto-discovered)..."
 	@echo "Using augmented data by default"
@@ -94,14 +92,6 @@ setup-wsl:
 		source .venv-wsl/bin/activate && \
 		uv pip install tensorflow opencv-python numpy pillow scikit-learn pydantic pyyaml"
 
-# Setup WSL GPU Environment
-setup-wsl-gpu:
-	@echo "Setting up WSL GPU environment..."
-	@echo "This will install CUDA toolkit and TensorFlow with GPU support"
-	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && \
-		chmod +x scripts/setup_gpu_wsl.sh && \
-		bash scripts/setup_gpu_wsl.sh"
-
 # Verify GPU setup
 verify-wsl-gpu:
 	@echo "Verifying GPU setup..."
@@ -118,16 +108,24 @@ gpu-status:
 	@echo "Checking GPU status..."
 	wsl -d $(WSL_DISTRO) nvidia-smi
 
-# Fix GPU library paths (if GPU not detected)
-fix-wsl-gpu:
-	@echo "Fixing GPU library paths..."
-	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && \
-		chmod +x scripts/fix_gpu_libs.sh && \
-		bash scripts/fix_gpu_libs.sh"
-
-# Development Commands
+# Test Commands (via nox)
 test:
 	uv run nox -s tests
+
+test-quick:
+	uv run nox -s test_quick
+
+test-config:
+	uv run nox -s test_config
+
+test-training:
+	uv run nox -s test_training
+
+test-mediapie:
+	uv run nox -s test_mediapipe
+
+test-integration:
+	uv run nox -s test_integration
 
 lint:
 	uv run nox -s lint
@@ -139,24 +137,23 @@ clean:
 	if exist .nox rmdir /s /q .nox
 	for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d"
 
-# Evaluation Commands
+# Evaluation
 evaluate: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/bp_face_recognition/evaluation/evaluate_methods.py
+	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_methods.py
 
 benchmark: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/benchmark_quantization_mediapipe.py
+	$(PYTHON) src/benchmark_quantization_mediapipe.py
 
 # Data Processing
 init-dataset: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/init_dataset.py $(name) $(args)
+	$(PYTHON) src/scripts/init_dataset.py $(name) $(args)
 
 register: setup
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/register_person.py $(name) $(dir) --db $(db)
+	$(PYTHON) src/scripts/register_person.py $(name) $(dir) --db $(db)
 
-# Quantization Commands
+# Quantization
 quantize: setup
-	@echo "Quantizing model: $(model)"
-	set PYTHONPATH=$(PYTHONPATH) && $(PYTHON) src/scripts/quantize_model.py --model $(model) --type $(or $(type),float16) --output $(or $(output),src/bp_face_recognition/models/)
+	$(PYTHON) src/scripts/quantize_model.py --model $(model) --type $(or $(type),float16) --output $(or $(output),src/bp_face_recognition/models/)
 
 # Quantize model in WSL (for GPU-trained models)
 quantize-wsl:

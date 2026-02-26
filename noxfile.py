@@ -8,7 +8,7 @@ nox.options.default_venv_backend = "uv"
 def tests(session):
     """Run full test suite."""
     session.install("-e", ".[dev]")
-    session.run("pytest", "src/bp_face_recognition/tests")
+    session.run("pytest", "test")
 
 
 @nox.session
@@ -48,11 +48,31 @@ def test_quick(session):
     session.install("-e", ".[dev]")
     session.run(
         "pytest",
-        "src/bp_face_recognition/tests/unit/test_quantization.py::TestModelQuantizer::test_quantizer_initialization",
-        "src/bp_face_recognition/tests/unit/test_quantization.py::TestModelQuantizer::test_float16_quantization",
-        "src/bp_face_recognition/tests/unit/test_quantization.py::TestQuantizationIntegration::test_tflite_recognizer_loads_quantized_model",
+        "test/test_config.py::TestConfigLoading::test_load_valid_yaml",
+        "test/test_factory_registry.py::TestFactoryWithRegistry::test_default_detector",
         "-v",
     )
+
+
+@nox.session
+def test_config(session):
+    """Run config system tests."""
+    session.install("-e", ".[dev]")
+    session.run("pytest", "test/test_config.py", "-v")
+
+
+@nox.session
+def test_preprocessing(session):
+    """Run preprocessing tests."""
+    session.install("-e", ".[dev]")
+    session.run("pytest", "test/test_preprocessing.py", "-v")
+
+
+@nox.session
+def test_training(session):
+    """Run training pipeline tests."""
+    session.install("-e", ".[dev]")
+    session.run("pytest", "test/test_training.py", "-v")
 
 
 @nox.session
