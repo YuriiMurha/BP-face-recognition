@@ -8,13 +8,16 @@ nox.options.default_venv_backend = "uv"
 def tests(session):
     """Run full test suite."""
     session.install("-e", ".[dev]")
-    session.run("pytest", "test")
+    # Install setuptools in the venv to fix face_recognition import issue
+    session.run("uv", "pip", "install", "setuptools", "face-recognition-models")
+    session.run("pytest", "src/bp_face_recognition/tests")
 
 
 @nox.session
 def test_quantization(session):
     """Run quantization tests."""
     session.install("-e", ".[dev]")
+    session.run("uv", "pip", "install", "setuptools", "face-recognition-models")
     session.run(
         "pytest", "src/bp_face_recognition/tests/unit/test_quantization.py", "-v"
     )
@@ -24,6 +27,7 @@ def test_quantization(session):
 def test_mediapipe(session):
     """Run MediaPipe performance tests."""
     session.install("-e", ".[dev]")
+    session.run("uv", "pip", "install", "setuptools", "face-recognition-models")
     session.run(
         "pytest",
         "src/bp_face_recognition/tests/unit/detectors/test_mediapipe_performance.py",
@@ -35,6 +39,7 @@ def test_mediapipe(session):
 def test_integration(session):
     """Run integration tests for quantization and MediaPipe."""
     session.install("-e", ".[dev]")
+    session.run("uv", "pip", "install", "setuptools", "face-recognition-models")
     session.run(
         "pytest",
         "src/bp_face_recognition/tests/integration/test_quantization_mediapipe.py",
@@ -43,36 +48,27 @@ def test_integration(session):
 
 
 @nox.session
-def test_quick(session):
-    """Run quick subset of tests for CI."""
-    session.install("-e", ".[dev]")
-    session.run(
-        "pytest",
-        "test/test_config.py::TestConfigLoading::test_load_valid_yaml",
-        "test/test_factory_registry.py::TestFactoryWithRegistry::test_default_detector",
-        "-v",
-    )
-
-
-@nox.session
 def test_config(session):
     """Run config system tests."""
     session.install("-e", ".[dev]")
-    session.run("pytest", "test/test_config.py", "-v")
+    session.run("pytest", "src/bp_face_recognition/tests/unit/test_config.py", "-v")
 
 
 @nox.session
 def test_preprocessing(session):
     """Run preprocessing tests."""
     session.install("-e", ".[dev]")
-    session.run("pytest", "test/test_preprocessing.py", "-v")
+    session.run("uv", "pip", "install", "setuptools", "face-recognition-models")
+    session.run(
+        "pytest", "src/bp_face_recognition/tests/unit/test_preprocessing.py", "-v"
+    )
 
 
 @nox.session
 def test_training(session):
     """Run training pipeline tests."""
     session.install("-e", ".[dev]")
-    session.run("pytest", "test/test_training.py", "-v")
+    session.run("pytest", "src/bp_face_recognition/tests/unit/test_training.py", "-v")
 
 
 @nox.session

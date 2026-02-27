@@ -112,9 +112,6 @@ gpu-status:
 test:
 	uv run nox -s tests
 
-test-quick:
-	uv run nox -s test_quick
-
 test-config:
 	uv run nox -s test_config
 
