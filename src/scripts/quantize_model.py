@@ -26,8 +26,29 @@ class ModelQuantizer:
 
         print(f"Loading model: {self.model_path}")
 
-        # Load the model
-        self.model = tf.keras.models.load_model(self.model_path, compile=False)
+        # Load the model with legacy support if needed
+        try:
+            self.model = tf.keras.models.load_model(self.model_path, compile=False)
+        except Exception as e:
+            print(f"Standard loading failed: {e}")
+            print("Attempting to load with safe_mode=False...")
+            try:
+                self.model = tf.keras.models.load_model(
+                    self.model_path, compile=False, safe_mode=False
+                )
+            except Exception as e2:
+                print(f"Loading with safe_mode=False failed: {e2}")
+                print("Attempting to load with legacy tf_keras...")
+                try:
+                    import tf_keras
+
+                    self.model = tf_keras.models.load_model(
+                        self.model_path, compile=False
+                    )
+                except Exception as e3:
+                    print(f"Legacy loading failed: {e3}")
+                    raise RuntimeError(f"Could not load model {model_path}")
+
         print(f"Model loaded successfully")
 
     def create_representative_dataset(
