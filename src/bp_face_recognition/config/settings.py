@@ -1,5 +1,12 @@
 from pathlib import Path
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class CameraSourceType:
+    WEBCAM = "webcam"
+    RTSP = "rtsp"
+    USB = "usb"
 
 
 class Settings(BaseSettings):
@@ -23,6 +30,14 @@ class Settings(BaseSettings):
     # App Settings
     APP_NAME: str = "BP Face Recognition"
     DEBUG: bool = False
+
+    # Camera Source Configuration
+    CAMERA_SOURCE: str = "webcam"
+    CAMERA_DEVICE: int = 0
+    CAMERA_RTSP_URL: Optional[str] = None
+    CAMERA_WIDTH: int = 1280
+    CAMERA_HEIGHT: int = 720
+    CAMERA_FPS: int = 30
 
     # Database (Example - could be loaded from .env)
     DB_HOST: str = "localhost"
