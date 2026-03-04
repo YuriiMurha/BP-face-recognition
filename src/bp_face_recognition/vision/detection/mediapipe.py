@@ -247,9 +247,13 @@ class MediaPipeDetector(BaseDetector):
 
             if detection_result.detections:
                 for detection in detection_result.detections:
-                    # MediaPipe provides bounding box in normalized coordinates
+                    # MediaPipe provides bounding box
                     bbox = detection.bounding_box
-                    h, w, y, x = bbox.height, bbox.width, bbox.y, bbox.x
+                    # Use origin_x and origin_y for MediaPipe Tasks API
+                    x = getattr(bbox, "origin_x", getattr(bbox, "x", 0))
+                    y = getattr(bbox, "origin_y", getattr(bbox, "y", 0))
+                    w = getattr(bbox, "width", 0)
+                    h = getattr(bbox, "height", 0)
 
                     # Convert to (x, y, w, h) format
                     box = (int(x), int(y), int(w), int(h))
@@ -313,7 +317,10 @@ class MediaPipeDetector(BaseDetector):
             if detection_result.detections:
                 for detection in detection_result.detections:
                     bbox = detection.bounding_box
-                    h, w, y, x = bbox.height, bbox.width, bbox.y, bbox.x
+                    x = getattr(bbox, "origin_x", getattr(bbox, "x", 0))
+                    y = getattr(bbox, "origin_y", getattr(bbox, "y", 0))
+                    w = getattr(bbox, "width", 0)
+                    h = getattr(bbox, "height", 0)
                     box = (int(x), int(y), int(w), int(h))
                     boxes.append(box)
 

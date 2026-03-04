@@ -120,6 +120,7 @@ class PipelineService:
                     "identity": recognition_result["identity"],
                     "recognized": recognition_result["recognized"],
                     "recognition_confidence": recognition_result["confidence"],
+                    "recognition_distance": recognition_result.get("distance", 9.9),
                     "threshold_used": recognition_result.get(
                         "threshold_used", self.recognition_threshold
                     ),

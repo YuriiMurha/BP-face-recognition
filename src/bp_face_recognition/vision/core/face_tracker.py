@@ -131,6 +131,7 @@ class FaceTracker:
     ) -> Dict[str, Any]:
         """
         Detect and recognize faces in image.
+        Uses resolution scaling for faster detection.
 
         Args:
             image: Input image array
@@ -139,8 +140,13 @@ class FaceTracker:
         Returns:
             Dictionary with detection and recognition results
         """
-        # Detect faces
-        detections = self.detect_faces(image)
+        # 1. Scale down for detection
+        scale = 0.5  # Process detection at 50% resolution
+        h, w = image.shape[:2]
+        small_image = cv2.resize(image, (0, 0), fx=scale, fy=scale)
+
+        # 2. Detect faces on small image
+        detections = self.detect_faces(small_image)
 
         if not detections:
             self.current_faces = []
@@ -151,22 +157,25 @@ class FaceTracker:
                 "embeddings": [],
             }
 
-        # Extract bounding boxes and confidences
+        # 3. Rescale bounding boxes back to original size
         boxes = []
         confidences = []
-        for box, confidence in detections:
+        for (sx, sy, sw, sh), confidence in detections:
+            box = (int(sx / scale), int(sy / scale), int(sw / scale), int(sh / scale))
             boxes.append(box)
             confidences.append(confidence)
 
-        # Get embeddings
+        # 4. Get embeddings from original (high-res) crops
         embeddings = self.get_embeddings(boxes, image)
 
         # Prepare face information
         face_info = []
-        for i, ((box, confidence), embedding) in enumerate(zip(detections, embeddings)):
+        for i, (final_box, (small_box, confidence), embedding) in enumerate(
+            zip(boxes, detections, embeddings)
+        ):
             face_data = {
                 "id": i,
-                "box": box,
+                "box": final_box,
                 "confidence": confidence,
                 "embedding": embedding,
                 "recognized": False,
