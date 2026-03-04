@@ -35,6 +35,7 @@ dependencies = [
     "mediapipe>=0.10.0",
     "psutil>=7.2.2",
     "setuptools>=82.0.0",
+    "tf-keras>=2.15.0",
 ]
 
 [project.optional-dependencies]
@@ -102,3 +103,11 @@ module = [
     "bp_face_recognition.models.methods.*"
 ]
 ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+markers = [
+    "unit: Unit tests that don't require external resources",
+    "integration: Integration tests that may require external resources like cameras",
+    "slow: Tests that take longer to run",
+]

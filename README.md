@@ -262,6 +262,69 @@ Model size: 14.85 MB
 - **Requirements**: NVIDIA GPU (GTX 1650+), 4GB+ VRAM
 - **Setup**: Run `make setup-wsl-gpu` for automated configuration
 
+## Camera Setup & Usage
+
+### Prerequisites
+- A webcam (built-in or USB-connected)
+- Or use your phone as a webcam via USB (e.g., using your phone's camera app in "USB camera" mode)
+
+### Environment Variables
+
+Configure camera via environment variables:
+
+```bash
+# Camera source type: webcam (or rtsp for network streams)
+set CAMERA_SOURCE=webcam
+
+# Webcam device index (default: 0)
+set CAMERA_DEVICE=0
+
+# RTSP stream URL (for network cameras)
+set CAMERA_RTSP_URL=rtsp://192.168.1.100:8080/live.sdp
+
+# Video resolution (default: 1280x720)
+set CAMERA_WIDTH=1280
+set CAMERA_HEIGHT=720
+
+# Frame rate (default: 30)
+set CAMERA_FPS=30
+```
+
+### Camera Commands
+
+```bash
+# View camera stream (quick test)
+make camera-view
+
+# Run full face recognition app with camera
+make run
+
+# Run camera unit tests
+make test-camera
+
+# Run camera integration tests
+make test-camera-integration
+```
+
+### Using Your Phone as Webcam
+
+If your phone is connected via USB and detected as a webcam (device index 0, 1, etc.):
+
+1. Connect your phone via USB
+2. Enable "USB camera" or "Camera" mode on your phone
+3. Set the device index:
+   ```bash
+   set CAMERA_DEVICE=0
+   make camera-view
+   ```
+
+### Troubleshooting
+
+**Camera not opening:**
+- Check device index: try `set CAMERA_DEVICE=1`
+- Check if another app is using the camera
+- Ensure no other video conferencing apps are running
+
 ## Troubleshooting
 
 ### Common Issues

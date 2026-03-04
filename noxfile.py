@@ -72,6 +72,26 @@ def test_training(session):
 
 
 @nox.session
+def test_camera(session):
+    """Run camera source tests."""
+    session.install("-e", ".[dev]")
+    session.run(
+        "pytest", "src/bp_face_recognition/tests/unit/test_camera_source.py", "-v"
+    )
+
+
+@nox.session
+def test_camera_integration(session):
+    """Run camera integration tests (requires camera hardware)."""
+    session.install("-e", ".[dev]")
+    session.run(
+        "pytest",
+        "src/bp_face_recognition/tests/integration/test_camera_stream.py::TestCameraIntegrationCI",
+        "-v",
+    )
+
+
+@nox.session
 def lint(session):
     """Run linting."""
     session.install("ruff")

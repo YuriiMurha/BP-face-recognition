@@ -124,6 +124,20 @@ test-mediapie:
 test-integration:
 	uv run nox -s test_integration
 
+# Camera Tests
+test-camera:
+	uv run nox -s test_camera
+
+test-camera-integration:
+	uv run nox -s test_camera_integration
+
+# Run camera stream viewer (requires camera)
+camera-view:
+	$(PYTHON) src/bp_face_recognition/evaluation/show_stream.py
+
+# Run full face recognition app with camera (use 'make run' instead)
+# make run
+
 lint:
 	uv run nox -s lint
 
@@ -146,7 +160,7 @@ init-dataset: setup
 	$(PYTHON) src/scripts/init_dataset.py $(name) $(args)
 
 register: setup
-	$(PYTHON) src/scripts/register_person.py $(name) $(dir) --db $(db)
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)"
 
 # Quantization
 quantize: setup
