@@ -62,9 +62,7 @@ class DatabaseService:
             success_count = 0
             for embedding in embeddings:
                 try:
-                    success = self.database.add_embedding(
-                        name, embedding, metadata or {}
-                    )
+                    success = self.database.add_face(embedding, name=name)
                     if success:
                         success_count += 1
                 except Exception as e:
@@ -87,14 +85,15 @@ class DatabaseService:
             return False
 
     def recognize_face(
-        self, embedding: np.ndarray, threshold: float = 0.7
+        self, embedding: np.ndarray, threshold: float = 0.6
     ) -> Dict[str, Any]:
         """
         Identify a face by comparing with stored embeddings.
+        Uses Euclidean distance (standard for Dlib/FaceNet).
 
         Args:
             embedding: Face embedding vector to identify
-            threshold: Minimum similarity threshold for recognition
+            threshold: Maximum distance threshold (default 0.6, lower is stricter)
 
         Returns:
             Recognition result with identity and confidence
@@ -119,6 +118,69 @@ class DatabaseService:
                     "error": "No registered faces",
                 }
 
+            # Find best match (minimum distance)
+            best_match = None
+            min_distance = float("inf")
+
+            for identity, embeddings_list in known_embeddings.items():
+                for known_embedding in embeddings_list:
+                    if len(known_embedding) != len(embedding):
+                        continue
+
+                    # Calculate Euclidean distance
+                    distance = np.linalg.norm(embedding - known_embedding)
+
+                    if distance < min_distance:
+                        min_distance = distance
+                        best_match = identity
+
+            # Log for debugging (using logger instead of print)
+            if best_match:
+                logger.debug(f"Recognition: {best_match} distance={min_distance:.4f}")
+
+            # Convert distance to a "confidence" score for display
+            # For Dlib, 0.6 is the typical threshold.
+            # We'll map 0.0 distance to 1.0 confidence, and 0.6 to 0.5 confidence.
+            confidence = max(0, 1.0 - (min_distance / 1.2))
+
+            # Determine recognition result
+            if min_distance <= threshold:
+                return {
+                    "recognized": True,
+                    "identity": best_match,
+                    "confidence": float(confidence),
+                    "distance": float(min_distance),
+                    "threshold_used": threshold,
+                }
+            else:
+                return {
+                    "recognized": False,
+                    "identity": "Unknown",
+                    "confidence": float(confidence),
+                    "distance": float(min_distance),
+                    "threshold_used": threshold,
+                }
+
+        except Exception as e:
+            logger.error(f"Face recognition failed: {e}")
+            return {
+                "recognized": False,
+                "identity": "Unknown",
+                "confidence": 0.0,
+                "error": str(e),
+            }
+
+            # Get all known embeddings
+            known_embeddings = self.database.get_all_embeddings()
+
+            if not known_embeddings:
+                return {
+                    "recognized": False,
+                    "identity": "Unknown",
+                    "confidence": 0.0,
+                    "error": "No registered faces",
+                }
+
             # Find best match
             best_match = None
             best_confidence = 0.0
@@ -129,13 +191,23 @@ class DatabaseService:
                         continue
 
                     # Calculate cosine similarity
-                    similarity = np.dot(embedding, known_embedding) / (
-                        np.linalg.norm(embedding) * np.linalg.norm(known_embedding)
-                    )
+                    norm_input = np.linalg.norm(embedding)
+                    norm_known = np.linalg.norm(known_embedding)
+
+                    if norm_input == 0 or norm_known == 0:
+                        similarity = 0
+                    else:
+                        similarity = np.dot(embedding, known_embedding) / (
+                            norm_input * norm_known
+                        )
 
                     if similarity > best_confidence:
                         best_confidence = similarity
                         best_match = identity
+
+            # Log for debugging
+            if best_match:
+                logger.debug(f"Recognition: {best_match} score={best_confidence:.4f}")
 
             # Determine recognition result
             if best_confidence >= threshold:
