@@ -62,7 +62,7 @@ class TFLiteRecognizer(BaseRecognizer):
         Get face embedding from face image.
 
         Args:
-            face_image: Input face image (RGB, already cropped)
+            face_image: Input face image (expected BGR, already cropped)
 
         Returns:
             Face embedding vector
@@ -70,8 +70,12 @@ class TFLiteRecognizer(BaseRecognizer):
         if not self._initialized:
             raise RuntimeError("Model not initialized")
 
-        # Preprocess
-        img = self._preprocess(face_image)
+        # Preprocess using base class logic (handles BGR to RGB, resize, normalize)
+        img = self._preprocess_face(face_image)
+
+        # Add batch dimension if needed
+        if len(img.shape) == 3:
+            img = np.expand_dims(img, axis=0)
 
         # Set input
         self.interpreter.set_tensor(self.input_details[0]["index"], img)
@@ -84,42 +88,11 @@ class TFLiteRecognizer(BaseRecognizer):
 
         return embedding.flatten()
 
-    def recognize(self, face_image: np.ndarray) -> Tuple[str, float]:
-        """
-        Recognize face from embedding.
-
-        Args:
-            face_image: Input face image
-
-        Returns:
-            Tuple of (identity, confidence)
-        """
-        # This method requires a database for comparison
-        # For now, return Unknown
-        return ("Unknown", 0.0)
-
     def _preprocess(self, image: np.ndarray) -> np.ndarray:
         """
-        Preprocess image for model input.
-
-        Args:
-            image: Input image (RGB)
-
-        Returns:
-            Preprocessed image array
+        Deprecated: Use _preprocess_face from BaseRecognizer instead.
         """
-        # Resize to input size
-        import cv2
-
-        img = cv2.resize(image, self.input_size)
-
-        # Normalize to [0, 1]
-        img = img.astype(np.float32) / 255.0
-
-        # Add batch dimension
-        img = np.expand_dims(img, axis=0)
-
-        return img
+        return self._preprocess_face(image)
 
     def get_input_size(self) -> Tuple[int, int]:
         """Get model input size."""

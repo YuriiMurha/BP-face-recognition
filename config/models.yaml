@@ -210,10 +210,35 @@ recognizers:
       input_size: [224, 224]
       normalize: true
 
+  efficientnetb0_feature_extractor:
+    class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
+    model_file: "bp_face_recognition/models/efficientnetb0_feature_extractor_float16.tflite"
+    version: "1.0"
+    description: "EfficientNetB0 feature extractor - 512D embeddings, float16 quantized"
+    metadata:
+      model_size: "9.4MB"
+      quantization: "float16"
+      purpose: "face_recognition"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+
+  dlib_v1:
+    class: "vision.recognition.dlib_recognizer.DlibRecognizer"
+    version: "1.0"
+    description: "Dlib-based high accuracy face recognition (ResNet-34)"
+    metadata:
+      library: "face_recognition"
+      embedding_size: 128
+      purpose: "production"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+
 # Global settings
 global:
   default_detector: "mediapipe_v1"
-  default_recognizer: "efficientnetb0_webcam_gpu_quantized"  # GPU-trained, quantized for realtime
+  default_recognizer: "dlib_v1"  # Switched to high-accuracy Dlib
   auto_fallback: true
   max_retry_attempts: 3
   log_level: "INFO"

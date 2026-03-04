@@ -71,15 +71,17 @@ class BaseRecognizer(FaceRecognizer):
         Common face image preprocessing.
 
         Args:
-            face_image: Input face image array
+            face_image: Input face image array (expected BGR)
 
         Returns:
-            Preprocessed face image array
+            Preprocessed face image array (RGB)
         """
         # Convert to RGB if needed (assuming input is BGR from OpenCV)
         if face_image.shape[2] == 3:
-            # Standardize to RGB - this handles both BGR and RGB input
-            processed = face_image.copy()
+            # Actual BGR to RGB conversion
+            import cv2
+
+            processed = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
         else:
             # If grayscale, convert to 3-channel
             processed = np.stack([face_image] * 3, axis=-1)
