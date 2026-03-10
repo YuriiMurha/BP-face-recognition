@@ -14,14 +14,108 @@ setup:
 
 install: setup
 
+# Run with default recognizer (metric_efficientnetb0_128d)
 run: setup
 	$(PYTHON) src/bp_face_recognition/main.py
 
+# Run with specific recognizer: make run recog=metric_efficientnetb0_128d, dlib_v1
+run-recog: setup
+	$(PYTHON) src/bp_face_recognition/main.py --recognizer $(recog)
+
+# Run with specific recognizer and threshold
+run-full: setup
+	$(PYTHON) src/bp_face_recognition/main.py --recognizer $(recog) --threshold $(threshold)
+
+# Register a new person from camera
+# Usage: make register name="Yurii" (uses metric_efficientnetb0_128d by default)
+# Override: make register name="Yurii" recog=dlib_v1
+register: setup
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer $(or $(recog),metric_efficientnetb0_128d)
+
+# ============================================================
+# Data Preprocessing Pipeline
+# ============================================================
+
+# Crop faces from raw datasets (uses dynamic discovery)
+prepare-crop: setup
+	$(PYTHON) src/bp_face_recognition/preprocessing/crop_faces.py --dataset $(dataset)
+
+# Crop all datasets (dynamic discovery)
+prepare-crop-all: setup
+	$(PYTHON) src/bp_face_recognition/preprocessing/crop_faces.py --dataset all
+
+# Split LFW dataset into train/val/test
+prepare-split-lfw: setup
+	$(PYTHON) src/bp_face_recognition/preprocessing/split_lfw.py
+
+# Augment cropped datasets
+prepare-augment: setup
+	$(PYTHON) src/bp_face_recognition/preprocessing/augmentation.py --dataset $(dataset)
+
+# Augment all datasets (dynamic discovery)
+prepare-augment-all: setup
+	$(PYTHON) src/bp_face_recognition/preprocessing/augmentation.py --dataset all
+
+# Full preprocessing pipeline
+prepare-all:
+	@echo "Running full preprocessing pipeline..."
+	@echo "1. Splitting LFW..."
+	$(MAKE) prepare-split-lfw
+	@echo "2. Cropping faces..."
+	$(MAKE) prepare-crop-all
+	@echo "3. Augmenting datasets..."
+	$(MAKE) prepare-augment-all
+	@echo "Preprocessing complete!"
+
+# ============================================================
+# Training Commands
+# ============================================================
+
 train: setup
-	$(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py $(args)
+	$(PYTHON) src/bp_face_recognition/vision/training/classifier/trainer.py $(args)
+
+train-classifier: train
+
+train-metric: setup
+	$(PYTHON) src/bp_face_recognition/vision/training/metric/trainer.py $(args)
+
+# Experiment C: Fine-tune classifier for embeddings (recommended over triplet loss)
+# Usage: make train-finetune-wsl datasets="lfw,webcam,seccam" epochs_phase1=15 epochs_phase2=10
+train-finetune-wsl:
+	@echo "Training fine-tune classifier in WSL2..."
+	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && \
+		export PATH=\"/root/.local/bin:\$$PATH\" && \
+		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
+		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
+		source .venv-wsl/bin/activate && \
+		python -m bp_face_recognition.vision.training.metric.finetune_trainer \
+		--datasets $(or $(datasets),lfw,webcam,seccam) \
+		--backbone $(or $(backbone),EfficientNetB0) \
+		--dim $(or $(dim),128) \
+		--epochs-phase1 $(or $(epochs_phase1),15) \
+		--epochs-phase2 $(or $(epochs_phase2),10) \
+		--batch-size $(or $(batch_size),32)"
+
+# Train metric model in WSL
+# Usage: make train-metric-wsl datasets="lfw,webcam,seccam_2" epochs=20
+# Default: lfw only
+train-metric-wsl:
+	@echo "Training metric model in WSL2..."
+	@echo "Datasets: $(datasets)"
+	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && \
+		export PATH=\"/root/.local/bin:\$$PATH\" && \
+		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
+		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
+		source .venv-wsl/bin/activate && \
+		python -m bp_face_recognition.vision.training.metric.trainer \
+		--dataset $(or $(datasets),lfw) \
+		--backbone $(or $(backbone),EfficientNetB0) \
+		--dim $(or $(dim),128) \
+		--epochs $(or $(epochs),20) \
+		--batch-size $(or $(batch_size),8)"
 
 train-cpu: setup
-	$(PYTHON) src/bp_face_recognition/vision/training/production_trainer.py --force-cpu $(args)
+	$(PYTHON) src/bp_face_recognition/vision/training/classifier/trainer.py --force-cpu $(args)
 
 # WSL Training Commands
 # Use --dataset <name> to train on specific dataset, or omit to train all available datasets
@@ -33,7 +127,7 @@ train-wsl:
 		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
 		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
 		source .venv-wsl/bin/activate && \
-		python src/bp_face_recognition/vision/training/production_trainer.py \
+		python src/bp_face_recognition/vision/training/classifier/trainer.py \
 		--backbone $(or $(backbone),EfficientNetB0) \
 		--epochs $(or $(epochs),20) \
 		$(if $(dataset),--dataset $(dataset),) \
@@ -55,7 +149,7 @@ train-all-datasets:
 		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
 		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
 		source .venv-wsl/bin/activate && \
-		python src/bp_face_recognition/vision/training/production_trainer.py \
+		python src/bp_face_recognition/vision/training/classifier/trainer.py \
 		--backbone $(or $(backbone),EfficientNetB0) \
 		--epochs $(or $(epochs),20) \
 		--batch-size $(or $(batch_size),8) \
@@ -69,7 +163,7 @@ train-one:
 		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
 		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
 		source .venv-wsl/bin/activate && \
-		python src/bp_face_recognition/vision/training/production_trainer.py \
+		python src/bp_face_recognition/vision/training/classifier/trainer.py \
 		--backbone $(or $(backbone),EfficientNetB0) \
 		--epochs $(or $(epochs),20) \
 		--batch-size $(or $(batch_size),8) \
@@ -158,9 +252,6 @@ benchmark: setup
 # Data Processing
 init-dataset: setup
 	$(PYTHON) src/scripts/init_dataset.py $(name) $(args)
-
-register: setup
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)"
 
 # Quantization
 quantize: setup
