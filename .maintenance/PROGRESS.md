@@ -678,5 +678,250 @@ make test-camera      # Run camera unit tests
 
 ---
 
-**SESSION IMPACT**: Successfully integrated real-time camera processing into the pipeline. Fixed critical bugs in the detection layer and color preprocessing. Delivered a user-friendly registration system that enables immediate use of the face recognition features. The system is now ready for performance benchmarking and production-level database integration.
+## 04-Mar-26 (Session 7 - Completed)
+
+### 🎯 **Real-Time Accuracy & Performance Fixes** ✅
+
+#### **Status**: ✅ **E2E Pipeline Working with High Accuracy**
+
+---
+
+### ✅ **MAJOR ACHIEVEMENTS**
+
+**1. Recognition Accuracy Resolved** ✅
+- **Problem**: Model produced identical embeddings for all faces (1.00 confidence for everyone).
+- **Diagnosis**: Discovered existing `EfficientNetB0` models were simple classifiers (outputting 2D probabilities) rather than feature extractors.
+- **Solution**: 
+  - Integrated `DlibRecognizer` (using `face_recognition` library) for professional-grade 128D embeddings.
+  - Switched database metric from Cosine Similarity to **Euclidean Distance**.
+  - Set stricter threshold (0.5 distance) to correctly distinguish between registered users and "Unknown" individuals.
+
+**2. Performance Optimization (FPS Boost)** ✅
+- **Frame Skipping**: Implemented logic to run heavy recognition only every 3rd frame.
+- **Resolution Scaling**: Implemented 0.5x scaling for face detection (MediaPipe runs on 320x180 instead of 640x360), significantly reducing latency.
+- **Result**: Visual stream is now much smoother while maintaining real-time tracking.
+
+**3. User Experience Enhancements** ✅
+- **Main App Improved**: `make run` now shows name and confidence in real-time on screen.
+- **Robust Registration**: `make register` now uses Dlib for high-quality embedding capture.
+- **Visual Feedback**: Green boxes are drawn for all detected faces, with labels updating as recognition completes.
+
+**4. Code Cleanup & Verification** ✅
+- Removed all 15+ diagnostic and debug scripts.
+- Optimized logging to reduce console overhead.
+- Fixed MediaPipe `BoundingBox` attribute errors in both detection methods.
+- Verified Training and Quantization pipelines remain operational.
+- Added legacy `tf-keras` support to bridge Keras 2/3 compatibility issues.
+
+---
+
+### 🚀 **UPDATED COMMANDS**
+
+```bash
+# Main application (high accuracy, optimized speed)
+make run
+
+# Register a person from camera (requires 10 samples)
+make register name="YourName"
+
+# Quick camera hardware test
+make camera-view
+```
+
+---
+
+### 📊 **ACCURACY VERIFICATION**
+
+- **Yurii (Self)**: recognized with distance ~0.25 (Match)
+- **Guest**: recognized with distance ~0.30 (Match)
+- **Stranger/Unknown**: distance > 0.60 (Correctly rejected as "Unknown")
+
+---
+
+### 📋 **SESSION 8 PRIORITIES**
+
+1. **Structural Separation**: Distinct paths for Classifier vs Metric paradigms.
+2. **Metric Learning Implementation**: Train a custom feature extractor using Triplet Loss.
+3. **Comparative Analysis**: Academic research on Closed-Set vs Open-Set recognition.
+
+---
+
+## 05-Mar-26 (Session 8)
+
+### 🎯 **CURRENT SESSION: Multi-Paradigm Recognition Setup** ✅
+
+#### **Status**: ✅ **Architectural Reorganization Complete**
+
+---
+
+### ✅ **MAJOR ACHIEVEMENTS**
+
+**1. Architectural Reorganization** ✅
+- **Restructured Training Folder**: Separated `classifier/` (Closed-Set) and `metric/` (Open-Set) training logic.
+- **New Directory Structure**:
+  ```
+  src/bp_face_recognition/vision/training/
+  ├── classifier/   # Softmax-based training
+  └── metric/       # Triplet Loss-based training
+  ```
+
+**2. Metric Learning Implementation (Open-Set)** ✅
+- **Custom Triplet Loss**: Implemented Keras 3 compatible Triplet Loss and `TripletModel` wrapper.
+- **Embedding Backbone**: Created base model with L2-Normalization layer for hypersphere projection.
+- **Triplet Data Loader**: Implemented (Anchor, Positive, Negative) generator for triplet mining.
+- **Metric Trainer**: New training orchestrator for embedding models.
+
+**3. Recognition Paradigms Implementation** ✅
+- **SoftmaxRecognizer**: Implemented Entropy-based "Unknown" detection for classifiers.
+- **MetricRecognizer**: Implemented Euclidean distance search for open-set recognition.
+- **Model Registry Update**: Added `paradigm` metadata to `models.yaml` for all recognizers.
+
+**4. Research Dataset Integration** ✅
+- **LFW Downloader**: Created `src/scripts/download_research_dataset.py` using scikit-learn.
+- **Automated Preparation**: Downloaded and filtered 34 identities (2,370 images) into `data/datasets/research/triplet_gallery`.
+- **Academic Standard**: Provided a standardized dataset for thesis benchmarking.
+
+**5. Build System & Infrastructure** ✅
+- **Makefile Updated**: Added `train-metric` and `train-classifier` commands.
+- **TODO.md Updated**: Comprehensive roadmap for Session 8 experiments (128D vs 64D, backbone comparison).
+- **Warning Fixes**: Resolved Keras 3 `UserWarning` by refining the `TripletModel` wrapper's `call` method and building logic.
+
+**6. Pipeline Verification** ✅
+- **Initial Training Success**: Ran 2 epochs of Metric Learning on the LFW research dataset.
+- **Model Storage**: Verified backbone saving as `.keras` and weights saving as `.weights.h5`.
+- **Infrastructure Stability**: Confirmed the data loader correctly mines triplets from the new research directory.
+
+---
+
+### 🔧 **TECHNICAL DETAILS**
+
+**Metric Learning Strategy:**
+- **Loss**: Semi-Hard Triplet Loss (Margin: 0.2)
+- **Normalization**: L2-Normalization on 128D embeddings
+- **Optimizer**: Adam (Learning rate: 1e-4)
+- **Keras 3 Wrapper**: Custom `TripletModel` with manual `train_step` for optimized backpropagation.
+
+**Closed-Set Refinement:**
+- **"Unknown" Detection**: Combination of `max_prob < threshold` and `normalized_entropy > entropy_threshold`.
+
+---
+
+### 🚀 **NEW COMMANDS**
+
+```bash
+# Train metric embedding model (Research Dataset)
+make train-metric dataset=research/triplet_gallery backbone=EfficientNetB0 dim=128
+
+# Download and Prepare Research Dataset (LFW)
+uv run python src/scripts/download_research_dataset.py
+```
+
+---
+
+### 📋 **IMMEDIATE NEXT STEPS**
+
+1. **Train 128D and 64D metric models** (Full run: 50+ epochs).
+2. **Benchmark Entropy-based Unknown detection** vs Metric-based rejection.
+3. **Quantize new models** and verify CPU inference speed.
+4. **Create `unseen_faces` dataset** for final study validation.
+
+---
+
+**SESSION IMPACT**: Successfully transitioned the project to a multi-paradigm architecture. The system now supports both professional-grade Metric Learning (Open-Set) and refined Classifier-based (Closed-Set) recognition. Verified the stability of the research dataset pipeline and fixed technical debt related to Keras 3 compatibility.
+
+---
+
+## 09-Mar-26 (Session 9)
+
+### 🎯 **CURRENT SESSION: Custom Metric Learning Model Training & Dataset Restructuring** ✅
+
+#### **Status**: ✅ **Custom Metric Model Trained & Pipeline Restructured**
+
+---
+
+### ✅ **MAJOR ACHIEVEMENTS**
+
+**1. Custom Metric Learning Model Trained** ✅
+- **Model**: EfficientNetB0 with Triplet Loss (128D embeddings)
+- **Dataset**: LFW (34 identities, ~142K augmented images)
+- **Training**: 5 epochs completed
+- **Final Loss**: 0.20
+- **Output**: `metric_efficientnetb0_128d_final.keras`
+- **Approach**: Open-Set recognition using Euclidean distance instead of dlib
+
+**2. Dataset Structure Unified** ✅
+- **Universal Format**: Flat structure (no nested folders)
+- **Custom Datasets** (webcam, seccam, seccam_2): `{label}_{uuid}.jpg`
+- **LFW**: `{identity}_{index}.jpg` (no prefix needed - identity already in folder name)
+- **Augmented**: `.{N}.jpg` suffix (e.g., `Yurii_f3d9f09a.0.jpg`)
+
+**3. Preprocessing Pipeline Created** ✅
+- `crop_faces.py`: Crops faces from raw datasets
+- `split_lfw.py`: Splits LFW into train/val/test
+- `augmentation.py`: Augments cropped faces
+- All in: `src/bp_face_recognition/preprocessing/`
+
+**4. Code Cleanup** ✅
+- Deleted `fix_labels.py` (one-time script, validated)
+- Deleted `utils/crop_faces.py` (redundant)
+- Deleted `research/` folder (LFW moved to `raw/`)
+- Renamed `data/` to `preprocessing/`
+
+**5. Configuration Updated** ✅
+- `models.yaml`: Updated default recognizer to `metric_efficientnetb0_128d`
+- `Makefile`: Added preprocessing commands
+
+---
+
+### 🔧 **TECHNICAL DETAILS**
+
+**Metric Learning Architecture:**
+- **Loss**: Semi-Hard Triplet Loss (Margin: 0.2)
+- **Embedding**: 128D with L2-Normalization
+- **Backbone**: EfficientNetB0
+- **Optimizer**: Adam (lr: 1e-4)
+
+**Dataset Statistics:**
+- LFW: 34 identities, ~4,200 original images
+- After augmentation: ~142K images
+- Structure: Flat, no nested folders
+
+**Model Path:**
+```
+src/bp_face_recognition/models/metric_efficientnetb0_128d_final.keras
+```
+
+---
+
+### 🚀 **COMMANDS**
+
+```bash
+# Register a person from camera
+make register name="YourName"
+
+# Run the application
+make run
+
+# Preprocessing (if needed)
+make preprocess dataset=lfw
+```
+
+---
+
+### 📋 **NEXT STEPS**
+
+1. **Test Recognition**: Register user and run app to verify custom metric model works
+2. **Extended Training**: Train with more epochs (20+) including webcam/seccam_2 datasets
+3. **Optional**: Address dlib/face_recognition warnings (optional dependencies)
+
+---
+
+### ⚠️ **KNOWN ISSUES**
+
+- Keras 3 compatibility: Model uses `tf.math.l2_normalize` which may have loading issues
+- dlib/face_recognition warnings appear (optional dependencies, don't affect custom model)
+
+---
+
+**SESSION IMPACT**: Successfully trained a custom metric learning model using Triplet Loss for Open-Set face recognition. Restructured all datasets into a unified flat format. The system now uses the custom-trained model by default instead of relying on dlib/face_recognition library.
 

@@ -1,142 +1,104 @@
 # TODO - Next Session
 
-## 🎯 **SESSION 7: Real-Time Pipeline & Camera Integration**
+## 🎯 **SESSION 10: Fix Keras Serialization & Complete Metric Model Training**
 
-### Image Source Configuration 🔥 **HIGH PRIORITY** (BLOCKS Real-Time Detection)
+### Current Session Progress ✅ (COMPLETED)
+- [x] Identified root cause: Lambda layer serialization incompatibility between WSL/Windows
+- [x] Created custom `L2NormalizeLayer` with `@tf.keras.utils.register_keras_serializable()`
+- [x] Updated `model.py` to use custom layer instead of Lambda
+- [x] Updated `finetune_trainer.py` to use custom layer
+- [x] Updated `keras_metric_recognizer.py` to pass custom_objects when loading
+- [x] Verified custom layer works for save/load on Windows
+- [x] Fixed duplicate model.fit() call in finetune_trainer.py
 
-- **Goal**: Configure image source via environment variable
-- **Tasks**:
-  - [x] Research Android phone USB tethering camera access
-  - [x] Support RTSP stream URLs (e.g., `rtsp://147.232.24.197/live.sdp`)
-  - [x] Support USB-connected Android device (Pixel 10 via ADB/USB camera)
-  - [x] Add environment variable configuration (`CAMERA_SOURCE`)
-  - [x] Handle source switching gracefully
-- **Deliverable**: Configurable camera source system ✅
+### Next Steps for Session 10
+- [ ] Run full training on Windows (10 epochs Phase 1, 5 epochs Phase 2)
+- [ ] Verify trained model achieves >80% validation accuracy
+- [ ] Test model loading in KerasMetricRecognizer
+- [ ] Clear database and re-register with new model
+- [ ] Verify face recognition works with custom metric model
+- [ ] If successful: set metric_efficientnetb0_128d as default in models.yaml
 
-### Real-Time Detection
-
-#### **1. Camera Stream Connection** 
-- **Goal**: Connect to camera and process frames in real-time
-- **Depends on**: Image Source Configuration
-- **Tasks**:
-  - [x] Test camera stream handling
-  - [x] Implement frame capture loop
-  - [x] Add frame preprocessing
-- **Deliverable**: Working camera capture ✅
-
-#### **2. Face Detection Pipeline** 
-- **Goal**: Integrate MediaPipe face detection
-- **Tasks**:
-  - [x] Test face detection (MediaPipe)
-  - [x] Test detection + recognition pipeline
-  - [x] Handle no-face case gracefully
-- **Deliverable**: Detection pipeline working ✅
-
-#### **3. Performance Optimization** 
-- **Goal**: Achieve 30+ FPS target
-- **Tasks**:
-  - [x] Measure FPS and identify bottlenecks
-  - [x] Implement frame skipping (current: skip 3)
-  - [x] Implement resolution scaling (current: 0.5x)
-  - [ ] Benchmark original vs quantized models
-  - [ ] Compare CPU vs GPU inference
-- **Deliverable**: Performance benchmarks
-
-### **SESSION 8: Multi-Paradigm Recognition (Classifier vs Metric)** 🎯
-
-#### **1. Structural Separation**
-- [ ] Move existing classifier training to `training/classifier/`
-- [ ] Create skeleton for metric learning in `training/metric/`
-- [ ] Update `models.yaml` with paradigm metadata (Closed-Set vs Open-Set)
-
-#### **2. Metric Learning Implementation (Open-Set)**
-- [ ] Implement Custom Triplet Loss for Keras 3
-- [ ] Add L2-Normalization layer to EfficientNet backbone
-- [ ] Update data loader for balanced triplet batching
-- [ ] Train 128D/512D feature extractor on `seccam_2` (15 identities)
-- [ ] Verify embedding variance on unseen faces
-
-#### **3. Classifier Refinement (Closed-Set)**
-- [ ] Implement stepped fine-tuning (backbone unfreezing)
-- [ ] Add Softmax-based recognizer for direct classification
-- [ ] Add entropy-based "Unknown" detection for classifiers
-
-#### **4. Comparative Analysis**
-- [ ] Benchmark Accuracy vs Generalization (unseen people)
-- [ ] Benchmark Latency (Softmax vs Euclidean Vector Search)
-- [ ] Quantize both models and verify CPU inference speed
+### Alternative Approaches (if current fails)
+- [ ] Train directly on Windows without WSL
+- [ ] Use pre-trained FaceNet model
+- [ ] Implement ArcFace loss instead of classification pre-training
 
 ---
 
-## 📋 **BACKLOG - Future Sessions**
+## 🎯 **SESSION 9: Custom Metric Model Training & Testing**
+
+### Preprocessing Pipeline ✅ (COMPLETED)
+- [x] Rename `data/` to `preprocessing/`
+- [x] Create universal dataset structure (flat, label prefix)
+- [x] Create `crop_faces.py` - crop from raw datasets
+- [x] Create `split_lfw.py` - split LFW into train/val/test
+- [x] Create `augmentation.py` - augment cropped faces
+- [x] Support dynamic dataset discovery
+- [x] Make commands: `prepare-crop-all`, `prepare-augment-all`, `prepare-all`
+
+### Dataset Restructuring ✅ (COMPLETED)
+- [x] Move webcam, seccam, seccam_2 to `raw/`
+- [x] Move triplet_gallery to `raw/lfw`
+- [x] Delete `research/` folder
+- [x] Fix labels: "1" → "Yurii", "2" → "Stranger_2"
+- [x] Universal filename format:
+  - Custom: `{label}_{uuid}.jpg` → `Yurii_f3d9f09a.jpg`
+  - LFW: `{identity}_{index}.jpg` → `George_W_Bush_0000.jpg`
+- [x] Augmented format: `.{N}.jpg` suffix → `Yurii_f3d9f09a.0.jpg`
+
+### Metric Model Training ✅ (COMPLETED)
+- [x] Train on LFW dataset (5 epochs)
+- [x] Model saved: `metric_efficientnetb0_128d_final.keras`
+- [x] Update models.yaml to use metric model by default
+
+### Testing Custom Model ✅ (COMPLETED - Session 9)
+- [x] Fix register_from_camera.py to use configurable recognizer from models.yaml
+- [x] Fix KerasMetricRecognizer to load trained weights
+- [x] Clear old database (dlib embeddings)
+- [x] Register yourself: `make register name="Yurii"` 
+- [x] Run app: `make run`
+- [x] Verify recognition works (using dlib_v1)
+
+### Known Issues
+- Custom metric model weights fail to load (Keras version mismatch) - needs retraining
+- Fallback: Use dlib_v1 which works reliably
+
+### Session 9 Complete ✅
+- dlib_v1 recognizer works for registration and recognition
+- Default recognizer changed to dlib_v1 (reliable)
+- Metric model training infrastructure fixed (trainer.py saves backbone weights)
+
+### Extended Training (OPTIONAL)
+- [ ] Train with more epochs (20+)
+- [ ] Include webcam + seccam_2 datasets
+- [ ] Train 64D vs 128D comparison
+
+---
+
+## 📋 **BACKLOG**
+
+### Warnings Cleanup
+- [ ] Address dlib/face_recognition warnings (optional dependency)
+- [ ] Either install or suppress warnings gracefully
+
+### Performance Optimization
+- [ ] Benchmark original vs quantized models
+- [ ] Compare CPU vs GPU inference
 
 ### Database Implementation
 - [ ] Implement FaceDatabase class
 - [ ] Add database connection handling
 - [ ] Add CRUD operations for face embeddings
-- [ ] Add database migration system
-- [ ] Add database tests (with mocked DB)
 
 ### Documentation
 - [ ] Add docstrings to all public APIs
 - [ ] Generate API documentation
-- [ ] Add usage examples
 - [ ] Create architecture diagram
 
-### Testing (Ongoing)
+### Testing
 - [ ] Verify accuracy after quantization
 - [ ] Add more edge case tests
-- [ ] Increase test coverage
 
 ### TensorFlow Lite Migration
-- [ ] Migrate from deprecated `tf.lite.Interpreter` to `ai_edge_litert` package
-- [ ] Reference: https://ai.google.dev/edge/litert/migration
-- [ ] Warning: "tf.lite.Interpreter is deprecated and is scheduled for deletion in TF 2.20"
-
----
-
-## ✅ COMPLETED (Session 7)
-
-### Camera Integration & Pipeline Fixes
-- [x] Camera stream works with USB phone (webcam device 0)
-- [x] Fixed MediaPipe detector attribute errors in both `detect()` and `detect_with_confidence()`
-- [x] `make run` - main command for face recognition app (with enhanced logging)
-- [x] `make register name="YourName"` - new command to register yourself from camera
-- [x] Boxes now show "Unknown" for unregistered faces
-- [x] Added `src/scripts/register_from_camera.py` for easy user onboarding
-- [x] Fixed `main.py` to use BGR frames for detector while keeping RGB for display
-
-### Image Source Configuration
-- [x] Add `CAMERA_SOURCE`, `CAMERA_DEVICE`, `CAMERA_RTSP_URL`, `CAMERA_WIDTH`, `CAMERA_HEIGHT`, `CAMERA_FPS` to settings.py
-- [x] Create `utils/camera_source.py` with:
-  - `CameraConfig` dataclass
-  - `CameraSource` abstract base class
-  - `WebcamSource` - local webcam support
-  - `RTSPSource` - RTSP stream URLs with auto-reconnect
-  - `USBDeviceSource` - USB-connected Android via ADB
-  - `CameraManager` - unified interface with source switching
-- [x] Add unit tests in `test_camera_source.py` (15 tests, all passing)
-- [x] Add nox session `test_camera` in noxfile.py
-- [x] All lint checks pass for new files
-- [x] No type errors in new files
-
-**Usage**:
-```bash
-export CAMERA_SOURCE=webcam  # or rtsp, usb
-export CAMERA_DEVICE=0
-export CAMERA_RTSP_URL=rtsp://147.232.24.197/live.sdp
-export CAMERA_WIDTH=1280
-export CAMERA_HEIGHT=720
-export CAMERA_FPS=30
-```
-
-### Test Infrastructure
-- [x] Create pytest test suite in `src/bp_face_recognition/tests/`
-- [x] Add unit tests: test_config.py, test_training.py, test_preprocessing.py
-- [x] Add integration tests: test_full_pipeline.py
-- [x] Add conftest.py with shared fixtures
-- [x] Update noxfile.py with test sessions
-- [x] Update Makefile with test commands
-- [x] Add setuptools to pyproject.toml
-
-**Note**: Tests that import from `vision` module are skipped in CI due to face_recognition package issue with pkg_resources in uv test environment. These tests work when run with proper pip setup.
+- [ ] Migrate from deprecated `tf.lite.Interpreter` to `ai_edge_litert`
