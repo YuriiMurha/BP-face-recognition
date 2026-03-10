@@ -8,13 +8,13 @@ from bp_face_recognition.utils.camera_source import create_camera_manager
 
 
 class AttendanceApp:
-    def __init__(self, camera_id=0, threshold=0.5, db_type="csv"):
+    def __init__(self, camera_id=0, threshold=0.5, db_type="csv", recognizer="metric_efficientnetb0_128d"):
         face_db = FaceDatabase(db_type=db_type)
         db_service = DatabaseService(database=face_db)
 
         self.service = PipelineService(
             detector_type="mediapipe_v1",
-            recognizer_type="dlib_v1",
+            recognizer_type=recognizer,
             recognition_threshold=threshold,
             database_service=db_service,
         )
@@ -92,6 +92,11 @@ class AttendanceApp:
         face_count = 0
         skip_frames = 3  # Process every Nth frame for recognition
         results = []
+        
+        # Get detector info
+        detector_info = self.service.face_tracker.get_detector_info()
+        print(f"Detector info: {detector_info}")
+        logging.info(f"Detector info: {detector_info}")
 
         while True:
             frame = self.camera.read_frame()
@@ -106,6 +111,14 @@ class AttendanceApp:
                 results = []
 
                 if result.get("success"):
+                    detection_result = result.get("detection_result", {})
+                    num_detected = detection_result.get("num_faces", 0)
+                    
+                    # Log detection info every 10 frames
+                    if frame_count % 30 == 0:
+                        print(f"Frame {frame_count}: detected {num_detected} faces")
+                        logging.info(f"Detection result: {detection_result}")
+
                     recognition_result = result.get("recognition_result")
                     reco_faces = (
                         recognition_result.get("faces", [])
@@ -146,7 +159,19 @@ class AttendanceApp:
 
 if __name__ == "__main__":
     import os
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Face Recognition Attendance System")
+    parser.add_argument("--recognizer", type=str, default="metric_efficientnetb0_128d",
+                        help="Recognizer type: metric_efficientnetb0_128d, dlib_v1")
+    parser.add_argument("--threshold", type=float, default=0.5,
+                        help="Recognition threshold (lower = stricter)")
+    parser.add_argument("--db-type", type=str, default="csv",
+                        help="Database type: csv, sqlite")
+
+    args = parser.parse_args()
 
     print(f"DEBUG: Running {os.path.abspath(__file__)}")
-    app = AttendanceApp(db_type="csv")
+    print(f"Using recognizer: {args.recognizer}")
+    app = AttendanceApp(db_type=args.db_type, recognizer=args.recognizer, threshold=args.threshold)
     app.run()

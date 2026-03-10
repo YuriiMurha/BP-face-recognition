@@ -56,6 +56,7 @@ recognizers:
       training_platform: "CPU"
       quantization: "none"
       purpose: "production_research"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -73,6 +74,7 @@ recognizers:
       training_platform: "CPU"
       quantization: "dynamic_range"
       purpose: "production_optimized"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -90,6 +92,7 @@ recognizers:
       quantization: "none"
       checkpoint_type: "best_validation"
       purpose: "benchmark_research"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -104,6 +107,7 @@ recognizers:
       model_size: "88MB"
       purpose: "baseline_comparison"
       training_dataset: "pretrained"
+      paradigm: "open-set"
     default_config:
       input_size: [160, 160]
       normalize: true
@@ -121,6 +125,7 @@ recognizers:
       training_platform: "GPU"
       quantization: "none"
       purpose: "production_gpu"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -138,6 +143,7 @@ recognizers:
       training_platform: "GPU"
       quantization: "float16"
       purpose: "realtime"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -155,6 +161,7 @@ recognizers:
       quantization: "none"
       num_classes: 15
       purpose: "production_gpu"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -173,6 +180,7 @@ recognizers:
       quantization: "float16"
       num_classes: 15
       purpose: "realtime"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -189,6 +197,7 @@ recognizers:
       training_platform: "GPU"
       quantization: "none"
       purpose: "production_gpu"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -206,6 +215,7 @@ recognizers:
       training_platform: "GPU"
       quantization: "float16"
       purpose: "realtime"
+      paradigm: "closed-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -219,6 +229,7 @@ recognizers:
       model_size: "9.4MB"
       quantization: "float16"
       purpose: "face_recognition"
+      paradigm: "open-set"
     default_config:
       input_size: [224, 224]
       normalize: true
@@ -231,14 +242,36 @@ recognizers:
       library: "face_recognition"
       embedding_size: 128
       purpose: "production"
+      paradigm: "open-set"
     default_config:
       input_size: [160, 160]
       normalize: true
 
+  # Custom Metric Learning Models (Open-Set, Triplet Loss)
+  metric_efficientnetb0_128d:
+    class: "vision.recognition.keras_metric_recognizer.KerasMetricRecognizer"
+    model_file: "bp_face_recognition/models/metric_efficientnetb0_128d_final.keras"
+    weights_file: "bp_face_recognition/models/metric_efficientnetb0_128d.weights.h5"
+    version: "1.0"
+    description: "Custom EfficientNetB0 metric learning - 128D embeddings, Triplet Loss"
+    metadata:
+      model_size: "~24MB"
+      embedding_size: 128
+      training_dataset: "triplet_gallery (LFW subset)"
+      backbone: "EfficientNetB0"
+      loss: "Triplet Loss"
+      purpose: "custom_model_testing"
+      paradigm: "open-set"
+    default_config:
+      input_size: [224, 224]
+      normalize: true
+      backbone: "EfficientNetB0"
+      embedding_dim: 128
+
 # Global settings
 global:
   default_detector: "mediapipe_v1"
-  default_recognizer: "dlib_v1"  # Switched to high-accuracy Dlib
+  default_recognizer: "metric_efficientnetb0_128d"  # Custom-trained metric model (20 epochs, lfw+webcam+seccam)
   auto_fallback: true
   max_retry_attempts: 3
   log_level: "INFO"
@@ -325,6 +358,14 @@ environments:
     use_gpu: true
     auto_gpu_detection: true
     log_level: "WARNING"
+
+  # Custom Model Testing (Metric Learning)
+  custom_metric_test:
+    detector: "mediapipe_v1"
+    recognizer: "metric_efficientnetb0_128d"
+    use_gpu: true
+    auto_gpu_detection: true
+    log_level: "INFO"
 
 # Performance optimization settings
 optimization:

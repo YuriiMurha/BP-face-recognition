@@ -13,6 +13,7 @@ The system supports both CPU and GPU training with automated setup via Make comm
 - **Production Model Registry**: Configuration-driven plugin system with runtime model switching.
 - **8 Environment Profiles**: Optimized configurations for development, production, and benchmarking.
 - **Model Quantization**: TensorFlow Lite optimization achieving 73.6% size reduction.
+- **Metric Learning**: Custom Triplet Loss models for Open-Set recognition (128D embeddings).
 - **Modular Architecture**: Decoupled detection/recognition, services layer, and plugin-based model management.
 - **Hybrid Storage**: Support for both PostgreSQL and CSV-based storage for embeddings and logs.
 - **Comprehensive Evaluation**: Scripts for benchmarking accuracy, detection time, and false positives.
@@ -106,6 +107,12 @@ make train-wsl backbone=EfficientNetB0 epochs=20
 
 # Custom configuration
 make train-wsl backbone=MobileNetV3Small epochs=15 dataset=your_dataset
+```
+
+#### Metric Learning (Open-Set Recognition)
+```bash
+# Train metric embedding model using Triplet Loss
+make train-metric dataset=lfw backbone=EfficientNetB0 dim=128 epochs=20
 ```
 
 ## WSL2 GPU Setup (Optional)
@@ -249,13 +256,20 @@ Model size: 14.85 MB
 
 ## Model Performance Summary
 
-| Model | Platform | Accuracy | Size | Training Time (20 epochs) | Best For |
-|-------|----------|----------|------|---------------------------|----------|
-| MobileNetV3Small | GPU | 100% | 14.85MB | ~9 min | Fast training |
-| MobileNetV3Small | CPU | 100% | 14.85MB | ~35 min | CPU-only systems |
-| EfficientNetB0 | CPU | ~76.67% | 19.8MB | ~45-60 min | Research |
-| EfficientNetB0 Quantized | CPU | ~75% | 5.0MB | N/A | **Production** |
-| FaceNet | Pretrained | N/A | 88MB | N/A | Baseline |
+| Model | Type | Platform | Accuracy | Size | Training Time (20 epochs) | Best For |
+|-------|------|----------|----------|------|---------------------------|----------|
+| MobileNetV3Small | Classifier | GPU | 100% | 14.85MB | ~9 min | Fast training |
+| MobileNetV3Small | Classifier | CPU | 100% | 14.85MB | ~35 min | CPU-only systems |
+| EfficientNetB0 | Classifier | CPU | ~76.67% | 19.8MB | ~45-60 min | Research |
+| EfficientNetB0 Quantized | Classifier | CPU | ~75% | 5.0MB | N/A | **Production** |
+| FaceNet | Metric | Pretrained | N/A | 88MB | N/A | Baseline |
+| **metric_efficientnetb0_128d** | **Metric** | **CPU/GPU** | **N/A** | **~20MB** | **~15 min** | **Open-Set** |
+
+**Metric Learning (Open-Set Recognition):**
+- Uses Triplet Loss for embedding learning
+- 128D embeddings with L2-Normalization
+- Euclidean distance-based matching
+- Can recognize people not seen during training
 
 **GPU Acceleration:**
 - **Speedup**: 3-4x faster than CPU
@@ -306,6 +320,18 @@ make test-camera
 make test-camera-integration
 ```
 
+### User Registration & Recognition
+
+```bash
+# Register a new person from camera (captures 10 samples)
+make register name="YourName"
+
+# Run the application (requires registered users)
+make run
+```
+
+The application uses the custom-trained metric model (`metric_efficientnetb0_128d`) by default for Open-Set recognition, which can identify people not seen during training.
+
 ### Using Your Phone as Webcam
 
 If your phone is connected via USB and detected as a webcam (device index 0, 1, etc.):
@@ -355,14 +381,53 @@ If your phone is connected via USB and detected as a webcam (device index 0, 1, 
 
 ### Dataset Setup
 
-Prepare your dataset:
+#### Universal Dataset Structure
+The project uses a flat dataset structure (no nested folders):
+```
+data/datasets/
+├── raw/                    # Original images from camera/dataset
+│   ├── webcam/
+│   ├── seccam/
+│   ├── seccam_2/
+│   └── lfw/               # LFW dataset
+├── cropped/               # Face-cropped images (flat)
+└── augmented/             # Augmented images for training (flat)
+```
+
+#### Dataset Naming Conventions
+- **Custom datasets** (webcam, seccam, seccam_2): `{label}_{uuid}.jpg` (e.g., `Yurii_f3d9f09a.jpg`)
+- **LFW**: `{identity}_{index}.jpg` (identity from folder name, no prefix needed)
+- **Augmented**: `.{N}.jpg` suffix (e.g., `Yurii_f3d9f09a.0.jpg`)
+
+#### Preprocessing Pipeline
+```bash
+# Crop faces from raw images
+python -m src.bp_face_recognition.preprocessing.crop_faces --dataset lfw
+
+# Split LFW into train/val/test
+python -m src.bp_face_recognition.preprocessing.split_lfw
+
+# Augment cropped faces
+python -m src.bp_face_recognition.preprocessing.augmentation --dataset lfw --factor 10
+```
+
+Or use Makefile commands:
+```bash
+make preprocess dataset=lfw          # Full preprocessing
+make preprocess-crop dataset=webcam  # Crop only
+make preprocess-augment dataset=lfw  # Augment only
+```
+
+#### Prepare Your Own Dataset
 ```bash
 # Initialize dataset structure
-python src/scripts/init_dataset.py --name seccam_2
+python src/scripts/init_dataset.py --name my_dataset
 
-# Add images to data/cropped/seccam_2/train/
+# Add images to data/datasets/raw/my_dataset/
+# Label format: {label}_{unique_id}.jpg (e.g., John_001.jpg)
+
 # Run preprocessing
-python src/scripts/update_pipeline.py
+make preprocess dataset=my_dataset
 ```
 
 ## Cross-Platform Notes

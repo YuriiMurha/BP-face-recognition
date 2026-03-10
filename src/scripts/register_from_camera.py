@@ -13,6 +13,18 @@ from bp_face_recognition.config.settings import settings
 from bp_face_recognition.services.pipeline_service import PipelineService
 from bp_face_recognition.database.database import FaceDatabase
 from bp_face_recognition.services.database_service import DatabaseService
+from bp_face_recognition.vision.registry import get_registry
+
+
+def get_default_recognizer():
+    """Get default recognizer from models.yaml global settings."""
+    try:
+        registry = get_registry()
+        return registry.get_global_settings().get(
+            "default_recognizer", "metric_efficientnetb0_128d"
+        )
+    except Exception:
+        return "metric_efficientnetb0_128d"
 
 
 def main():
@@ -21,22 +33,41 @@ def main():
     parser.add_argument(
         "--count", type=int, default=10, help="Number of samples to capture"
     )
+    parser.add_argument(
+        "--recognizer",
+        type=str,
+        default=None,
+        help="Recognizer type (default: from models.yaml)",
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.7,
+        help="Recognition threshold (default: 0.7)",
+    )
     args = parser.parse_args()
 
     name = args.name
     target_count = args.count
 
+    # Use default from models.yaml if not specified
+    recognizer_type = args.recognizer if args.recognizer else get_default_recognizer()
+    threshold = args.threshold
+
     print(f"Registering '{name}'...")
+    print(f"Recognizer: {recognizer_type}")
+    print(f"Threshold: {threshold}")
     print(f"Goal: Capture {target_count} clear face samples.")
 
     # Initialize components
     face_db = FaceDatabase(db_type="csv")
     db_service = DatabaseService(database=face_db)
 
-    # We use the same service as the main app to ensure consistency
+    # Use configurable recognizer from models.yaml default
     service = PipelineService(
         detector_type="mediapipe_v1",
-        recognizer_type="dlib_v1",
+        recognizer_type=recognizer_type,
+        recognition_threshold=threshold,
         database_service=db_service,
     )
 
