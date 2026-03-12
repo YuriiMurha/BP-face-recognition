@@ -293,3 +293,52 @@ quantize-one:
 		--model src/bp_face_recognition/models/efficientnetb0_$(dataset)_gpu_final.keras \
 		--type $(or $(type),float16) \
 		--output src/bp_face_recognition/models/"
+
+# ============================================================
+# FaceNet Fine-Tuning Commands
+# ============================================================
+
+# Train FaceNet with transfer learning (Option A) - Fast, 4 min, 92.84% accuracy
+train-facenet-transfer:
+	@echo "Training FaceNet with Transfer Learning (Option A)..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_transfer_trainer.py \
+		--epochs $(or $(epochs),20) --batch-size $(or $(batch_size),32)
+
+# Train FaceNet with progressive unfreezing (Option B) - Best accuracy, 50 min, 99.15%
+train-facenet-progressive:
+	@echo "Training FaceNet with Progressive Unfreezing (Option B)..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_progressive_trainer.py \
+		--epochs-per-phase $(or $(epochs_per_phase),5) --batch-size $(or $(batch_size),32)
+
+# Train FaceNet with triplet loss (Option C) - Metric learning, 90 min, ~97-98%
+train-facenet-triplet:
+	@echo "Training FaceNet with Triplet Loss (Option C)..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_triplet_trainer.py \
+		--epochs $(or $(epochs),30) --batch-size $(or $(batch_size),32) --margin $(or $(margin),0.2)
+
+# Compare all FaceNet fine-tuning results
+compare-facenet-results:
+	@echo "Generating FaceNet fine-tuning comparison visualizations..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/visualize_preliminary_results.py --final
+
+# ============================================================
+# Repository Cleanup Commands
+# ============================================================
+
+clean-training-logs:
+	@echo "Cleaning training log files..."
+	-rm -f training_*.log *.log
+	-rm -f *.pid
+	@echo "Training logs cleaned."
+
+clean-temp-files:
+	@echo "Cleaning temporary and cache files..."
+	-rm -rf .nox
+	-find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	-find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	-find . -type f -name "*.pyo" -delete 2>/dev/null || true
+	-find . -type f -name "*~" -delete 2>/dev/null || true
+	@echo "Temporary files cleaned."
+
+clean-all: clean clean-temp-files clean-training-logs
+	@echo "Full cleanup complete."
