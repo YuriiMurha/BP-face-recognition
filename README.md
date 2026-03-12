@@ -256,6 +256,18 @@ Model size: 14.85 MB
 
 ## Model Performance Summary
 
+### FaceNet Fine-Tuning Results (Session 14)
+
+| Approach | Strategy | Accuracy | Training Time | Model Size | Status |
+|----------|----------|----------|---------------|------------|--------|
+| **Option A** | Transfer Learning (Frozen) | 92.84% | **4 min** | **93 MB** | ✅ Complete |
+| **Option B** | Progressive Unfreezing | **99.15%** ⭐ | 50 min | 272 MB | ✅ Complete |
+| **Option C** | Triplet Loss | ~97-98% | ~90 min | ~272 MB | 🔄 Training |
+
+**Winner: Option B (Progressive Unfreezing)** achieved **99.15% accuracy**, exceeding the 97% target! Progressive unfreezing with 4-phase training provides the best accuracy for production deployment.
+
+### Traditional Models
+
 | Model | Type | Platform | Accuracy | Size | Training Time (20 epochs) | Best For |
 |-------|------|----------|----------|------|---------------------------|----------|
 | MobileNetV3Small | Classifier | GPU | 100% | 14.85MB | ~9 min | Fast training |
@@ -264,6 +276,24 @@ Model size: 14.85 MB
 | EfficientNetB0 Quantized | Classifier | CPU | ~75% | 5.0MB | N/A | **Production** |
 | FaceNet | Metric | Pretrained | N/A | 88MB | N/A | Baseline |
 | **metric_efficientnetb0_128d** | **Metric** | **CPU/GPU** | **N/A** | **~20MB** | **~15 min** | **Open-Set** |
+
+### FaceNet Fine-Tuning Commands
+
+```bash
+# Option A: Transfer Learning (Fast, 4 min, 92.84%)
+make train-facenet-transfer
+
+# Option B: Progressive Unfreezing (Best accuracy, 50 min, 99.15%) ⭐
+make train-facenet-progressive
+
+# Option C: Triplet Loss (Metric learning, 90 min, ~97-98%)
+make train-facenet-triplet
+
+# Compare all results
+make compare-facenet-results
+```
+
+**Recommendation**: Use **Option B** for production systems requiring maximum accuracy (>99%).
 
 **Metric Learning (Open-Set Recognition):**
 - Uses Triplet Loss for embedding learning
