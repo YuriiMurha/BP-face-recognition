@@ -1,0 +1,127 @@
+{
+  "model_name": "facenet_progressive_v1.0",
+  "model_path": "src/bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras",
+  "timestamp": "2026-03-13T10:31:51.775338",
+  "metrics": {
+    "accuracy": 0.2193973634651601,
+    "accuracy_percent": 21.93973634651601,
+    "num_samples": 1062,
+    "num_classes": 14
+  },
+  "per_class_accuracy": {
+    "Stranger_1": 0.9102564102564102,
+    "Stranger_10": 0.0,
+    "Stranger_11": 0.0,
+    "Stranger_12": 0.0,
+    "Stranger_14": 0.0,
+    "Stranger_2": 0.0,
+    "Stranger_3": 0.0,
+    "Stranger_4": 0.0,
+    "Stranger_5": 0.0,
+    "Stranger_6": 0.0,
+    "Stranger_7": 0.0,
+    "Stranger_8": 0.0,
+    "Stranger_9": 0.0,
+    "Yurii": 0.07407407407407407
+  },
+  "classification_report": {
+    "Stranger_1": {
+      "precision": 0.21385542168674698,
+      "recall": 0.9102564102564102,
+      "f1-score": 0.3463414634146341,
+      "support": 234.0
+    },
+    "Stranger_10": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Stranger_11": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 108.0
+    },
+    "Stranger_12": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Stranger_14": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 18.0
+    },
+    "Stranger_2": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 180.0
+    },
+    "Stranger_3": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 108.0
+    },
+    "Stranger_4": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 63.0
+    },
+    "Stranger_5": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 18.0
+    },
+    "Stranger_6": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Stranger_7": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Stranger_8": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 18.0
+    },
+    "Stranger_9": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Yurii": {
+      "precision": 0.30303030303030304,
+      "recall": 0.07407407407407407,
+      "f1-score": 0.11904761904761904,
+      "support": 270.0
+    },
+    "accuracy": 0.2193973634651601,
+    "macro avg": {
+      "precision": 0.036920408908360715,
+      "recall": 0.07030932030932031,
+      "f1-score": 0.03324207731873237,
+      "support": 1062.0
+    },
+    "weighted avg": {
+      "precision": 0.12416228859969927,
+      "recall": 0.2193973634651601,
+      "f1-score": 0.10657886966278862,
+      "support": 1062.0
+    }
+  },
+  "note": "Evaluated using FaceNet embeddings + KNN classifier"
+}
