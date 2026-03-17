@@ -135,7 +135,7 @@ class TestDataAugmentation:
 
     def test_augmentation_get_augmentor(self):
         """Test get_augmentor returns augmentor."""
-        from bp_face_recognition.data.augmentation import get_augmentor
+        from bp_face_recognition.preprocessing.augmentation import get_augmentor
 
         augmentor = get_augmentor(224, 224)
 
@@ -143,7 +143,7 @@ class TestDataAugmentation:
 
     def test_augmentor_is_compose(self):
         """Test augmentor is albumentations compose."""
-        from bp_face_recognition.data.augmentation import get_augmentor
+        from bp_face_recognition.preprocessing.augmentation import get_augmentor
 
         augmentor = get_augmentor(224, 224)
 

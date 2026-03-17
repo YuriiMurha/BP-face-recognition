@@ -1,4 +1,4 @@
-from bp_face_recognition.data.augmentation import augment_dataset
+from bp_face_recognition.preprocessing.augmentation import augment_dataset
 
 print("Running augmentation smoke test...")
 # Run for one dataset with minimal augmentations

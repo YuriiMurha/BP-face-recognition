@@ -121,34 +121,43 @@ class DatabaseService:
             # Find best match (minimum distance)
             best_match = None
             min_distance = float("inf")
+            best_similarity = -1.0
 
             for identity, embeddings_list in known_embeddings.items():
                 for known_embedding in embeddings_list:
                     if len(known_embedding) != len(embedding):
                         continue
 
-                    # Calculate Euclidean distance
-                    distance = np.linalg.norm(embedding - known_embedding)
+                    # For L2-normalized embeddings, cosine similarity = dot product
+                    # Both registration and recognition use metric model with L2 normalization
+                    similarity = np.dot(embedding, known_embedding)
 
-                    if distance < min_distance:
+                    # Convert to distance-like metric (1 - similarity)
+                    # Similarity 1.0 = same direction = distance 0
+                    # Similarity 0.0 = orthogonal = distance 1
+                    distance = 1.0 - similarity
+
+                    if similarity > best_similarity:
+                        best_similarity = similarity
                         min_distance = distance
                         best_match = identity
 
-            # Log for debugging (using logger instead of print)
-            if best_match:
-                logger.debug(f"Recognition: {best_match} distance={min_distance:.4f}")
+            # Log for debugging
+            logger.debug(
+                f"Recognition: {best_match} similarity={best_similarity:.4f}, distance={min_distance:.4f}"
+            )
 
-            # Convert distance to a "confidence" score for display
-            # For Dlib, 0.6 is the typical threshold.
-            # We'll map 0.0 distance to 1.0 confidence, and 0.6 to 0.5 confidence.
-            confidence = max(0, 1.0 - (min_distance / 1.2))
+            # For L2-normalized embeddings, similarity ranges from -1 to 1
+            # threshold of 0.7 means similarity >= 0.7 (distance <= 0.3)
+            # Convert threshold from similarity to distance
+            threshold_distance = 1.0 - threshold
 
             # Determine recognition result
-            if min_distance <= threshold:
+            if min_distance <= threshold_distance:
                 return {
                     "recognized": True,
                     "identity": best_match,
-                    "confidence": float(confidence),
+                    "confidence": float(best_similarity),
                     "distance": float(min_distance),
                     "threshold_used": threshold,
                 }
@@ -156,7 +165,7 @@ class DatabaseService:
                 return {
                     "recognized": False,
                     "identity": "Unknown",
-                    "confidence": float(confidence),
+                    "confidence": float(best_similarity),
                     "distance": float(min_distance),
                     "threshold_used": threshold,
                 }

@@ -378,11 +378,25 @@ if __name__ == "__main__":
     dataset_names = [d.strip() for d in args.datasets.split(",")]
     dataset_paths = []
     for name in dataset_names:
+        # Try augmented path first
         p = Path(f"data/datasets/augmented/{name}")
         if p.exists():
             dataset_paths.append(str(p))
         else:
-            print(f"[WARN] Dataset not found: {name}")
+            # Try alternative paths (research, raw, etc.)
+            alt_paths = [
+                Path(f"data/datasets/research/{name}"),
+                Path(f"data/datasets/{name}"),
+                Path(name),  # Allow full paths
+            ]
+            found = False
+            for alt_p in alt_paths:
+                if alt_p.exists():
+                    dataset_paths.append(str(alt_p))
+                    found = True
+                    break
+            if not found:
+                print(f"[WARN] Dataset not found: {name}")
 
     if not dataset_paths:
         raise SystemExit("No valid datasets found.")

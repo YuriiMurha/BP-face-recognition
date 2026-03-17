@@ -210,6 +210,12 @@ class ModelRegistry:
                 model_file
             )  # Most recognizers use model_path
 
+        # Add weights file path if specified
+        if "weights_file" in recognizer_config:
+            project_root = Path(__file__).parent.parent.parent
+            weights_file = project_root / recognizer_config["weights_file"]
+            merged_config["weights_path"] = str(weights_file)
+
         try:
             recognizer_class = self._dynamic_import(class_path)
             recognizer_instance = recognizer_class(**merged_config)
