@@ -206,3 +206,8 @@ requirements.txt
 *.zip
 *.7z
 data/faces_backup_*.csv
+# IDE/AI artifacts
+.claude/
+
+# Benchmark data (large files)
+data/benchmarks/
