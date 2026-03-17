@@ -36,6 +36,7 @@ dependencies = [
     "psutil>=7.2.2",
     "setuptools>=82.0.0",
     "tf-keras>=2.15.0",
+    "keras-facenet>=0.3.0",
 ]
 
 [project.optional-dependencies]

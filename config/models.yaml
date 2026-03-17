@@ -247,6 +247,23 @@ recognizers:
       input_size: [160, 160]
       normalize: true
 
+  facenet_pretrained:
+    class: "vision.recognition.facenet_keras.FaceNetKerasRecognizer"
+    version: "1.0"
+    description: "FaceNet pre-trained on MS-Celeb-1M - 512D embeddings, 99.6% LFW accuracy"
+    metadata:
+      package: "keras-facenet"
+      embedding_size: 512
+      model_size: "~92MB"
+      training_dataset: "MS-Celeb-1M (millions of faces)"
+      lfw_accuracy: "99.6%"
+      purpose: "production_recommended"
+      paradigm: "open-set"
+      threshold: 0.6  # Cosine distance threshold
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+
   # Custom Metric Learning Models (Open-Set, Triplet Loss)
   metric_efficientnetb0_128d:
     class: "vision.recognition.keras_metric_recognizer.KerasMetricRecognizer"
@@ -268,10 +285,78 @@ recognizers:
       backbone: "EfficientNetB0"
       embedding_dim: 128
 
+  # FaceNet Fine-Tuned Models (Session 14)
+  # Transfer Learning (TL) - Fast baseline, 92.84% accuracy
+  facenet_tl:
+    class: "vision.recognition.finetuned_recognizer.FinetunedRecognizer"
+    model_file: "bp_face_recognition/models/finetuned/facenet_transfer_v1.0.keras"
+    version: "1.0"
+    description: "FaceNet Transfer Learning (TL) - 92.84% accuracy, frozen base + trainable head"
+    metadata:
+      accuracy: 0.9284
+      training_time: "4 min"
+      model_size: "93 MB"
+      trainable_params: "131K (0.56%)"
+      approach: "Transfer Learning"
+      paradigm: "closed-set"
+      dataset: "combined (7,080 images, 14 classes)"
+      epochs: 2
+      status: "baseline"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+      preprocessing: "facenet_standard"
+
+  # Progressive Unfreezing (PU) - BEST MODEL, 99.15% accuracy
+  facenet_pu:
+    class: "vision.recognition.finetuned_recognizer.FinetunedRecognizer"
+    model_file: "bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras"
+    version: "1.0"
+    description: "FaceNet Progressive Unfreezing (PU) - 99.15% accuracy - RECOMMENDED"
+    metadata:
+      accuracy: 0.9915
+      validation_accuracy: 0.9953
+      training_time: "50 min"
+      model_size: "272 MB"
+      trainable_params: "23.6M (100%)"
+      approach: "Progressive Unfreezing"
+      paradigm: "closed-set"
+      dataset: "combined (7,080 images, 14 classes)"
+      phases: 4
+      epochs: 19
+      recommended: true
+      status: "production_ready"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+      preprocessing: "facenet_standard"
+
+  # Triplet Loss (TLoss) - Metric learning, 94.63% accuracy
+  facenet_tloss:
+    class: "vision.recognition.finetuned_recognizer.FinetunedRecognizer"
+    model_file: "bp_face_recognition/models/finetuned/facenet_triplet_best.keras"
+    version: "1.0"
+    description: "FaceNet Triplet Loss (TLoss) - 94.63% accuracy, metric learning approach"
+    metadata:
+      accuracy: 0.9463
+      training_time: "90 min"
+      model_size: "271 MB"
+      trainable_params: "23.6M (100%)"
+      approach: "Triplet Loss"
+      paradigm: "open-set"
+      margin: 0.2
+      dataset: "combined (7,080 images, 14 classes)"
+      epochs: 30
+      status: "research"
+    default_config:
+      input_size: [160, 160]
+      normalize: true
+      preprocessing: "facenet_standard"
+
 # Global settings
 global:
   default_detector: "mediapipe_v1"
-  default_recognizer: "metric_efficientnetb0_128d"  # Custom-trained metric model (20 epochs, lfw+webcam+seccam)
+  default_recognizer: "facenet_pu"  # FaceNet pre-trained on MS-Celeb-1M (Strategy B)
   auto_fallback: true
   max_retry_attempts: 3
   log_level: "INFO"
@@ -279,31 +364,31 @@ global:
 
 # Environment-specific configurations
 environments:
-  # Core Profiles
+  # Core Profiles - Using Fine-Tuned FaceNet Models
   wsl_development:
     detector: "mediapipe_v1"
-    recognizer: "efficientnetb0_baseline"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: true
     auto_gpu_detection: true
     log_level: "DEBUG"
     
   wsl_production:
     detector: "mediapipe_v1"
-    recognizer: "efficientnetb0_quantized"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: true
     auto_gpu_detection: true
     log_level: "INFO"
     
   windows_development:
-    detector: "haar_v1"
-    recognizer: "facenet_baseline_comparison"
+    detector: "mediapipe_v1"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: false
     auto_gpu_detection: false
     log_level: "DEBUG"
     
   windows_production:
     detector: "mediapipe_v1"
-    recognizer: "efficientnetb0_quantized"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: false
     auto_gpu_detection: false
     log_level: "INFO"
@@ -311,28 +396,28 @@ environments:
   # Specialized Profiles
   benchmarking:
     detector: "dlib_hog_v1"
-    recognizer: "efficientnetb0_best"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: false
     auto_gpu_detection: false
     log_level: "INFO"
     
   testing:
-    detector: "haar_v1"
-    recognizer: "facenet_baseline_comparison"
+    detector: "mediapipe_v1"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: false
     auto_gpu_detection: false
     log_level: "DEBUG"
     
   performance_demo:
     detector: "mediapipe_v1"
-    recognizer: "efficientnetb0_best"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: true
     auto_gpu_detection: true
     log_level: "WARNING"
     
   research:
     detector: "mediapipe_v1"
-    recognizer: "efficientnetb0_baseline"
+    recognizer: "facenet_pu"  # Progressive Unfreezing - 99.15% accuracy
     use_gpu: true
     auto_gpu_detection: true
     log_level: "INFO"
@@ -366,6 +451,31 @@ environments:
     use_gpu: true
     auto_gpu_detection: true
     log_level: "INFO"
+
+  # FaceNet Fine-Tuned Model Testing (Session 14)
+  test_facenet_tl:
+    detector: "mediapipe_v1"
+    recognizer: "facenet_tl"
+    use_gpu: false
+    auto_gpu_detection: false
+    log_level: "INFO"
+    description: "Test FaceNet Transfer Learning (92.84%)"
+
+  test_facenet_pu:
+    detector: "mediapipe_v1"
+    recognizer: "facenet_pu"
+    use_gpu: false
+    auto_gpu_detection: false
+    log_level: "INFO"
+    description: "Test FaceNet Progressive Unfreezing (99.15%) - RECOMMENDED"
+
+  test_facenet_tloss:
+    detector: "mediapipe_v1"
+    recognizer: "facenet_tloss"
+    use_gpu: false
+    auto_gpu_detection: false
+    log_level: "INFO"
+    description: "Test FaceNet Triplet Loss (94.63%)"
 
 # Performance optimization settings
 optimization:

@@ -27,10 +27,25 @@ run-full: setup
 	$(PYTHON) src/bp_face_recognition/main.py --recognizer $(recog) --threshold $(threshold)
 
 # Register a new person from camera
-# Usage: make register name="Yurii" (uses metric_efficientnetb0_128d by default)
-# Override: make register name="Yurii" recog=dlib_v1
+# Usage: make register name="Yurii" (uses default from config/models.yaml)
+# Override: make register name="Yurii" recog=facenet_pu
 register: setup
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer $(or $(recog),metric_efficientnetb0_128d)
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)" $(if $(recog),--recognizer $(recog),)
+
+# Register with FaceNet PU (recommended)
+register-pu: setup
+	@echo "Registering with FaceNet PU (99.15% accuracy)..."
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_pu
+
+# Register with FaceNet TL
+register-tl: setup
+	@echo "Registering with FaceNet TL (92.84% accuracy)..."
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_tl
+
+# Register with FaceNet TLoss
+register-tloss: setup
+	@echo "Registering with FaceNet TLoss (94.63% accuracy)..."
+	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_tloss
 
 # ============================================================
 # Data Preprocessing Pipeline
@@ -342,3 +357,111 @@ clean-temp-files:
 
 clean-all: clean clean-temp-files clean-training-logs
 	@echo "Full cleanup complete."
+
+# ============================================================
+# FaceNet Fine-Tuned Models - Professional Naming Convention
+# TL = Transfer Learning | PU = Progressive Unfreezing | TLoss = Triplet Loss
+# ============================================================
+
+# Training Commands
+# Transfer Learning (TL) - Fast baseline, 4 min, 92.84%
+train-facenet-tl:
+	@echo "Training FaceNet Transfer Learning (TL) - 92.84% target..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_transfer_trainer.py \
+		--epochs $(or $(epochs),20) --batch-size $(or $(batch_size),32)
+
+# Progressive Unfreezing (PU) - Best accuracy, 50 min, 99.15% ⭐
+train-facenet-pu:
+	@echo "Training FaceNet Progressive Unfreezing (PU) - 99.15% target..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_progressive_trainer.py \
+		--epochs-per-phase $(or $(epochs_per_phase),5) --batch-size $(or $(batch_size),32)
+
+# Triplet Loss (TLoss) - Metric learning, 90 min, 94.63%
+train-facenet-tloss:
+	@echo "Training FaceNet Triplet Loss (TLoss) - 94.63% target..."
+	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_triplet_trainer.py \
+		--epochs $(or $(epochs),30) --batch-size $(or $(batch_size),32) --margin $(or $(margin),0.2)
+
+# WSL GPU versions
+train-facenet-tl-wsl:
+	@echo "Training FaceNet TL in WSL (GPU)..."
+	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && source .venv-wsl/bin/activate && \
+		python src/bp_face_recognition/vision/training/finetune/facenet_transfer_trainer.py \
+		--epochs $(or $(epochs),20) --batch-size $(or $(batch_size),32)"
+
+train-facenet-pu-wsl:
+	@echo "Training FaceNet PU in WSL (GPU)..."
+	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && source .venv-wsl/bin/activate && \
+		python src/bp_face_recognition/vision/training/finetune/facenet_progressive_trainer.py \
+		--epochs-per-phase $(or $(epochs_per_phase),5) --batch-size $(or $(batch_size),32)"
+
+train-facenet-tloss-wsl:
+	@echo "Training FaceNet TLoss in WSL (GPU)..."
+	wsl -d $(WSL_DISTRO) bash -c "cd $(WSL_PATH) && source .venv-wsl/bin/activate && \
+		python src/bp_face_recognition/vision/training/finetune/facenet_triplet_trainer.py \
+		--epochs $(or $(epochs),30) --batch-size $(or $(batch_size),32) --margin $(or $(margin),0.2)"
+
+# Testing Commands (with Camera)
+test-facenet-tl: setup
+	@echo "Testing FaceNet Transfer Learning (92.84%) with camera..."
+	$(PYTHON) src/bp_face_recognition/main.py --recognizer facenet_tl
+
+test-facenet-pu: setup
+	@echo "Testing FaceNet Progressive Unfreezing (99.15%) with camera - RECOMMENDED..."
+	$(PYTHON) src/bp_face_recognition/main.py --recognizer facenet_pu
+
+test-facenet-tloss: setup
+	@echo "Testing FaceNet Triplet Loss (94.63%) with camera..."
+	$(PYTHON) src/bp_face_recognition/main.py --recognizer facenet_tloss
+
+# Model Switching Commands
+switch-pu:
+	@echo "Switching to FaceNet PU (Progressive Unfreezing - 99.15%)..."
+	$(PYTHON) scripts/switch_model.py pu
+
+switch-tl:
+	@echo "Switching to FaceNet TL (Transfer Learning - 92.84%)..."
+	$(PYTHON) scripts/switch_model.py tl
+
+switch-tloss:
+	@echo "Switching to FaceNet TLoss (Triplet Loss - 94.63%)..."
+	$(PYTHON) scripts/switch_model.py tloss
+
+# Database Management
+clear-db:
+	@echo "Clearing face database (backup created automatically)..."
+	$(PYTHON) scripts/switch_model.py clear
+
+# Combined: Switch model and clear database
+reset-pu: switch-pu clear-db
+	@echo "Reset complete: FaceNet PU selected, database cleared"
+
+reset-tl: switch-tl clear-db
+	@echo "Reset complete: FaceNet TL selected, database cleared"
+
+reset-tloss: switch-tloss clear-db
+	@echo "Reset complete: FaceNet TLoss selected, database cleared"
+
+# Evaluation Commands
+evaluate-facenet-all:
+	@echo "Comprehensive evaluation of all FaceNet models..."
+	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_comprehensive.py \
+		--models src/bp_face_recognition/models/finetuned/facenet_transfer_v1.0.keras \
+		       src/bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras \
+		       src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras \
+		--output results/evaluation/facenet_comparison
+
+evaluate-facenet-tl-quick:
+	@echo "Quick evaluation: Transfer Learning..."
+	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
+		--model src/bp_face_recognition/models/finetuned/facenet_transfer_v1.0.keras
+
+evaluate-facenet-pu-quick:
+	@echo "Quick evaluation: Progressive Unfreezing..."
+	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
+		--model src/bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras
+
+evaluate-facenet-tloss-quick:
+	@echo "Quick evaluation: Triplet Loss..."
+	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
+		--model src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras

@@ -117,6 +117,7 @@ dependencies = [
     { name = "dlib", version = "19.24.1", source = { path = "wheels/dlib-19.24.1-cp311-cp311-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "face-recognition" },
     { name = "face-recognition-models" },
+    { name = "keras-facenet" },
     { name = "matplotlib" },
     { name = "mediapipe" },
     { name = "mtcnn" },
@@ -164,6 +165,7 @@ requires-dist = [
     { name = "face-recognition-models", specifier = ">=0.3.0" },
     { name = "face-recognition-models", marker = "extra == 'dev'", specifier = ">=0.3.0" },
     { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=6.0.0" },
+    { name = "keras-facenet", specifier = ">=0.3.0" },
     { name = "matplotlib", specifier = ">=3.7.0" },
     { name = "mediapipe", specifier = ">=0.10.0" },
     { name = "mtcnn", specifier = ">=0.1.0" },
@@ -676,6 +678,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/09/e9/400582e5f3dbd815d
 wheels = [
     { url = "https://files.pythonhosted.org/packages/28/b5/ea85873abc99dc64a7a27ff1a8dbfdc7dbb57d4e5d1a423abc11217af4f1/keras-3.13.2-py3-none-any.whl", hash = "sha256:14b2afc0f9c636cc295d28efc36aae42fc52e7b892c950eec33f3befe4d22fb5", size = 1513769, upload-time = "2026-01-30T00:35:09.664Z" },
 ]
+
+[[package]]
+name = "keras-facenet"
+version = "0.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mtcnn" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6a/c5/6fadf919a86c44b87ba9d8134cc83820b8fa8a98f5c68ff676179e052839/keras-facenet-0.3.2.tar.gz", hash = "sha256:5df16907c293289ba3198455d97cc6960dc209887c2d6ce3aa9a51a8d62c2a32", size = 10339, upload-time = "2020-09-26T03:46:33.833Z" }
 
 [[package]]
 name = "kiwisolver"
