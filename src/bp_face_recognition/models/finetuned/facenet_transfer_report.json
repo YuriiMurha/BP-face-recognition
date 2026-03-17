@@ -1,0 +1,49 @@
+{
+  "model_type": "FaceNet Transfer Learning (Option A)",
+  "timestamp": "2026-03-12T01:14:00.784631",
+  "architecture": {
+    "base_model": "FaceNet (frozen)",
+    "hidden_units": 256,
+    "dropout_rate": 0.5,
+    "num_classes": 14
+  },
+  "training_config": {
+    "learning_rate": 0.001,
+    "epochs_trained": 2,
+    "early_stopping": true
+  },
+  "dataset": {
+    "num_classes": 14,
+    "class_names": [
+      "Stranger_1",
+      "Stranger_10",
+      "Stranger_11",
+      "Stranger_12",
+      "Stranger_14",
+      "Stranger_2",
+      "Stranger_3",
+      "Stranger_4",
+      "Stranger_5",
+      "Stranger_6",
+      "Stranger_7",
+      "Stranger_8",
+      "Stranger_9",
+      "Yurii"
+    ],
+    "num_train": 4956,
+    "num_val": 1062,
+    "num_test": 1062,
+    "img_size": [
+      160,
+      160
+    ],
+    "batch_size": 32
+  },
+  "results": {
+    "final_train_accuracy": 0.884584367275238,
+    "final_val_accuracy": 0.9190207123756409,
+    "best_val_accuracy": 0.9190207123756409,
+    "test_accuracy": 0.9284369349479675,
+    "test_loss": 0.28869104385375977
+  }
+}
