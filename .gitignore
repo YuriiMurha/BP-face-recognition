@@ -205,3 +205,4 @@ Merged Thesis Document.markdown
 requirements.txt
 *.zip
 *.7z
+data/faces_backup_*.csv
