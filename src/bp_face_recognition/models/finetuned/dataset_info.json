@@ -1,0 +1,20 @@
+{
+  "class_names": [
+    "Stranger_1",
+    "Stranger_10",
+    "Stranger_11",
+    "Stranger_12",
+    "Stranger_14",
+    "Stranger_2",
+    "Stranger_3",
+    "Stranger_4",
+    "Stranger_5",
+    "Stranger_6",
+    "Stranger_7",
+    "Stranger_8",
+    "Stranger_9",
+    "Yurii"
+  ],
+  "num_classes": 14,
+  "img_size": [160, 160]
+}

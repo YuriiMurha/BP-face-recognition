@@ -451,6 +451,41 @@ evaluate-facenet-all:
 		       src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras \
 		--output results/evaluation/facenet_comparison
 
+# ============================================================
+# Closed-Set Face Recognition (Direct Classification)
+# No registration needed - model classifies directly into N classes
+# ============================================================
+
+# Run closed-set recognition (default: FaceNet PU, threshold 0.7)
+run-closed-set: setup
+	@echo "Running closed-set recognition (no database needed)..."
+	$(PYTHON) src/bp_face_recognition/closed_set_main.py --recognizer $(or $(recog),facenet_pu) --threshold $(or $(threshold),0.7)
+
+run-closed-set-pu: setup
+	@echo "Closed-set: FaceNet PU (99.15%)..."
+	$(PYTHON) src/bp_face_recognition/closed_set_main.py --recognizer facenet_pu
+
+run-closed-set-tl: setup
+	@echo "Closed-set: FaceNet TL (92.84%)..."
+	$(PYTHON) src/bp_face_recognition/closed_set_main.py --recognizer facenet_tl
+
+run-closed-set-tloss: setup
+	@echo "Closed-set: FaceNet TLoss (94.63%)..."
+	$(PYTHON) src/bp_face_recognition/closed_set_main.py --recognizer facenet_tloss
+
+# Thesis benchmark - comprehensive comparison of all models
+thesis-benchmark: setup
+	@echo "Running thesis benchmark (all models)..."
+	$(PYTHON) src/bp_face_recognition/evaluation/thesis_benchmark.py
+
+thesis-benchmark-recognition: setup
+	@echo "Running thesis benchmark (recognition only)..."
+	$(PYTHON) src/bp_face_recognition/evaluation/thesis_benchmark.py --skip-detection
+
+thesis-benchmark-detection: setup
+	@echo "Running thesis benchmark (detection only)..."
+	$(PYTHON) src/bp_face_recognition/evaluation/thesis_benchmark.py --skip-recognition
+
 evaluate-facenet-tl-quick:
 	@echo "Quick evaluation: Transfer Learning..."
 	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \

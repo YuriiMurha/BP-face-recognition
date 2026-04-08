@@ -4,7 +4,7 @@
 detectors:
   mediapipe_v1:
     class: "vision.detection.mediapipe.MediaPipeDetector"
-    model_file: "vision/detection/models/blaze_face_short_range.tflite"
+    model_file: "bp_face_recognition/vision/detection/models/blaze_face_short_range.tflite"
     version: "1.0"
     description: "MediaPipe BlazeFace detection with GPU acceleration support"
     default_config:
@@ -46,7 +46,7 @@ detectors:
 recognizers:
   efficientnetb0_baseline:
     class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
-    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_baseline_v1.0.keras"
+    model_file: "bp_face_recognition/vision/recognition/models/efficientnetb0_seccam_2_cpu_baseline_v1.0.keras"
     version: "1.0"
     description: "EfficientNetB0 baseline model - 76.67% accuracy, 19.8MB"
     metadata:
@@ -63,7 +63,7 @@ recognizers:
   
   efficientnetb0_quantized:
     class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
-    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_quantized_v1.0.tflite"
+    model_file: "bp_face_recognition/vision/recognition/models/efficientnetb0_seccam_2_cpu_quantized_v1.0.tflite"
     version: "1.0"
     description: "EfficientNetB0 quantized model - ~75% accuracy, 5.0MB (73.6% compression)"
     metadata:
@@ -81,7 +81,7 @@ recognizers:
   
   efficientnetb0_best:
     class: "vision.recognition.tflite_recognizer.TFLiteRecognizer"
-    model_file: "vision/recognition/models/efficientnetb0_seccam_2_cpu_best_v1.0.keras"
+    model_file: "bp_face_recognition/vision/recognition/models/efficientnetb0_seccam_2_cpu_best_v1.0.keras"
     version: "1.0"
     description: "EfficientNetB0 best checkpoint - ~78% accuracy, 54MB"
     metadata:
@@ -99,7 +99,7 @@ recognizers:
   
   facenet_baseline_comparison:
     class: "vision.recognition.facenet.FaceNetRecognizer"
-    model_file: "vision/recognition/models/facenet_keras_baseline_comparison_v0.1.h5"
+    model_file: "bp_face_recognition/vision/recognition/models/facenet_keras_baseline_comparison_v0.1.h5"
     version: "0.1"
     description: "FaceNet model for performance comparison - 88MB"
     metadata:
