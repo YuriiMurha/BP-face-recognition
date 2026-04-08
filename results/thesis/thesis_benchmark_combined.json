@@ -1,0 +1,698 @@
+{
+  "timestamp": "2026-03-18T19:07:23.793329",
+  "detection": [
+    {
+      "name": "MediaPipe",
+      "type": "mediapipe_v1",
+      "num_images": 19,
+      "total_faces_detected": 6,
+      "avg_faces_per_image": 0.3157894736842105,
+      "avg_detection_time_ms": 3.0709316855982727,
+      "fps": 325.63407538164824,
+      "min_time_ms": 2.1355152130126953,
+      "max_time_ms": 4.008769989013672
+    },
+    {
+      "name": "MTCNN",
+      "type": "mtcnn_v1",
+      "num_images": 19,
+      "total_faces_detected": 25,
+      "avg_faces_per_image": 1.3157894736842106,
+      "avg_detection_time_ms": 240.28128071835167,
+      "fps": 4.161789037457982,
+      "min_time_ms": 211.52162551879883,
+      "max_time_ms": 297.9011535644531
+    },
+    {
+      "name": "Haar Cascade",
+      "type": "haar_v1",
+      "num_images": 19,
+      "total_faces_detected": 12,
+      "avg_faces_per_image": 0.631578947368421,
+      "avg_detection_time_ms": 31.411748183401006,
+      "fps": 31.835222737728195,
+      "min_time_ms": 14.150381088256836,
+      "max_time_ms": 57.36589431762695
+    },
+    {
+      "name": "Dlib HOG",
+      "type": "dlib_hog_v1",
+      "num_images": 19,
+      "total_faces_detected": 10,
+      "avg_faces_per_image": 0.5263157894736842,
+      "avg_detection_time_ms": 155.66377890737434,
+      "fps": 6.424102042357823,
+      "min_time_ms": 120.39637565612793,
+      "max_time_ms": 192.23642349243164
+    }
+  ],
+  "recognition": [
+    {
+      "name": "FaceNet TL",
+      "path": "D:\\Coding\\Personal\\BP-face-recognition\\src\\bp_face_recognition\\models\\finetuned\\facenet_transfer_v1.0.keras",
+      "approach": "Transfer Learning",
+      "size_mb": 92.67638778686523,
+      "accuracy": 0.928436911487759,
+      "accuracy_percent": 92.8436911487759,
+      "precision": 0.9315848974018125,
+      "recall": 0.928436911487759,
+      "f1_score": 0.9275523474323192,
+      "avg_inference_time_ms": 509.64324614580937,
+      "per_face_inference_ms": 15.926351442056543,
+      "num_samples": 1062,
+      "per_class_metrics": {
+        "Stranger_1": {
+          "accuracy": 0.9358974358974359,
+          "support": 234
+        },
+        "Stranger_10": {
+          "accuracy": 0.6666666666666666,
+          "support": 9
+        },
+        "Stranger_11": {
+          "accuracy": 0.9907407407407407,
+          "support": 108
+        },
+        "Stranger_12": {
+          "accuracy": 1.0,
+          "support": 9
+        },
+        "Stranger_14": {
+          "accuracy": 0.8333333333333334,
+          "support": 18
+        },
+        "Stranger_2": {
+          "accuracy": 0.9055555555555556,
+          "support": 180
+        },
+        "Stranger_3": {
+          "accuracy": 0.9074074074074074,
+          "support": 108
+        },
+        "Stranger_4": {
+          "accuracy": 0.9047619047619048,
+          "support": 63
+        },
+        "Stranger_5": {
+          "accuracy": 0.7777777777777778,
+          "support": 18
+        },
+        "Stranger_6": {
+          "accuracy": 0.5555555555555556,
+          "support": 9
+        },
+        "Stranger_7": {
+          "accuracy": 0.8888888888888888,
+          "support": 9
+        },
+        "Stranger_8": {
+          "accuracy": 0.8333333333333334,
+          "support": 18
+        },
+        "Stranger_9": {
+          "accuracy": 0.5555555555555556,
+          "support": 9
+        },
+        "Yurii": {
+          "accuracy": 0.9814814814814815,
+          "support": 270
+        }
+      },
+      "confusion_matrix": [
+        [
+          219,
+          0,
+          3,
+          0,
+          0,
+          3,
+          2,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        [
+          1,
+          6,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          107,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          15,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          0,
+          0,
+          0,
+          0,
+          163,
+          4,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          0,
+          3,
+          0,
+          0,
+          1,
+          98,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3
+        ],
+        [
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          57,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          14,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          15,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          5,
+          0
+        ],
+        [
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          265
+        ]
+      ]
+    },
+    {
+      "name": "FaceNet PU",
+      "path": "D:\\Coding\\Personal\\BP-face-recognition\\src\\bp_face_recognition\\models\\finetuned\\facenet_progressive_v1.0.keras",
+      "approach": "Progressive Unfreezing",
+      "size_mb": 271.90723037719727,
+      "accuracy": 0.9915254237288136,
+      "accuracy_percent": 99.15254237288136,
+      "precision": 0.9917529799627538,
+      "recall": 0.9915254237288136,
+      "f1_score": 0.9912447842021521,
+      "avg_inference_time_ms": 487.6345886903651,
+      "per_face_inference_ms": 15.23858089657391,
+      "num_samples": 1062,
+      "per_class_metrics": {
+        "Stranger_1": {
+          "accuracy": 1.0,
+          "support": 234
+        },
+        "Stranger_10": {
+          "accuracy": 0.8888888888888888,
+          "support": 9
+        },
+        "Stranger_11": {
+          "accuracy": 1.0,
+          "support": 108
+        },
+        "Stranger_12": {
+          "accuracy": 1.0,
+          "support": 9
+        },
+        "Stranger_14": {
+          "accuracy": 1.0,
+          "support": 18
+        },
+        "Stranger_2": {
+          "accuracy": 0.9944444444444445,
+          "support": 180
+        },
+        "Stranger_3": {
+          "accuracy": 0.9907407407407407,
+          "support": 108
+        },
+        "Stranger_4": {
+          "accuracy": 0.9841269841269841,
+          "support": 63
+        },
+        "Stranger_5": {
+          "accuracy": 0.8888888888888888,
+          "support": 18
+        },
+        "Stranger_6": {
+          "accuracy": 0.6666666666666666,
+          "support": 9
+        },
+        "Stranger_7": {
+          "accuracy": 1.0,
+          "support": 9
+        },
+        "Stranger_8": {
+          "accuracy": 1.0,
+          "support": 18
+        },
+        "Stranger_9": {
+          "accuracy": 1.0,
+          "support": 9
+        },
+        "Yurii": {
+          "accuracy": 1.0,
+          "support": 270
+        }
+      },
+      "confusion_matrix": [
+        [
+          234,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          108,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          18,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          179,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          107,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          62,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          16,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          18,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          270
+        ]
+      ]
+    },
+    {
+      "name": "FaceNet TLoss",
+      "path": "D:\\Coding\\Personal\\BP-face-recognition\\src\\bp_face_recognition\\models\\finetuned\\facenet_triplet_best.keras",
+      "approach": "Triplet Loss",
+      "size_mb": 270.35857486724854,
+      "accuracy": 0.9463,
+      "accuracy_percent": 94.63,
+      "precision": 0.946,
+      "recall": 0.9463,
+      "f1_score": 0.9455,
+      "avg_inference_time_ms": 0.0,
+      "per_face_inference_ms": 0.0,
+      "num_samples": 1062,
+      "per_class_metrics": {},
+      "confusion_matrix": [],
+      "note": "Embedding model \u2014 metrics from training evaluation, not live benchmark"
+    },
+    {
+      "name": "EfficientNetB0 (full)",
+      "path": "D:\\Coding\\Personal\\BP-face-recognition\\src\\bp_face_recognition\\models\\efficientnetb0_seccam_2_gpu_final.keras",
+      "approach": "EfficientNetB0 classifier",
+      "size_mb": 23.758671760559082,
+      "accuracy": 1.0,
+      "accuracy_percent": 100.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "avg_inference_time_ms": 0.0,
+      "per_face_inference_ms": 0.0,
+      "num_samples": 0,
+      "per_class_metrics": {},
+      "confusion_matrix": [],
+      "note": "Trained on seccam_2 (15 classes). Accuracy from training report. Full precision."
+    },
+    {
+      "name": "EfficientNetB0 (float16)",
+      "path": "D:\\Coding\\Personal\\BP-face-recognition\\src\\bp_face_recognition\\models\\efficientnetb0_seccam_2_gpu_final_float16.tflite",
+      "approach": "EfficientNetB0 quantized",
+      "size_mb": 8.968551635742188,
+      "accuracy": 1.0,
+      "accuracy_percent": 100.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "avg_inference_time_ms": 0.0,
+      "per_face_inference_ms": 0.0,
+      "num_samples": 0,
+      "per_class_metrics": {},
+      "confusion_matrix": [],
+      "note": "Trained on seccam_2 (15 classes). Accuracy from training report. Float16 quantized."
+    }
+  ]
+}
