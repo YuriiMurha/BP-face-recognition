@@ -12,8 +12,6 @@ Usage:
     python facenet_triplet_trainer.py --epochs 30 --batch-size 32 --margin 0.2
 """
 
-import os
-import sys
 import json
 import argparse
 import logging
@@ -23,9 +21,6 @@ from typing import Dict, Tuple
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
 from bp_face_recognition.vision.training.finetune.dataset_loader import (
     create_combined_dataset,
@@ -455,6 +450,22 @@ def main():
     trainer.save_model()
     trainer.save_history()
     trainer.save_training_report(dataset_info)
+
+    # Save dataset metadata for closed-set recognition
+    import json
+
+    metadata_path = trainer.model_dir / "dataset_info.json"
+    with open(metadata_path, "w") as f:
+        json.dump(
+            {
+                "class_names": dataset_info["class_names"],
+                "num_classes": dataset_info["num_classes"],
+                "img_size": list(dataset_info.get("img_size", [160, 160])),
+            },
+            f,
+            indent=2,
+        )
+    logger.info(f"Saved dataset_info.json to {metadata_path}")
 
     logger.info("Triplet loss training complete!")
 

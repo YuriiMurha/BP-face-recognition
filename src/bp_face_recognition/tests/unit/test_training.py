@@ -4,9 +4,6 @@ import tempfile
 import os
 from pathlib import Path
 import numpy as np
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 class TestLabelParsing:

@@ -7,8 +7,6 @@ Usage:
     python visualize_preliminary_results.py
 """
 
-import os
-import sys
 import json
 from pathlib import Path
 import numpy as np
@@ -20,9 +18,6 @@ from datetime import datetime
 sns.set_style("whitegrid")
 plt.rcParams["figure.figsize"] = (12, 8)
 plt.rcParams["font.size"] = 10
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
 
 def load_results(model_dir: str, model_name: str) -> dict:

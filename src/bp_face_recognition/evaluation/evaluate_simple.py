@@ -12,17 +12,12 @@ Output:
     - JSON results file
 """
 
-import os
-import sys
 import json
 import argparse
 import numpy as np
 from pathlib import Path
 from datetime import datetime
 from typing import Dict
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import tensorflow as tf
 from tensorflow import keras
@@ -37,9 +32,9 @@ def load_facenet_model(model_path: str):
     """
     Load FaceNet model with proper handling of custom layers.
     """
-    from bp_face_recognition.utils.facenet_loader import load_finetuned_facenet
+    from bp_face_recognition.utils.facenet_loader import load_finetuned_facenet_robust
 
-    return load_finetuned_facenet(model_path)
+    return load_finetuned_facenet_robust(model_path)
 
 
 def evaluate_model_simple(model_path: str, verbose: bool = True) -> Dict:

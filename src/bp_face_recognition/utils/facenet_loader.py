@@ -11,8 +11,6 @@ Solution: Reconstruct the exact architecture and load only the weights.
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np

@@ -14,17 +14,12 @@ Usage:
     identity, confidence = recognizer.recognize(face_image)
 """
 
-import os
-import sys
 import json
 import numpy as np
 import tensorflow as tf
 from pathlib import Path
 from typing import List, Tuple, Union, Optional
 from PIL import Image
-
-# Add parent to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from bp_face_recognition.vision.recognition.base import BaseRecognizer
 

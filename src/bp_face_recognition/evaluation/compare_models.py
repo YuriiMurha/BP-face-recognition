@@ -9,7 +9,6 @@ Usage:
     python compare_models.py --dataset webcam --output results/comparison/
 """
 
-import os
 import sys
 import json
 import time
@@ -19,9 +18,6 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple
 import pandas as pd
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import tensorflow as tf
 from sklearn.metrics import accuracy_score, classification_report

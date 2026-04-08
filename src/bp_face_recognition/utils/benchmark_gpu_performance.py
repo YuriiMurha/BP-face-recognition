@@ -7,17 +7,13 @@ across different image sizes and batch sizes. It's designed to work in both
 Windows (CPU) and WSL (GPU) environments.
 """
 
+import sys
 import time
 import numpy as np
 import json
-import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 import logging
-
-# Add project root to path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root / "src"))
 
 from bp_face_recognition.models.methods.mediapipe_detector import MediaPipeDetector
 from bp_face_recognition.utils.gpu import get_gpu_info, print_gpu_diagnostics

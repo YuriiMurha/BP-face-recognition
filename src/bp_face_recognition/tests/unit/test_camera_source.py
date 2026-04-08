@@ -1,9 +1,5 @@
-import os
-import sys
 import cv2
 from unittest.mock import patch, MagicMock
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 class TestCameraConfig:

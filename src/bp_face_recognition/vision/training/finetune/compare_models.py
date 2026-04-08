@@ -7,8 +7,6 @@ Usage:
     python compare_models.py --models facenet_transfer facenet_full facenet_triplet baseline
 """
 
-import os
-import sys
 import json
 import argparse
 import logging
@@ -18,9 +16,6 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

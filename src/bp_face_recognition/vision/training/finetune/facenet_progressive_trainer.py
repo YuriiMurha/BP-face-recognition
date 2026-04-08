@@ -13,8 +13,6 @@ Usage:
     python facenet_progressive_trainer.py --epochs-per-phase 5 --batch-size 32
 """
 
-import os
-import sys
 import json
 import argparse
 import logging
@@ -24,9 +22,6 @@ from typing import Dict, Optional, List
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
 from bp_face_recognition.vision.training.finetune.dataset_loader import (
     create_combined_dataset,
@@ -385,6 +380,22 @@ def main():
     trainer.save_model()
     trainer.save_history()
     trainer.save_training_report(dataset_info, test_results)
+
+    # Save dataset metadata for closed-set recognition
+    import json
+
+    metadata_path = trainer.model_dir / "dataset_info.json"
+    with open(metadata_path, "w") as f:
+        json.dump(
+            {
+                "class_names": dataset_info["class_names"],
+                "num_classes": dataset_info["num_classes"],
+                "img_size": list(dataset_info.get("img_size", [160, 160])),
+            },
+            f,
+            indent=2,
+        )
+    logger.info(f"Saved dataset_info.json to {metadata_path}")
 
     logger.info("Progressive unfreezing training complete!")
 

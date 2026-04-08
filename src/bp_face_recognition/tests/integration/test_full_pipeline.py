@@ -1,10 +1,6 @@
 import pytest
 import numpy as np
 from unittest.mock import MagicMock, patch
-import sys
-import os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 class TestFullPipelineIntegration:

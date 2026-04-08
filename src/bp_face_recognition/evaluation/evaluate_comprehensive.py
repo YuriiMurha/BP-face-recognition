@@ -15,8 +15,6 @@ Output:
     - Summary table
 """
 
-import os
-import sys
 import json
 import argparse
 import numpy as np
@@ -27,9 +25,6 @@ from typing import Dict, List, Tuple
 import warnings
 
 warnings.filterwarnings("ignore")
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import tensorflow as tf
 from tensorflow import keras
@@ -86,10 +81,8 @@ def evaluate_single_model(
     import time
 
     for images, labels in test_ds:
-        # Preprocess
-        images = tf.cast(images, tf.float32)
-        images = images / 255.0
-        images = (images - 0.5) * 2.0
+        # Dataset already returns images normalized to [-1, 1]
+        # (dataset_loader.py applies /255 and *2-1 during loading)
 
         # Time inference
         start = time.time()
