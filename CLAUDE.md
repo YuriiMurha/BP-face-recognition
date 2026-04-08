@@ -93,17 +93,15 @@ Pipeline: `crop_faces.py` (MediaPipe-based) → `split_lfw.py` → `augmentation
 
 ## Current Research Status
 
-Session-based development tracked in `.maintenance/` directory:
-- **Sessions 12-14**: FaceNet fine-tuning study complete — 3 approaches compared
-- **Session 17**: Runtime testing of FaceNet models (in progress)
-- **Best model**: FaceNet Progressive Unfreezing (`facenet_pu`) — 99.15% accuracy on 14-class combined dataset (7,080 images)
-- **Production default recognizer**: `facenet_pretrained` (config/models.yaml `global.default_recognizer`)
-- **Next priorities**: Runtime model comparison, thesis documentation, production optimization
+- **Best model**: FaceNet PU (`facenet_pu`) — 99.15% accuracy, F1=0.991 on 14-class combined dataset
+- **Production default**: `facenet_pu` (config/models.yaml `global.default_recognizer`)
+- **Both paradigms working**: Open-set (`make run`) and Closed-set (`make run-closed-set`)
+- **Thesis benchmark**: `make thesis-benchmark` — generates comparison tables, confusion matrices, training curves to `results/thesis/`
 
 Key files for context:
-- `.maintenance/TODO.md` — current tasks and session plans
-- `.maintenance/PROGRESS.md` — detailed session achievements
-- `.maintenance/reports/` — comprehensive reports including implementation context
+- `.maintenance/TODO.md` — current tasks
+- `.maintenance/PROGRESS.md` — session achievements
+- `results/thesis/` — benchmark outputs (markdown, LaTeX, PNG plots, JSON)
 
 ## Testing
 

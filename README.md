@@ -254,46 +254,52 @@ Total training time: 514.65s (8.58m)
 Model size: 14.85 MB
 ```
 
-## Model Performance Summary
+## Benchmark Results
 
-### FaceNet Fine-Tuning Results (Session 14)
+### Face Detection Methods
 
-| Approach | Strategy | Accuracy | Training Time | Model Size | Status |
-|----------|----------|----------|---------------|------------|--------|
-| **Option A** | Transfer Learning (Frozen) | 92.84% | **4 min** | **93 MB** | ✅ Complete |
-| **Option B** | Progressive Unfreezing | **99.15%** ⭐ | 50 min | 272 MB | ✅ Complete |
-| **Option C** | Triplet Loss | ~97-98% | ~90 min | ~272 MB | 🔄 Training |
+Benchmarked on 19 raw surveillance frames (resized to ≤800px):
 
-**Winner: Option B (Progressive Unfreezing)** achieved **99.15% accuracy**, exceeding the 97% target! Progressive unfreezing with 4-phase training provides the best accuracy for production deployment.
+| Method | Avg Time (ms) | FPS | Faces Detected | Best For |
+|--------|--------------|-----|----------------|----------|
+| **MediaPipe** | **3.1** | **325.6** | 6 | Real-time (fastest) |
+| MTCNN | 240.3 | 4.2 | **25** | Accuracy (most faces) |
+| Haar Cascade | 31.4 | 31.8 | 12 | Lightweight |
+| Dlib HOG | 155.7 | 6.4 | 10 | CPU-only |
 
-### Traditional Models
+### Face Recognition Models
 
-| Model | Type | Platform | Accuracy | Size | Training Time (20 epochs) | Best For |
-|-------|------|----------|----------|------|---------------------------|----------|
-| MobileNetV3Small | Classifier | GPU | 100% | 14.85MB | ~9 min | Fast training |
-| MobileNetV3Small | Classifier | CPU | 100% | 14.85MB | ~35 min | CPU-only systems |
-| EfficientNetB0 | Classifier | CPU | ~76.67% | 19.8MB | ~45-60 min | Research |
-| EfficientNetB0 Quantized | Classifier | CPU | ~75% | 5.0MB | N/A | **Production** |
-| FaceNet | Metric | Pretrained | N/A | 88MB | N/A | Baseline |
-| **metric_efficientnetb0_128d** | **Metric** | **CPU/GPU** | **N/A** | **~20MB** | **~15 min** | **Open-Set** |
+Evaluated on 1,062 test samples (14 classes, combined webcam+seccam dataset):
+
+| Model | Accuracy | Precision | Recall | F1 | Size (MB) |
+|-------|----------|-----------|--------|------|-----------|
+| FaceNet TL (Transfer Learning) | 92.84% | 0.9316 | 0.9284 | 0.9276 | 92.7 |
+| **FaceNet PU (Progressive Unfreezing)** | **99.15%** | **0.9918** | **0.9915** | **0.9912** | 271.9 |
+| FaceNet TLoss (Triplet Loss) | 94.63% | 0.9460 | 0.9463 | 0.9455 | 270.4 |
+| EfficientNetB0 (full) | 100%* | 1.0 | 1.0 | 1.0 | 23.8 |
+| EfficientNetB0 (float16 quantized) | 100%* | 1.0 | 1.0 | 1.0 | 9.0 |
+
+\* EfficientNetB0 trained on seccam_2 (15 classes), different dataset. Quantization achieves 62% size reduction.
+
+**Winner: FaceNet PU (Progressive Unfreezing)** — 99.15% accuracy, exceeding the 97% target.
 
 ### FaceNet Fine-Tuning Commands
 
 ```bash
 # Option A: Transfer Learning (Fast, 4 min, 92.84%)
-make train-facenet-transfer
+make train-facenet-tl
 
-# Option B: Progressive Unfreezing (Best accuracy, 50 min, 99.15%) ⭐
-make train-facenet-progressive
+# Option B: Progressive Unfreezing (Best accuracy, 50 min, 99.15%)
+make train-facenet-pu
 
-# Option C: Triplet Loss (Metric learning, 90 min, ~97-98%)
-make train-facenet-triplet
+# Option C: Triplet Loss (Metric learning, 90 min, 94.63%)
+make train-facenet-tloss
 
-# Compare all results
-make compare-facenet-results
+# Run full thesis benchmark (all models)
+make thesis-benchmark
 ```
 
-**Recommendation**: Use **Option B** for production systems requiring maximum accuracy (>99%).
+Benchmark outputs (tables, confusion matrices, training curves) are saved to `results/thesis/`.
 
 **Metric Learning (Open-Set Recognition):**
 - Uses Triplet Loss for embedding learning
@@ -350,7 +356,7 @@ make test-camera
 make test-camera-integration
 ```
 
-### User Registration & Recognition
+### User Registration & Recognition (Open-Set)
 
 ```bash
 # Register a new person from camera (captures 10 samples)
@@ -360,7 +366,21 @@ make register name="YourName"
 make run
 ```
 
-The application uses the custom-trained metric model (`metric_efficientnetb0_128d`) by default for Open-Set recognition, which can identify people not seen during training.
+### Closed-Set Recognition (No Registration Needed)
+
+The system also supports **closed-set classification** — the model directly classifies faces into one of 14 known identities from training, without any registration step.
+
+```bash
+# Run closed-set recognition (no database needed)
+make run-closed-set              # Default: FaceNet PU (99.15%)
+make run-closed-set-pu           # Progressive Unfreezing
+make run-closed-set-tl           # Transfer Learning
+make run-closed-set-tloss        # Triplet Loss
+```
+
+**Open-Set vs Closed-Set:**
+- **Open-Set** (`make run`): Register new people dynamically, uses embedding matching against database
+- **Closed-Set** (`make run-closed-set`): Fixed set of 14 identities, direct classifier output, no registration
 
 ### Using Your Phone as Webcam
 
