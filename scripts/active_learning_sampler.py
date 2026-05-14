@@ -11,7 +11,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.getcwd(), "src"))
 
 from bp_face_recognition.database.database import FaceDatabase
-from bp_face_recognition.models.model import FaceTracker
+from bp_face_recognition.vision.core.face_tracker import FaceTracker
 from bp_face_recognition.config.settings import settings
 
 

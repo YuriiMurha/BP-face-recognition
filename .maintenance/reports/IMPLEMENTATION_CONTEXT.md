@@ -10,7 +10,7 @@ This project is a Face Recognition system developed as a Bachelor's Thesis. It i
 - **`.opencode/`**: Custom LLM tool definitions and agent guidelines.
 - **`assets/`**: Contains static assets like plots and diagrams.
 - **`data/`**: Stores datasets (raw, cropped, augmented) and training logs.
-- **`notebooks/`**: Jupyter notebooks for exploration and visualization. *Core logic has been migrated to `src/` for production use.*
+- **`notebooks/`**: Removed in Session 22. Exploration notebooks superseded by production code in `src/`.
 - **`src/`**: Production source code.
 - **`LaTeX/`**: Source files for the thesis document.
 - **`noxfile.py`**: Configuration for `nox` (automation, testing, linting).
@@ -71,19 +71,20 @@ The source code is organized into modular packages with a new vision architectur
 - **`src/database/`**: Database interaction layer.
   - `database.py`: Handles connections to PostgreSQL or CSV.
   - `setup_db.py`: Database schema initialization script.
-- **`src/evaluation/`**: Scripts for evaluating model performance.
-  - `evaluate_methods.py`: Main script for running detection comparisons.
-  - `evaluate_recognition.py`: Script for Top-K recognition metrics and confusion matrices.
+- **`src/bp_face_recognition/evaluation/`**: Scripts for evaluating model performance.
+  - `thesis_benchmark.py`: Unified detection + recognition benchmark for thesis results.
+  - `detection_eval_with_groundtruth.py`: GT-based detection P/R/F1/Mean-IoU at IoU≥0.5.
+  - `embedding_quality.py`: Intra/inter L2, silhouette, separation ratio at 512D backbone.
+  - `evaluate_methods.py`: Detection comparison runner.
+  - `evaluate_recognition.py`: Top-K recognition metrics and confusion matrices.
+  - `create_dataset.py`, `split_datasets.py`, `detection_methods.py`, `show_stream.py`: helpers.
 - **`src/scripts/`**: Utility and management scripts.
   - `init_dataset.py`: Scaffolds and splits new raw datasets.
   - `update_pipeline.py`: Orchestrates the Augmentation -> Cropping workflow.
   - `register_person.py`: Automates adding a new person to the database from a folder of images.
   - `active_learning_sampler.py`: Identifies and saves low-confidence detections for manual labeling.
 - **`src/utils/`**: Utility functions (Camera, GPU, Face Cropping).
-- **`src/experiments/`**: **NEW** - Legacy and experimental code.
-  - `legacy_models/`: Old models folder (moved from `src/models/`).
-  - `facenet_experiment/`: Cloned FaceNet repository.
-  - `development_models/`: Training attempts and experimental models.
+- **`experiments/`**: Removed in Session 22. The folder held legacy `face-recognition/` tutorial code and a vendored `FaceNet/` repo that were superseded by `src/bp_face_recognition/vision/` and `keras-facenet`.
 
 ## Key Components
 

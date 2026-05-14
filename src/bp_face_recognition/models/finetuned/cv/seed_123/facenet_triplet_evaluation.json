@@ -1,0 +1,111 @@
+{
+  "model_type": "FaceNet Triplet Loss (Option C)",
+  "timestamp": "2026-05-13T15:19:43.029401",
+  "test_accuracy": 0.9001883239171374,
+  "test_accuracy_percent": 90.01883239171374,
+  "num_test_samples": 1062,
+  "num_train_samples": 2016,
+  "classification_report": {
+    "Stranger_1": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.8888888888888888,
+      "support": 234.0
+    },
+    "Stranger_10": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.8888888888888888,
+      "support": 9.0
+    },
+    "Stranger_11": {
+      "precision": 0.9285714285714286,
+      "recall": 0.9629629629629629,
+      "f1-score": 0.9454545454545454,
+      "support": 108.0
+    },
+    "Stranger_12": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9.0
+    },
+    "Stranger_14": {
+      "precision": 0.9473684210526315,
+      "recall": 1.0,
+      "f1-score": 0.972972972972973,
+      "support": 18.0
+    },
+    "Stranger_2": {
+      "precision": 0.8947368421052632,
+      "recall": 0.9444444444444444,
+      "f1-score": 0.918918918918919,
+      "support": 180.0
+    },
+    "Stranger_3": {
+      "precision": 0.9259259259259259,
+      "recall": 0.6944444444444444,
+      "f1-score": 0.7936507936507936,
+      "support": 108.0
+    },
+    "Stranger_4": {
+      "precision": 0.8055555555555556,
+      "recall": 0.9206349206349206,
+      "f1-score": 0.8592592592592593,
+      "support": 63.0
+    },
+    "Stranger_5": {
+      "precision": 0.7777777777777778,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.7777777777777778,
+      "support": 18.0
+    },
+    "Stranger_6": {
+      "precision": 0.9,
+      "recall": 1.0,
+      "f1-score": 0.9473684210526315,
+      "support": 9.0
+    },
+    "Stranger_7": {
+      "precision": 0.6666666666666666,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.7619047619047619,
+      "support": 9.0
+    },
+    "Stranger_8": {
+      "precision": 0.7142857142857143,
+      "recall": 0.5555555555555556,
+      "f1-score": 0.625,
+      "support": 18.0
+    },
+    "Stranger_9": {
+      "precision": 0.8,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.8421052631578947,
+      "support": 9.0
+    },
+    "Yurii": {
+      "precision": 0.9448529411764706,
+      "recall": 0.9518518518518518,
+      "f1-score": 0.948339483394834,
+      "support": 270.0
+    },
+    "accuracy": 0.9001883239171374,
+    "macro avg": {
+      "precision": 0.8631085036353723,
+      "recall": 0.883087679516251,
+      "f1-score": 0.869323569665869,
+      "support": 1062.0
+    },
+    "weighted avg": {
+      "precision": 0.9015145145182665,
+      "recall": 0.9001883239171374,
+      "f1-score": 0.8984366246772802,
+      "support": 1062.0
+    }
+  },
+  "weights_path": "/mnt/d/Coding/Personal/BP-face-recognition/src/bp_face_recognition/models/finetuned/cv/seed_123/facenet_triplet_v1.0.weights.h5",
+  "embedding_shape": 512,
+  "seed": 123,
+  "note": "Evaluated using loaded weights with KNN classifier"
+}

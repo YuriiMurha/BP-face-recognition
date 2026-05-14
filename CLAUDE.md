@@ -96,12 +96,12 @@ Pipeline: `crop_faces.py` (MediaPipe-based) → `split_lfw.py` → `augmentation
 - **Best model**: FaceNet PU (`facenet_pu`) — 99.15% accuracy, F1=0.991 on 14-class combined dataset
 - **Production default**: `facenet_pu` (config/models.yaml `global.default_recognizer`)
 - **Both paradigms working**: Open-set (`make run`) and Closed-set (`make run-closed-set`)
-- **Thesis benchmark**: `make thesis-benchmark` — generates comparison tables, confusion matrices, training curves to `results/thesis/`
+- **Thesis benchmark**: `make thesis-benchmark` — generates comparison tables, confusion matrices, training curves to `results/`
 
 Key files for context:
 - `.maintenance/TODO.md` — current tasks
 - `.maintenance/PROGRESS.md` — session achievements
-- `results/thesis/` — benchmark outputs (markdown, LaTeX, PNG plots, JSON)
+- `results/` — benchmark outputs (markdown, LaTeX, PNG plots, JSON)
 
 ## Testing
 
@@ -126,5 +126,5 @@ Key files for context:
 - Datasets: `data/datasets/{raw,cropped,augmented}/{dataset_name}/`
 - Training logs go to `data/logs/`
 - Session progress and plans in `.maintenance/` directory
-- Thesis documentation in `docs/thesis/`
+- Thesis documentation in `thesis/` (chapters under `thesis/chapters/`, figures under `thesis/figures/`)
 - Model switching: `scripts/switch_model.py` or `switch.bat` (Windows)

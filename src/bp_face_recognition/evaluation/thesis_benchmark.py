@@ -12,7 +12,7 @@ Usage:
     python thesis_benchmark.py --skip-detection   # recognition only
     python thesis_benchmark.py --skip-recognition  # detection only
 
-Output: results/thesis/
+Output: results/
 """
 
 import json
@@ -45,7 +45,7 @@ from bp_face_recognition.config.settings import settings
 PROJECT_ROOT = settings.ROOT_DIR
 MODELS_DIR = PROJECT_ROOT / "src" / "bp_face_recognition" / "models"
 FINETUNED_DIR = MODELS_DIR / "finetuned"
-OUTPUT_DIR = PROJECT_ROOT / "results" / "thesis"
+OUTPUT_DIR = PROJECT_ROOT / "results"
 
 
 # ---------------------------------------------------------------------------

@@ -178,7 +178,9 @@ class FaceNetProgressiveTrainer:
         # Compile with appropriate LR
         self._compile_model(learning_rate)
 
-        # Callbacks
+        # Callbacks. We use weights-only checkpoints (.weights.h5) because the
+        # FaceNet base contains Lambda layers whose Python closures cannot be
+        # JSON-serialized in the .keras zip format on this TF/Keras 2.15 env.
         callbacks = [
             keras.callbacks.EarlyStopping(
                 monitor="val_accuracy", patience=3, restore_best_weights=True, verbose=1
@@ -186,10 +188,11 @@ class FaceNetProgressiveTrainer:
             keras.callbacks.ModelCheckpoint(
                 filepath=str(
                     self.model_dir
-                    / f'facenet_progressive_{phase_name.lower().replace(" ", "_")}.keras'
+                    / f'facenet_progressive_{phase_name.lower().replace(" ", "_")}.weights.h5'
                 ),
                 monitor="val_accuracy",
                 save_best_only=True,
+                save_weights_only=True,
                 verbose=1,
             ),
         ]
@@ -268,11 +271,17 @@ class FaceNetProgressiveTrainer:
 
         return results
 
-    def save_model(self, filename: str = "facenet_progressive_v1.0.keras"):
-        """Save final model."""
+    def save_model(self, filename: str = "facenet_progressive_v1.0.weights.h5"):
+        """Save final model weights.
+
+        We persist only weights (.weights.h5) because the FaceNet base contains
+        non-JSON-serializable Lambda layers in this Keras 2.15 environment.
+        To reload: rebuild via `FaceNetProgressiveTrainer.build_model()` then
+        call `model.load_weights(filename)`.
+        """
         save_path = self.model_dir / filename
-        self.model.save(save_path)
-        logger.info(f"Model saved to {save_path}")
+        self.model.save_weights(str(save_path))
+        logger.info(f"Model weights saved to {save_path}")
 
     def save_history(self, filename: str = "facenet_progressive_history.json"):
         """Save training history."""
@@ -343,8 +352,28 @@ def main():
     parser.add_argument(
         "--hidden-units", type=int, default=256, help="Hidden layer units"
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for split + training reproducibility",
+    )
+    parser.add_argument(
+        "--model-dir",
+        type=str,
+        default="src/bp_face_recognition/models/finetuned",
+        help="Directory to save trained model and reports",
+    )
 
     args = parser.parse_args()
+
+    # Set all random seeds early. We use individual seed setters rather than
+    # `keras.utils.set_random_seed` because the latter, on Keras 2.15, can inject
+    # SeedGenerator objects that break `.keras` checkpoint serialization.
+    import random as _random
+    _random.seed(args.seed)
+    np.random.seed(args.seed)
+    tf.random.set_seed(args.seed)
 
     print("=" * 60)
     print("FACENET PROGRESSIVE UNFREEZING (Option B)")
@@ -352,17 +381,21 @@ def main():
     print(f"Epochs per phase: {args.epochs_per_phase}")
     print(f"Total expected epochs: {args.epochs_per_phase * 4}")
     print(f"Batch size: {args.batch_size}")
+    print(f"Seed: {args.seed}")
+    print(f"Model dir: {args.model_dir}")
     print("=" * 60)
 
     # Load dataset
     logger.info("Loading dataset...")
     train_ds, val_ds, test_ds, dataset_info = create_combined_dataset(
-        batch_size=args.batch_size, augmentation=True
+        batch_size=args.batch_size, augmentation=True, random_state=args.seed
     )
 
     # Create trainer
     trainer = FaceNetProgressiveTrainer(
-        num_classes=dataset_info["num_classes"], hidden_units=args.hidden_units
+        num_classes=dataset_info["num_classes"],
+        hidden_units=args.hidden_units,
+        model_dir=args.model_dir,
     )
 
     # Build model

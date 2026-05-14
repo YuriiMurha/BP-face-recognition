@@ -1,0 +1,47 @@
+{
+  "model_type": "FaceNet Triplet Loss (Option C)",
+  "timestamp": "2026-05-14T17:44:39.935245",
+  "architecture": {
+    "base_model": "FaceNet (fully trainable)",
+    "embedding_dim": 512,
+    "margin": 0.2,
+    "loss": "Triplet Loss"
+  },
+  "training_config": {
+    "learning_rate": 0.001,
+    "epochs_trained": 27,
+    "margin": 0.2
+  },
+  "dataset": {
+    "num_classes": 14,
+    "class_names": [
+      "Stranger_1",
+      "Stranger_10",
+      "Stranger_11",
+      "Stranger_12",
+      "Stranger_14",
+      "Stranger_2",
+      "Stranger_3",
+      "Stranger_4",
+      "Stranger_5",
+      "Stranger_6",
+      "Stranger_7",
+      "Stranger_8",
+      "Stranger_9",
+      "Yurii"
+    ],
+    "num_train": 4956,
+    "num_val": 1062,
+    "num_test": 1062,
+    "img_size": [
+      160,
+      160
+    ],
+    "batch_size": 8
+  },
+  "results": {
+    "final_train_loss": 0.011589876376092434,
+    "final_val_loss": 0.010301041416823864,
+    "best_val_loss": 0.002388289198279381
+  }
+}

@@ -37,6 +37,7 @@ class FaceNetDatasetLoader:
         test_split: float = 0.15,
         augmentation: bool = True,
         cache_dir: Optional[str] = None,
+        random_state: int = 42,
     ):
         """
         Initialize dataset loader.
@@ -49,6 +50,7 @@ class FaceNetDatasetLoader:
             test_split: Fraction for test (0.0 to 1.0)
             augmentation: Whether to apply data augmentation
             cache_dir: Directory to cache preprocessed data
+            random_state: Seed for train/val/test split reproducibility
         """
         self.data_dirs = [Path(d) for d in data_dirs]
         self.img_size = img_size
@@ -57,6 +59,7 @@ class FaceNetDatasetLoader:
         self.test_split = test_split
         self.augmentation = augmentation
         self.cache_dir = Path(cache_dir) if cache_dir else None
+        self.random_state = random_state
 
         self.class_names = []
         self.class_to_idx = {}
@@ -243,7 +246,7 @@ class FaceNetDatasetLoader:
             labels,
             test_size=self.validation_split + self.test_split,
             stratify=labels,
-            random_state=42,
+            random_state=self.random_state,
         )
 
         # Second split: val vs test
@@ -253,7 +256,7 @@ class FaceNetDatasetLoader:
             temp_labels,
             test_size=1 - val_size,
             stratify=temp_labels,
-            random_state=42,
+            random_state=self.random_state,
         )
 
         logger.info(f"Data splits:")
@@ -399,6 +402,7 @@ class FaceNetDatasetLoader:
 def create_combined_dataset(
     webcam_dir: str = "data/datasets/augmented/webcam",
     seccam_dir: str = "data/datasets/augmented/seccam_2",
+    random_state: int = 42,
     **kwargs,
 ) -> Tuple[tf.data.Dataset, tf.data.Dataset, tf.data.Dataset, Dict]:
     """
@@ -407,12 +411,15 @@ def create_combined_dataset(
     Args:
         webcam_dir: Path to webcam dataset
         seccam_dir: Path to seccam_2 dataset
+        random_state: Seed for train/val/test split reproducibility
         **kwargs: Additional arguments for FaceNetDatasetLoader
 
     Returns:
         (train_dataset, val_dataset, test_dataset, dataset_info)
     """
-    loader = FaceNetDatasetLoader(data_dirs=[webcam_dir, seccam_dir], **kwargs)
+    loader = FaceNetDatasetLoader(
+        data_dirs=[webcam_dir, seccam_dir], random_state=random_state, **kwargs
+    )
 
     return loader.load_dataset()
 

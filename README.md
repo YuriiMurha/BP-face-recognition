@@ -178,8 +178,7 @@ BP-face-recognition/
 ├── data/                    # Datasets and training logs
 │   ├── cropped/            # Cropped face images
 │   └── logs/               # Training logs
-├── notebooks/               # Jupyter notebooks
-├── scripts/                 # Utility scripts
+├── scripts/                 # Utility scripts (training launchers, plotting, eval orchestration)
 ├── src/
 │   ├── bp_face_recognition/
 │   │   ├── vision/         # Face detection/recognition
@@ -299,7 +298,7 @@ make train-facenet-tloss
 make thesis-benchmark
 ```
 
-Benchmark outputs (tables, confusion matrices, training curves) are saved to `results/thesis/`.
+Benchmark outputs (tables, confusion matrices, training curves) are saved to `results/`.
 
 **Metric Learning (Open-Set Recognition):**
 - Uses Triplet Loss for embedding learning
@@ -471,7 +470,7 @@ make preprocess-augment dataset=lfw  # Augment only
 #### Prepare Your Own Dataset
 ```bash
 # Initialize dataset structure
-python src/scripts/init_dataset.py --name my_dataset
+python scripts/init_dataset.py --name my_dataset
 
 # Add images to data/datasets/raw/my_dataset/
 # Label format: {label}_{unique_id}.jpg (e.g., John_001.jpg)

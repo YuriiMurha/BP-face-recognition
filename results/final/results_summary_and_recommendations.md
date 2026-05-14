@@ -1,210 +1,81 @@
-# FaceNet Fine-Tuning: Results Summary and Recommendations
+# FaceNet Fine-Tuning: Final Results and Deployment Recommendations
 
-**Date**: March 12, 2026  
-**Session**: 14 - Final Analysis  
-**Status**: 🔄 Option C Training in Progress
+**Last updated**: May 13, 2026 (final, all approaches complete)
+**Status**: ✅ Closed-set + open-set evaluation complete across all three approaches
 
----
+This document summarizes deployment-relevant findings from the thesis. For the
+underlying numbers and methodology see
+`results/thesis_benchmark_report.md` and the source JSON artifacts in
+the same directory.
 
-## Executive Summary
+## At-a-glance
 
-This document provides a concise summary of the FaceNet fine-tuning study results and practical recommendations for deployment.
+| Approach | Closed-set Accuracy | Training Time | Embedding Separation Ratio | Recommended Use Case |
+|---|---|---|---|---|
+| **Transfer Learning (TL)** | 92.84% | ~4 min | 1.33 (= vanilla FaceNet) | Rapid prototyping; resource-constrained baseline |
+| **Progressive Unfreezing (PU)** | **99.15%** | ~50 min | 1.90 | Closed-set production identification |
+| **Triplet Loss (TLoss)** | 94.63% | ~90 min | **3.72** | Open-set verification (1:1) and registration-based identification |
 
-### Key Achievement
+Numbers come from a 1,062-sample held-out test set (14 classes, 65/20/15 split).
+The separation ratio is the average inter-class L2 distance divided by the
+average intra-class L2 distance, computed on the 512-dimensional FaceNet
+backbone output — higher is better.
 
-**Option B (Progressive Unfreezing) achieved 99.15% accuracy**, exceeding all targets and demonstrating the effectiveness of gradual domain adaptation.
+## Key findings
 
----
+1. **Progressive Unfreezing is the closed-set classification winner.** It
+   beats Transfer Learning by 6.31 percentage points and Triplet Loss by 4.52
+   points, and does so in roughly half the training time of Triplet Loss.
 
-## Results at a Glance
+2. **Triplet Loss is the embedding-geometry winner.** Its separation ratio of
+   3.72 is almost twice Progressive Unfreezing's 1.90 — direct evidence that
+   triplet training does what it was designed to do, even though it loses on
+   the classification metric. This makes it the right choice for open-set
+   verification despite the classification accuracy gap.
 
-### Completed Approaches
+3. **The original hypothesis H3 (Triplet Loss > 97% classification accuracy)
+   was not confirmed** on this dataset, primarily because we used random
+   online triplet mining rather than semi-hard negative mining as in the
+   original FaceNet paper. The geometric metrics indicate this is a training
+   strategy issue, not a model-capacity issue.
 
-| Approach | Accuracy | Time | Status |
-|----------|----------|------|--------|
-| **Option A**: Transfer Learning | 92.84% | 4 min | ✅ Complete |
-| **Option B**: Progressive Unfreezing | **99.15%** | 50 min | ✅ Complete |
-| **Option C**: Triplet Loss | TBD | ~90 min | 🔄 In Progress |
+4. **The frozen-backbone baseline (TL) is essentially vanilla pre-trained
+   FaceNet** for the purposes of embedding geometry. Its separation ratio of
+   1.33 is the floor we improve against.
 
-### Performance Highlights
+## Deployment guidance
 
-✅ **Option B exceeded 97% target by 2.15%**  
-✅ **+6.31% improvement over Option A**  
-✅ **19 epochs of stable training**  
-✅ **No catastrophic forgetting observed**
+| Scenario | Recommended Approach |
+|---|---|
+| Need results in under 10 minutes of training | TL |
+| Maximum closed-set accuracy on a fixed identity set | PU |
+| Open-set verification (face matching against a database that can be edited) | TLoss |
+| Resource-constrained edge device, fixed identity set | TL with smaller head + post-training quantization |
+| Pipeline that already runs FaceNet without fine-tuning | TL (no architectural change required) |
 
----
+## Detection pairing
 
-## Detailed Findings
+The recognition models above pair with one of four detection methods:
 
-### Option A: Transfer Learning (Frozen Base)
+| Detector | F1 (IoU≥0.5) | Speed (CPU, 800px) | Use case |
+|---|---|---|---|
+| MediaPipe BlazeFace | 0.250 | 238 FPS | Real-time monitoring (only viable >30 FPS option) |
+| MTCNN | **0.706** | 3.5 FPS | Offline batch / attentive replay (best F1) |
+| Haar Cascade | 0.105 | 25 FPS | Not recommended (low precision) |
+| Dlib HOG | 0.056 | 6 FPS | Not recommended (low precision) |
 
-**What Worked**:
-- Extremely fast training (4 minutes)
-- 92.84% accuracy with minimal effort
-- No overfitting (frozen base prevents forgetting)
-- Stable convergence in 2 epochs
+The system defaults to MediaPipe for real-time work because it is the only
+method that meets the 30 FPS real-time threshold without GPU. MTCNN is
+exposed as a configurable alternative for offline batch processing where
+recall matters more than latency.
 
-**Limitations**:
-- Fixed features cannot adapt to domain specifics
-- Plateaued quickly at 92.84%
-- Struggles with class imbalance
+## Artifacts
 
-**Best For**:
-- Rapid prototyping
-- Resource-constrained environments
-- Similar domain to pre-training data
-
-### Option B: Progressive Unfreezing
-
-**What Worked**:
-- **99.15% accuracy** (highest achieved)
-- Gradual adaptation prevented forgetting
-- Each phase contributed meaningful improvements
-- Successfully adapted to domain-specific features
-
-**Phases Breakdown**:
-1. **Phase 1** (Head only): ~92% baseline
-2. **Phase 2** (+Top 20%): ~96% (+4%)
-3. **Phase 3** (+Top 40%): ~98% (+2%)
-4. **Phase 4** (Full): 99.53% (+1.5%)
-
-**Trade-offs**:
-- 12.5× longer training (50 min vs 4 min)
-- 2.9× larger model (272 MB vs 93 MB)
-- Superior accuracy justifies additional cost
-
-**Best For**:
-- Production systems requiring maximum accuracy
-- Domains different from pre-training data
-- When 45-60 min training time is acceptable
-
-### Option C: Triplet Loss (In Progress)
-
-**Status**: Training started, Epoch 1/30 in progress
-
-**Expected**:
-- 97-98% accuracy
-- ~90 minutes training time
-- Optimized embedding space
-- Better similarity matching
-
----
-
-## Recommendations
-
-### For Immediate Deployment
-
-**Choose Option B** for production systems:
-- ✅ Highest accuracy (99.15%)
-- ✅ Validated approach
-- ✅ Complete training pipeline
-- ✅ Production-ready model available
-
-### For Different Scenarios
-
-| Scenario | Recommended Approach | Why |
-|----------|---------------------|-----|
-| **Need results in < 10 min** | Option A | 92.84% in 4 minutes |
-| **Maximum accuracy required** | Option B | 99.15% accuracy |
-| **Balanced approach** | Option B (Phases 1-2) | ~96% in 25 min |
-| **Research/embedding focus** | Option C | Metric learning |
-| **Resource constrained** | Option A | Smaller model, faster training |
-
-### Hybrid Strategy
-
-For optimal deployment:
-1. **Start with Option A** for rapid baseline (4 min)
-2. **If accuracy < 95% needed**: Switch to Option B
-3. **Use Option B Phase 1-2 only** for 25 min / ~96% compromise
-
----
-
-## Scientific Contributions
-
-### Validated Hypotheses
-
-1. ✅ **H1**: Transfer learning achieves >90% accuracy (achieved: 92.84%)
-2. ✅ **H2**: Progressive unfreezing improves accuracy (achieved: +6.31%)
-3. 🔄 **H3**: Triplet loss achieves >97% (testing in progress)
-4. ✅ **H4**: Progressive unfreezing offers best accuracy/time ratio (confirmed)
-
-### Novel Findings
-
-1. **Progressive unfreezing validated**: 4-phase approach with decreasing learning rates effectively prevents catastrophic forgetting
-
-2. **Diminishing returns observed**: Each phase contributed less improvement (4% → 2% → 1.5%), suggesting optimal stopping point at Phase 3 (~98%)
-
-3. **Domain adaptation works**: 99.15% on small dataset (7,080 images) comparable to original FaceNet on millions
-
-4. **Time-accuracy trade-off quantified**: 12.5× time investment yields 6.31% accuracy gain
-
----
-
-## Technical Details
-
-### Training Configuration Summary
-
-```yaml
-Option A (Transfer Learning):
-  - Epochs: 20 (early stopping at 2)
-  - LR: 0.001
-  - Trainable: 131K params (0.56%)
-  - Time: ~4 min
-
-Option B (Progressive Unfreezing):
-  - Phases: 4
-  - LR Schedule: 1e-3 → 1e-5 → 5e-6 → 1e-6
-  - Trainable: 23.6M params (100%)
-  - Time: ~50 min
-
-Option C (Triplet Loss):
-  - Epochs: 30
-  - LR: 0.001
-  - Margin: 0.2
-  - Trainable: 23.6M params (100%)
-  - Time: ~90 min
-```
-
-### Model Artifacts
-
-All models saved in:
-```
-src/bp_face_recognition/models/finetuned/
-├── facenet_transfer_v1.0.keras (93 MB, 92.84%)
-├── facenet_progressive_v1.0.keras (272 MB, 99.15%)
-└── facenet_triplet_v1.0.keras (TBD)
-```
-
----
-
-## Next Steps
-
-### Immediate (Next 2 Hours)
-1. ⏳ Wait for Option C training completion (~60 min remaining)
-2. 📊 Generate final comparison visualizations
-3. 📄 Update this document with Option C results
-
-### Short-term (Next Session)
-1. 🧪 Evaluate Option C on test set
-2. 📈 Generate t-SNE embeddings visualization
-3. 📋 Create final thesis chapter
-
-### Long-term
-1. 🚀 Deploy Option B to production
-2. 🔬 Publish results (conference paper)
-3. 📚 Archive experimental code
-
----
-
-## Conclusion
-
-This study successfully compared three FaceNet fine-tuning strategies, with **Option B (Progressive Unfreezing) emerging as the clear winner** with 99.15% accuracy. The results validate the effectiveness of gradual domain adaptation and provide clear guidance for practitioners choosing between rapid deployment (Option A) and maximum accuracy (Option B).
-
-**Primary Recommendation**: Use **Option B** for production face recognition systems requiring >99% accuracy.
-
----
-
-**Document Version**: 1.0  
-**Last Updated**: March 12, 2026  
-**Status**: Complete (pending Option C results)
+- Trained models: `src/bp_face_recognition/models/finetuned/`
+  - `facenet_transfer_v1.0.keras` (93 MB)
+  - `facenet_progressive_v1.0.keras` (272 MB)
+  - `facenet_triplet_v1.0.weights.h5` (95 MB, weights-only — load by rebuilding the FaceNet base via `keras_facenet.FaceNet()` and calling `load_weights`)
+- Training histories: `*_history.json` in the same directory
+- Benchmark results: `results/` (this directory has the canonical numbers)
+- Thesis: `thesis/chapters/07-results.md` (Section 7.4.2 documents the
+  embedding-geometry analysis in detail)

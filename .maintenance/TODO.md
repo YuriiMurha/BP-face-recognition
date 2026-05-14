@@ -14,19 +14,22 @@
 | **19** | Codebase Cleanup | Deleted 12 dead files, fixed 3 bugs, cleaned 20 files | ✅ |
 | **20** | Thesis Benchmark | Detection + recognition benchmarks, confusion matrices, training curves | ✅ |
 | **21** | Thesis Writing | 5 chapters written, TBD values filled, thesis index created | ✅ |
+| **22** | Thesis Polish | GT detection eval, embedding quality, verification eval, full 5-seed CV (15/15 cells), chapters 1-3 drafted, folder/script cleanup | ✅ |
 
 ---
 
-## Benchmark Results (Session 20)
+## Benchmark Results (Session 22 — GT-based detection)
 
-### Detection (19 raw surveillance frames, resized to ≤800px)
+### Detection (19 surveillance frames, 26 GT boxes, IoU≥0.5 matching)
 
-| Method | Avg Time (ms) | FPS | Faces Detected |
-|--------|--------------|-----|----------------|
-| MediaPipe | 3.1 | 325.6 | 6 |
-| MTCNN | 240.3 | 4.2 | 25 |
-| Haar Cascade | 31.4 | 31.8 | 12 |
-| Dlib HOG | 155.7 | 6.4 | 10 |
+| Method | F1 | Precision | Recall | Mean IoU | FPS |
+|--------|----|-----------|--------|----------|-----|
+| **MTCNN** | **0.706** | 0.720 | 0.692 | 0.693 | 3.5 |
+| MediaPipe | 0.250 | 0.667 | 0.154 | 0.720 | 238.3 |
+| Haar Cascade | 0.105 | 0.167 | 0.077 | 0.774 | 25.5 |
+| Dlib HOG | 0.056 | 0.100 | 0.038 | 0.580 | 6.0 |
+
+The old count-only methodology (Session 20) hid that Haar/Dlib detections were mostly false positives.
 
 ### Recognition (1,062 test samples, 14 classes)
 
@@ -41,11 +44,13 @@
 \* Training-report metrics (embedding model, no softmax head for live eval)
 \** Trained on seccam_2 (15 classes), different dataset — metrics from training report
 
-### Outputs: `results/thesis/`
+### Outputs: `results/`
 - `thesis_benchmark_report.md` — Markdown + LaTeX tables
-- `facenet_tl_confusion_matrix.png`, `facenet_pu_confusion_matrix.png`
-- `training_curves_comparison.png`
-- `detection_results.json`, `recognition_results.json`
+- `detection_eval_report.md`, `detection_results_groundtruth.json` — GT-based detection
+- `embedding_quality_report.md`, `embedding_quality.json` — 512D backbone geometry
+- `facenet_tl_confusion_matrix.png`, `facenet_pu_confusion_matrix.png`, `facenet_tloss_confusion_matrix.png`
+- `thesis/figures/` — 3 per-approach training curve PNGs (TL, PU, TLoss)
+- `recognition_results.json`, `thesis_benchmark_combined.json`
 
 ---
 
@@ -61,10 +66,26 @@
 - [x] Write system architecture chapter
 - [x] Create thesis chapter index (`docs/thesis/README.md`)
 
-### Repository Final Cleanup
-- [ ] Clean training logs and temp files: `make clean-all`
-- [ ] Organize `.maintenance/` documentation
+### Repository Final Cleanup (Session 22 - COMPLETE)
+- [x] Delete broken `results/evaluation/` (KNN-on-softmax methodology, PU misreported as 21.94%)
+- [x] Delete preliminary `results/visualizations/` (2/3-model plots from Mar 12)
+- [x] Delete superseded `docs/thesis/` (canonical version now in `thesis/`)
+- [x] Flatten `results/thesis/` → `results/`
+- [x] Delete 7 broken/redundant Python scripts (evaluate_simple, evaluate_comprehensive, compare_models, etc.)
+- [x] Remove 5 Makefile targets that invoked broken scripts
+- [x] Add 3 new Makefile targets: `detection-eval`, `embedding-quality`, `training-curves`
 - [ ] Final commit with all benchmark results and thesis chapters
+
+### Session 22 - Thesis Rigor (COMPLETE except CV)
+- [x] Fix TLoss trainer bugs (batch_size not propagated, .keras save fails on Lambda layers)
+- [x] GT-based detection eval (`evaluation/detection_eval_with_groundtruth.py`)
+- [x] Embedding quality analysis (`evaluation/embedding_quality.py`)
+- [x] Per-approach training curves (`scripts/plot_training_curves.py`)
+- [x] Isolated-subprocess detection eval runner (`scripts/run_detection_eval.py`)
+- [x] Thesis Ch. 7 updates: §7.1 (GT detection), §7.2.5 (per-approach figures), §7.4.2 (embedding quality)
+- [x] 5-seed cross-validation across TL/PU/TLoss — **COMPLETE** (15/15 cells). Final CV: TL 96.52% ± 0.46%, PU 94.11% ± 0.59%, TLoss 87.08% ± 10.33%. Ranking reverses vs canonical (TL > PU > TLoss under CV; PU > TLoss > TL on single split). Full integration in §7.4.4 + Table 7.5 + §7.5.1 + §7.6.
+- [x] Verification eval (TAR/FAR/EER pairs) — done; §7.4.3 added with finding that PU wins verification (EER=0.090) over TLoss (EER=0.179), reconciled with §7.4.2 separation-ratio claim
+- [x] Chapters 1-3 drafted (Introduction, Literature Review, Tools & Libraries) — 1.4k + 6.0k + 3.0k words; ~36 unique BibTeX entries added; no duplicates
 
 ---
 
@@ -76,8 +97,8 @@
 - [ ] Benchmark quantized vs full: accuracy drop, speed gain
 
 ### Advanced Evaluation
-- [ ] ROC/AUC curves for each recognizer (threshold sweep)
-- [ ] FAR/FRR curves at different thresholds
+- [x] ROC/AUC curves for each recognizer (covered by verification eval, Session 22)
+- [x] FAR/FRR curves at different thresholds (covered by verification eval, Session 22)
 - [ ] Open-set vs Closed-set side-by-side comparison on same faces
 - [ ] End-to-end pipeline timing breakdown (detection + preprocessing + recognition)
 - [ ] Robustness analysis under brightness/contrast/rotation perturbations
@@ -89,8 +110,8 @@
 
 ---
 
-**Last Updated**: Session 21 — Thesis Chapters Complete
+**Last Updated**: Session 22 — May 13, 2026
 
-**Current Focus**: Final cleanup and submission preparation
+**Current Focus**: Cross-validation rigor + thesis polish
 
-**Next**: `make clean-all`, organize .maintenance/, final commit, submit thesis
+**Next**: Final commit when user authorizes. All thesis work for Session 22 is complete: GT detection eval, embedding-quality eval, verification (TAR/FAR/EER), full 5-seed CV with ranking-reversal finding, chapters 1-3 drafted, ~53 BibTeX entries added, all references deduplicated, folder/script cleanup, Makefile path bugs fixed.

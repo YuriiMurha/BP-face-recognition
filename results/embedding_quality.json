@@ -1,0 +1,100 @@
+{
+  "embedding_extraction_point": "FaceNet backbone output (512D)",
+  "num_test_samples": 1062,
+  "class_names": [
+    "Stranger_1",
+    "Stranger_10",
+    "Stranger_11",
+    "Stranger_12",
+    "Stranger_14",
+    "Stranger_2",
+    "Stranger_3",
+    "Stranger_4",
+    "Stranger_5",
+    "Stranger_6",
+    "Stranger_7",
+    "Stranger_8",
+    "Stranger_9",
+    "Yurii"
+  ],
+  "models": [
+    {
+      "key": "TL",
+      "name": "Transfer Learning",
+      "embedding_dim": 512,
+      "num_samples": 1062,
+      "intra_class_distance": 0.6515,
+      "inter_class_distance": 0.8664,
+      "silhouette_cosine": 0.1111,
+      "separation_ratio": 1.3297,
+      "intra_per_class": {
+        "0": 0.857,
+        "1": 0.5072,
+        "2": 0.6809,
+        "3": 0.3171,
+        "4": 0.6509,
+        "5": 0.7392,
+        "6": 0.8047,
+        "7": 0.8519,
+        "8": 0.6382,
+        "9": 0.6522,
+        "10": 0.4623,
+        "11": 0.6479,
+        "12": 0.5817,
+        "13": 0.7304
+      }
+    },
+    {
+      "key": "PU",
+      "name": "Progressive Unfreezing",
+      "embedding_dim": 512,
+      "num_samples": 1062,
+      "intra_class_distance": 0.5746,
+      "inter_class_distance": 1.0922,
+      "silhouette_cosine": 0.3203,
+      "separation_ratio": 1.901,
+      "intra_per_class": {
+        "0": 0.8369,
+        "1": 0.4148,
+        "2": 0.646,
+        "3": 0.2773,
+        "4": 0.4849,
+        "5": 0.7305,
+        "6": 0.736,
+        "7": 0.7664,
+        "8": 0.4925,
+        "9": 0.5948,
+        "10": 0.355,
+        "11": 0.5289,
+        "12": 0.4376,
+        "13": 0.7425
+      }
+    },
+    {
+      "key": "TLoss",
+      "name": "Triplet Loss",
+      "embedding_dim": 512,
+      "num_samples": 1062,
+      "intra_class_distance": 0.3368,
+      "inter_class_distance": 1.254,
+      "silhouette_cosine": 0.17,
+      "separation_ratio": 3.7238,
+      "intra_per_class": {
+        "0": 0.5322,
+        "1": 0.2242,
+        "2": 0.1232,
+        "3": 0.2185,
+        "4": 0.1821,
+        "5": 0.4381,
+        "6": 0.6095,
+        "7": 0.4399,
+        "8": 0.2999,
+        "9": 0.3405,
+        "10": 0.3904,
+        "11": 0.3264,
+        "12": 0.2559,
+        "13": 0.3337
+      }
+    }
+  ]
+}

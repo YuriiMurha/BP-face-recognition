@@ -1,0 +1,52 @@
+{
+  "model_type": "FaceNet Progressive Unfreezing (Option B)",
+  "timestamp": "2026-05-14T19:12:00.307518",
+  "architecture": {
+    "base_model": "FaceNet with progressive unfreezing",
+    "phases": [
+      "Phase 1: Head only (frozen base)",
+      "Phase 2: Top 20% unfrozen (LR=1e-5)",
+      "Phase 3: Top 40% unfrozen (LR=5e-6)",
+      "Phase 4: Full unfrozen (LR=1e-6)"
+    ]
+  },
+  "training_config": {
+    "epochs_per_phase": 5,
+    "total_epochs": 18,
+    "progressive_strategy": true
+  },
+  "dataset": {
+    "num_classes": 14,
+    "class_names": [
+      "Stranger_1",
+      "Stranger_10",
+      "Stranger_11",
+      "Stranger_12",
+      "Stranger_14",
+      "Stranger_2",
+      "Stranger_3",
+      "Stranger_4",
+      "Stranger_5",
+      "Stranger_6",
+      "Stranger_7",
+      "Stranger_8",
+      "Stranger_9",
+      "Yurii"
+    ],
+    "num_train": 4956,
+    "num_val": 1062,
+    "num_test": 1062,
+    "img_size": [
+      160,
+      160
+    ],
+    "batch_size": 32
+  },
+  "results": {
+    "final_train_accuracy": 0.9384584426879883,
+    "final_val_accuracy": 0.9350282549858093,
+    "best_val_accuracy": 0.935969889163971,
+    "test_accuracy": 0.9416195750236511,
+    "test_loss": 0.20435310900211334
+  }
+}

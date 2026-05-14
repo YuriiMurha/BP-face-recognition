@@ -1,0 +1,73 @@
+{
+  "iou_threshold": 0.5,
+  "max_dim": 800,
+  "num_test_images": 19,
+  "total_gt_boxes": 26,
+  "detectors": [
+    {
+      "detector": "MediaPipe",
+      "tp": 4,
+      "fp": 2,
+      "fn": 22,
+      "precision": 0.6667,
+      "recall": 0.1538,
+      "f1": 0.25,
+      "mean_iou_matched": 0.7202,
+      "avg_time_ms": 4.2,
+      "min_time_ms": 3.0,
+      "max_time_ms": 6.0,
+      "fps": 238.35,
+      "num_test_images": 19,
+      "total_gt_boxes": 26
+    },
+    {
+      "detector": "Haar Cascade",
+      "tp": 2,
+      "fp": 10,
+      "fn": 24,
+      "precision": 0.1667,
+      "recall": 0.0769,
+      "f1": 0.1053,
+      "mean_iou_matched": 0.7737,
+      "avg_time_ms": 39.23,
+      "min_time_ms": 19.7,
+      "max_time_ms": 56.38,
+      "fps": 25.49,
+      "num_test_images": 19,
+      "total_gt_boxes": 26
+    },
+    {
+      "detector": "Dlib HOG",
+      "tp": 1,
+      "fp": 9,
+      "fn": 25,
+      "precision": 0.1,
+      "recall": 0.0385,
+      "f1": 0.0556,
+      "mean_iou_matched": 0.58,
+      "avg_time_ms": 167.83,
+      "min_time_ms": 126.1,
+      "max_time_ms": 200.8,
+      "fps": 5.96,
+      "num_test_images": 19,
+      "total_gt_boxes": 26
+    },
+    {
+      "detector": "MTCNN",
+      "tp": 18,
+      "fp": 7,
+      "fn": 8,
+      "precision": 0.72,
+      "recall": 0.6923,
+      "f1": 0.7059,
+      "mean_iou_matched": 0.6927,
+      "avg_time_ms": 283.31,
+      "min_time_ms": 247.9,
+      "max_time_ms": 316.81,
+      "fps": 3.53,
+      "num_test_images": 19,
+      "total_gt_boxes": 26
+    }
+  ],
+  "skipped": []
+}

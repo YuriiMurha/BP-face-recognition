@@ -135,13 +135,13 @@ Three fine-tuning strategies:
 
 ## Benchmark Summary
 
-### Detection (19 surveillance frames)
-| Method | Speed | Detections | Trade-off |
-|--------|-------|------------|-----------|
-| MediaPipe | 3 ms (326 FPS) | 6 | Fastest, fewer detections |
-| MTCNN | 240 ms (4 FPS) | 25 | Most detections, slowest |
-| Haar Cascade | 31 ms (32 FPS) | 12 | Good balance |
-| Dlib HOG | 156 ms (6 FPS) | 10 | CPU-focused |
+### Detection (19 surveillance frames, 26 GT boxes, IoU≥0.5)
+| Method | F1 | Precision | Recall | Mean IoU | FPS |
+|--------|----|-----------|--------|----------|-----|
+| **MTCNN** | **0.706** | 0.720 | 0.692 | 0.693 | 3.5 |
+| MediaPipe | 0.250 | 0.667 | 0.154 | 0.720 | 238.3 |
+| Haar Cascade | 0.105 | 0.167 | 0.077 | 0.774 | 25.5 |
+| Dlib HOG | 0.056 | 0.100 | 0.038 | 0.580 | 6.0 |
 
 ### Recognition (1,062 test samples, 14 classes)
 | Model | Accuracy | F1 | Size |
@@ -153,7 +153,17 @@ Three fine-tuning strategies:
 
 \* Different dataset (seccam_2, 15 classes)
 
-Run `make thesis-benchmark` to reproduce. Results saved to `results/thesis/`.
+### Embedding Quality (512D FaceNet backbone)
+| Metric | TL | PU | TLoss |
+|---|---|---|---|
+| Intra-class L2 | 0.651 | 0.575 | **0.337** |
+| Inter-class L2 | 0.866 | 1.092 | **1.254** |
+| Silhouette (cos) | 0.111 | **0.320** | 0.170 |
+| Separation ratio | 1.330 | 1.901 | **3.724** |
+
+Triplet Loss produces the most geometrically separated embeddings; PU wins classification accuracy.
+
+Run `make thesis-benchmark`, `make detection-eval`, `make embedding-quality`, `make training-curves` to regenerate. Results saved to `results/`.
 
 ## File Organization
 

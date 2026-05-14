@@ -30,22 +30,22 @@ run-full: setup
 # Usage: make register name="Yurii" (uses default from config/models.yaml)
 # Override: make register name="Yurii" recog=facenet_pu
 register: setup
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)" $(if $(recog),--recognizer $(recog),)
+	$(PYTHON) scripts/register_from_camera.py "$(name)" $(if $(recog),--recognizer $(recog),)
 
 # Register with FaceNet PU (recommended)
 register-pu: setup
 	@echo "Registering with FaceNet PU (99.15% accuracy)..."
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_pu
+	$(PYTHON) scripts/register_from_camera.py "$(name)" --recognizer facenet_pu
 
 # Register with FaceNet TL
 register-tl: setup
 	@echo "Registering with FaceNet TL (92.84% accuracy)..."
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_tl
+	$(PYTHON) scripts/register_from_camera.py "$(name)" --recognizer facenet_tl
 
 # Register with FaceNet TLoss
 register-tloss: setup
 	@echo "Registering with FaceNet TLoss (94.63% accuracy)..."
-	$(PYTHON) src/scripts/register_from_camera.py "$(name)" --recognizer facenet_tloss
+	$(PYTHON) scripts/register_from_camera.py "$(name)" --recognizer facenet_tloss
 
 # ============================================================
 # Data Preprocessing Pipeline
@@ -261,16 +261,15 @@ clean:
 evaluate: setup
 	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_methods.py
 
-benchmark: setup
-	$(PYTHON) src/benchmark_quantization_mediapipe.py
+benchmark: thesis-benchmark
 
 # Data Processing
 init-dataset: setup
-	$(PYTHON) src/scripts/init_dataset.py $(name) $(args)
+	$(PYTHON) scripts/init_dataset.py $(name) $(args)
 
 # Quantization
 quantize: setup
-	$(PYTHON) src/scripts/quantize_model.py --model $(model) --type $(or $(type),float16) --output $(or $(output),src/bp_face_recognition/models/)
+	$(PYTHON) scripts/quantize_model.py --model $(model) --type $(or $(type),float16) --output $(or $(output),src/bp_face_recognition/models/)
 
 # Quantize model in WSL (for GPU-trained models)
 quantize-wsl:
@@ -280,7 +279,7 @@ quantize-wsl:
 		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
 		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
 		source .venv-wsl/bin/activate && \
-		python src/scripts/quantize_model.py \
+		python scripts/quantize_model.py \
 		--model $(model) \
 		--type $(or $(type),float16) \
 		--output $(or $(output),src/bp_face_recognition/models/)"
@@ -304,7 +303,7 @@ quantize-one:
 		export PYTHONPATH=$(WSL_PATH)/src:\$$PYTHONPATH && \
 		export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/lib/nvidia-cuda-toolkit && \
 		source .venv-wsl/bin/activate && \
-		python src/scripts/quantize_model.py \
+		python scripts/quantize_model.py \
 		--model src/bp_face_recognition/models/efficientnetb0_$(dataset)_gpu_final.keras \
 		--type $(or $(type),float16) \
 		--output src/bp_face_recognition/models/"
@@ -330,11 +329,6 @@ train-facenet-triplet:
 	@echo "Training FaceNet with Triplet Loss (Option C)..."
 	$(PYTHON) src/bp_face_recognition/vision/training/finetune/facenet_triplet_trainer.py \
 		--epochs $(or $(epochs),30) --batch-size $(or $(batch_size),32) --margin $(or $(margin),0.2)
-
-# Compare all FaceNet fine-tuning results
-compare-facenet-results:
-	@echo "Generating FaceNet fine-tuning comparison visualizations..."
-	$(PYTHON) src/bp_face_recognition/vision/training/finetune/visualize_preliminary_results.py --final
 
 # ============================================================
 # Repository Cleanup Commands
@@ -442,15 +436,6 @@ reset-tl: switch-tl clear-db
 reset-tloss: switch-tloss clear-db
 	@echo "Reset complete: FaceNet TLoss selected, database cleared"
 
-# Evaluation Commands
-evaluate-facenet-all:
-	@echo "Comprehensive evaluation of all FaceNet models..."
-	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_comprehensive.py \
-		--models src/bp_face_recognition/models/finetuned/facenet_transfer_v1.0.keras \
-		       src/bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras \
-		       src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras \
-		--output results/evaluation/facenet_comparison
-
 # ============================================================
 # Closed-Set Face Recognition (Direct Classification)
 # No registration needed - model classifies directly into N classes
@@ -486,17 +471,34 @@ thesis-benchmark-detection: setup
 	@echo "Running thesis benchmark (detection only)..."
 	$(PYTHON) src/bp_face_recognition/evaluation/thesis_benchmark.py --skip-recognition
 
-evaluate-facenet-tl-quick:
-	@echo "Quick evaluation: Transfer Learning..."
-	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
-		--model src/bp_face_recognition/models/finetuned/facenet_transfer_v1.0.keras
+# Per-detector ground-truth detection evaluation (replaces the old count-only
+# benchmark). Runs each detector in an isolated subprocess to avoid
+# cross-detector state collisions in shared deep-learning runtimes.
+detection-eval:
+	@echo "Running detection evaluation with ground-truth annotations..."
+	$(PYTHON) scripts/run_detection_eval.py
 
-evaluate-facenet-pu-quick:
-	@echo "Quick evaluation: Progressive Unfreezing..."
-	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
-		--model src/bp_face_recognition/models/finetuned/facenet_progressive_v1.0.keras
+# Embedding-quality evaluation (intra/inter distance, silhouette, separation
+# ratio at the 512D FaceNet backbone output — fair to TLoss).
+embedding-quality:
+	@echo "Running embedding-geometry evaluation..."
+	$(PYTHON) src/bp_face_recognition/evaluation/embedding_quality.py
 
-evaluate-facenet-tloss-quick:
-	@echo "Quick evaluation: Triplet Loss..."
-	$(PYTHON) src/bp_face_recognition/evaluation/evaluate_simple.py \
-		--model src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras
+# Generate per-approach training-curve PNGs for the thesis.
+training-curves:
+	@echo "Generating training-curve figures..."
+	$(PYTHON) scripts/plot_training_curves.py
+
+# Active learning: scan an image directory, save crops where recognition is
+# uncertain (low confidence) so they can be manually labelled and folded into
+# the next training cycle. Usage: make active-learning input=path/to/images
+active-learning:
+	@echo "Sampling uncertain face predictions from $(input) ..."
+	$(PYTHON) scripts/active_learning_sampler.py --input $(input) $(if $(output),--output $(output),) $(if $(lower),--lower $(lower),) $(if $(upper),--upper $(upper),)
+
+# Download the LFW (Labeled Faces in the Wild) dataset via sklearn and lay it
+# out as a flat-structure train/val/test split (default: 30 min faces/person,
+# 80/10/10 split). Edit scripts/download_research_dataset.py to change params.
+download-lfw:
+	@echo "Downloading LFW (defaults: min_faces=30, 80/10/10 split)..."
+	$(PYTHON) scripts/download_research_dataset.py

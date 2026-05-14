@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime
 
 import tensorflow as tf
-from tensorflow import keras
+from tensorflow import keras  # noqa: F401  (kept for seed-setting via keras.utils.set_random_seed)
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -29,7 +29,13 @@ def build_facenet_model():
     return facenet.model
 
 
-def evaluate_triplet_model_weights(weights_path: str, test_ds, dataset_info: dict):
+def evaluate_triplet_model_weights(
+    weights_path: str,
+    test_ds,
+    dataset_info: dict,
+    output_path: str = "src/bp_face_recognition/models/finetuned/facenet_triplet_evaluation.json",
+    seed: int = 42,
+):
     """
     Evaluate triplet model by loading weights into fresh model.
     """
@@ -41,9 +47,9 @@ def evaluate_triplet_model_weights(weights_path: str, test_ds, dataset_info: dic
     print(f"Loading weights from: {weights_path}")
     try:
         model.load_weights(weights_path)
-        print("✓ Weights loaded successfully")
+        print("Weights loaded successfully")
     except Exception as e:
-        print(f"⚠ Could not load weights: {e}")
+        print(f"Could not load weights: {e}")
         print("Using original FaceNet weights instead")
 
     print(f"Model input shape: {model.input_shape}")
@@ -62,11 +68,13 @@ def evaluate_triplet_model_weights(weights_path: str, test_ds, dataset_info: dic
     test_embeddings = np.vstack(test_embeddings)
     test_labels = np.array(test_labels)
 
-    print(f"✓ Test embeddings: {test_embeddings.shape}")
+    print(f"Test embeddings: {test_embeddings.shape}")
 
     # Collect training embeddings for classifier
     print("\nGenerating embeddings for training set...")
-    train_ds, _, _, _ = create_combined_dataset(batch_size=32, augmentation=False)
+    train_ds, _, _, _ = create_combined_dataset(
+        batch_size=32, augmentation=False, random_state=seed
+    )
 
     train_embeddings = []
     train_labels = []
@@ -84,7 +92,7 @@ def evaluate_triplet_model_weights(weights_path: str, test_ds, dataset_info: dic
     train_embeddings = np.vstack(train_embeddings)
     train_labels = np.array(train_labels)
 
-    print(f"✓ Train embeddings: {train_embeddings.shape}")
+    print(f"Train embeddings: {train_embeddings.shape}")
 
     # Train KNN classifier
     print("\nTraining KNN classifier...")
@@ -124,16 +132,16 @@ def evaluate_triplet_model_weights(weights_path: str, test_ds, dataset_info: dic
         "classification_report": report,
         "weights_path": weights_path,
         "embedding_shape": int(test_embeddings.shape[1]),
+        "seed": seed,
         "note": "Evaluated using loaded weights with KNN classifier",
     }
 
-    results_path = Path(
-        "src/bp_face_recognition/models/finetuned/facenet_triplet_evaluation.json"
-    )
+    results_path = Path(output_path)
+    results_path.parent.mkdir(parents=True, exist_ok=True)
     with open(results_path, "w") as f:
         json.dump(results, f, indent=2)
 
-    print(f"\n✓ Results saved to: {results_path}")
+    print(f"\nResults saved to: {results_path}")
 
     return results
 
@@ -143,26 +151,48 @@ def main():
     parser.add_argument(
         "--weights",
         type=str,
-        default="src/bp_face_recognition/models/finetuned/facenet_triplet_best.keras",
+        default="src/bp_face_recognition/models/finetuned/facenet_triplet_v1.0.weights.h5",
         help="Path to trained model weights",
     )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="src/bp_face_recognition/models/finetuned/facenet_triplet_evaluation.json",
+        help="Path to write the evaluation JSON",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed used when training (controls dataset split)",
+    )
     args = parser.parse_args()
+
+    # Set seeds (does not affect KNN, but covers tf graph determinism for embeddings).
+    # Use individual setters to match the trainers and avoid SeedGenerator injection.
+    import random as _random
+    _random.seed(args.seed)
+    np.random.seed(args.seed)
+    tf.random.set_seed(args.seed)
 
     print("=" * 60)
     print("FACENET TRIPLET MODEL EVALUATION (Option C)")
     print("=" * 60)
 
-    # Load test dataset
+    # Load test dataset with the same seed used for training (so the test split
+    # matches the held-out images for that training run).
     print("\nLoading dataset...")
     _, _, test_ds, dataset_info = create_combined_dataset(
-        batch_size=32, augmentation=False
+        batch_size=32, augmentation=False, random_state=args.seed
     )
 
-    print(f"✓ Dataset loaded: {dataset_info['num_test']} test samples")
-    print(f"✓ Number of classes: {dataset_info['num_classes']}")
+    print(f"Dataset loaded: {dataset_info['num_test']} test samples")
+    print(f"Number of classes: {dataset_info['num_classes']}")
 
     # Evaluate
-    results = evaluate_triplet_model_weights(args.weights, test_ds, dataset_info)
+    results = evaluate_triplet_model_weights(
+        args.weights, test_ds, dataset_info, output_path=args.output, seed=args.seed
+    )
 
     print("\n" + "=" * 60)
     print("EVALUATION COMPLETE")

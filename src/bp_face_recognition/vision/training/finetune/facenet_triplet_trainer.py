@@ -279,6 +279,7 @@ class FaceNetTripletTrainer:
         epochs: int = 30,
         learning_rate: float = 0.001,
         steps_per_epoch: int = 100,
+        batch_size: int = 32,
     ) -> keras.callbacks.History:
         """
         Train with triplet loss.
@@ -289,6 +290,8 @@ class FaceNetTripletTrainer:
             epochs: Number of epochs
             learning_rate: Learning rate
             steps_per_epoch: Batches per epoch
+            batch_size: Triplet batch size (each step processes 3 * batch_size images
+                through the shared backbone, so reduce for small-VRAM GPUs).
 
         Returns:
             Training history
@@ -296,13 +299,13 @@ class FaceNetTripletTrainer:
         if self.model is None:
             self.build_model()
 
-        logger.info(f"Starting triplet loss training for {epochs} epochs...")
+        logger.info(f"Starting triplet loss training for {epochs} epochs (batch={batch_size})...")
 
         # Create triplet generators
         train_triplet_gen = TripletDataGenerator(
-            train_ds, self.num_classes, batch_size=32
+            train_ds, self.num_classes, batch_size=batch_size
         )
-        val_triplet_gen = TripletDataGenerator(val_ds, self.num_classes, batch_size=32)
+        val_triplet_gen = TripletDataGenerator(val_ds, self.num_classes, batch_size=batch_size)
 
         train_triplet_ds = train_triplet_gen.create_tf_dataset()
         val_triplet_ds = val_triplet_gen.create_tf_dataset()
@@ -322,9 +325,10 @@ class FaceNetTripletTrainer:
                 monitor="val_loss", factor=0.5, patience=3, min_lr=1e-6, verbose=1
             ),
             keras.callbacks.ModelCheckpoint(
-                filepath=str(self.model_dir / "facenet_triplet_best.keras"),
+                filepath=str(self.model_dir / "facenet_triplet_best.weights.h5"),
                 monitor="val_loss",
                 save_best_only=True,
+                save_weights_only=True,
                 verbose=1,
             ),
         ]
@@ -343,12 +347,17 @@ class FaceNetTripletTrainer:
         logger.info("Triplet loss training completed!")
         return self.history
 
-    def save_model(self, filename: str = "facenet_triplet_v1.0.keras"):
-        """Save trained model."""
+    def save_model(self, filename: str = "facenet_triplet_v1.0.weights.h5"):
+        """Save trained embedding model weights.
+
+        Uses weights-only format because FaceNet (InceptionResNetV1) contains
+        Lambda layers whose Python function references cannot be JSON-serialized
+        in the .keras zip format. To load: rebuild the FaceNet base via
+        keras_facenet.FaceNet() and call model.load_weights(filename).
+        """
         save_path = self.model_dir / filename
-        # Save the embedding model (base FaceNet) for inference
-        self.embedding_model.save(save_path)
-        logger.info(f"Model saved to {save_path}")
+        self.embedding_model.save_weights(str(save_path))
+        logger.info(f"Embedding model weights saved to {save_path}")
 
     def save_history(self, filename: str = "facenet_triplet_history.json"):
         """Save training history."""
@@ -415,8 +424,28 @@ def main():
     parser.add_argument("--batch-size", type=int, default=32, help="Batch size")
     parser.add_argument("--margin", type=float, default=0.2, help="Triplet loss margin")
     parser.add_argument("--lr", type=float, default=0.001, help="Learning rate")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for split + training reproducibility",
+    )
+    parser.add_argument(
+        "--model-dir",
+        type=str,
+        default="src/bp_face_recognition/models/finetuned",
+        help="Directory to save trained model and reports",
+    )
 
     args = parser.parse_args()
+
+    # Set all random seeds early. We use individual seed setters rather than
+    # `keras.utils.set_random_seed` because the latter, on Keras 2.15, can inject
+    # SeedGenerator objects that break checkpoint serialization.
+    import random as _random
+    _random.seed(args.seed)
+    np.random.seed(args.seed)
+    tf.random.set_seed(args.seed)
 
     print("=" * 60)
     print("FACENET TRIPLET LOSS TRAINING (Option C)")
@@ -425,17 +454,21 @@ def main():
     print(f"Batch size: {args.batch_size}")
     print(f"Margin: {args.margin}")
     print(f"Learning rate: {args.lr}")
+    print(f"Seed: {args.seed}")
+    print(f"Model dir: {args.model_dir}")
     print("=" * 60)
 
     # Load dataset
     logger.info("Loading dataset...")
     train_ds, val_ds, test_ds, dataset_info = create_combined_dataset(
-        batch_size=args.batch_size, augmentation=True
+        batch_size=args.batch_size, augmentation=True, random_state=args.seed
     )
 
     # Create trainer
     trainer = FaceNetTripletTrainer(
-        num_classes=dataset_info["num_classes"], margin=args.margin
+        num_classes=dataset_info["num_classes"],
+        margin=args.margin,
+        model_dir=args.model_dir,
     )
 
     # Build model
@@ -443,13 +476,18 @@ def main():
 
     # Train
     trainer.train(
-        train_ds=train_ds, val_ds=val_ds, epochs=args.epochs, learning_rate=args.lr
+        train_ds=train_ds,
+        val_ds=val_ds,
+        epochs=args.epochs,
+        learning_rate=args.lr,
+        batch_size=args.batch_size,
     )
 
-    # Save everything
-    trainer.save_model()
+    # Save everything — history first so partial failures still produce the
+    # JSON used by the thesis training-curve plotter.
     trainer.save_history()
     trainer.save_training_report(dataset_info)
+    trainer.save_model()
 
     # Save dataset metadata for closed-set recognition
     import json

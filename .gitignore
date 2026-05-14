@@ -191,6 +191,8 @@ assets/reports/
 *.png
 *.h5
 *.keras
+*.keras.bak
+*.weights.h5.bak
 *.log
 *.sqlite
 
