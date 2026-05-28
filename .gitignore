@@ -178,10 +178,28 @@ GEMINI.md
 .ruff_cache/
 
 # Maintenance and Workspace tracking
-# .maintenance/
+.maintenance/
 
 # OpenCode
 .opencode/
+
+# Developer-only reference (dev cheatsheet, not part of the build)
+QUICK_REFERENCE.md
+
+# TensorBoard / training-runtime artefacts (committed previously, now ignored)
+src/logs/
+
+# LaTeX build artefacts from local latexmk runs (generated, never tracked)
+LaTeX/*.aux
+LaTeX/*.fdb_latexmk
+LaTeX/*.fls
+LaTeX/*.glo
+LaTeX/*.gls
+LaTeX/*.lof
+LaTeX/*.lot
+LaTeX/*.synctex.gz
+LaTeX/*.toc
+LaTeX/tukethesis.pdf
 
 # Project Data
 data/datasets/
@@ -196,12 +214,17 @@ assets/reports/
 *.log
 *.sqlite
 
+# Thesis figures: the *.png / *.jpg blanket above would catch these, but we
+# want the Excalidraw exports, the title-page scan, and the plot outputs in
+# version control so the LaTeX project is reproducible.
+!thesis/figures/
+!thesis/figures/**
+
 # Dummy/Temporary Files
 dummy_assets/
 dummy_deep_learning_csvs/
 dummy_deep_learning_plots/
 dummy_method_evaluation.md
-Files/
 Merged Thesis Document.markdown
 *.pdf
 requirements.txt
@@ -214,3 +237,8 @@ data/faces.csv
 
 # Benchmark data (large files)
 data/benchmarks/
+
+# Thesis pipeline -- credentials and build artifacts (do not commit)
+.thesis-overleaf.json
+thesis/build/
+

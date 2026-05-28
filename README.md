@@ -257,14 +257,16 @@ Model size: 14.85 MB
 
 ### Face Detection Methods
 
-Benchmarked on 19 raw surveillance frames (resized to ≤800px):
+Benchmarked on 19 raw surveillance frames (resized so the longest edge ≤800 px), with each detector run in an isolated subprocess on CPU. Ground truth is 26 face boxes hand-annotated in LabelMe across the 19 frames; precision, recall, F1 and mean IoU are computed by greedy IoU matching at threshold 0.5.
 
-| Method | Avg Time (ms) | FPS | Faces Detected | Best For |
-|--------|--------------|-----|----------------|----------|
-| **MediaPipe** | **3.1** | **325.6** | 6 | Real-time (fastest) |
-| MTCNN | 240.3 | 4.2 | **25** | Accuracy (most faces) |
-| Haar Cascade | 31.4 | 31.8 | 12 | Lightweight |
-| Dlib HOG | 155.7 | 6.4 | 10 | CPU-only |
+| Method | Avg Time (ms) | FPS | TP | FP | FN | Precision | Recall | F1 | Mean IoU |
+|--------|--------------|-----|----|----|----|-----------|--------|----|----------|
+| **MediaPipe** | **4.2** | **238.3** | 4 | 2 | 22 | 0.667 | 0.154 | 0.250 | 0.720 |
+| MTCNN | 283.3 | 3.5 | **18** | 7 | 8 | **0.720** | **0.692** | **0.706** | 0.693 |
+| Haar Cascade | 39.2 | 25.5 | 2 | 10 | 24 | 0.167 | 0.077 | 0.105 | 0.774 |
+| Dlib HOG | 167.8 | 6.0 | 1 | 9 | 25 | 0.100 | 0.038 | 0.056 | 0.580 |
+
+Numbers come from `results/detection_eval_report.md`; rerun with `make detection-eval` to refresh them. **MediaPipe** wins on speed (only detector clearing 30 FPS comfortably); **MTCNN** wins on quality (highest F1, highest recall). Haar Cascade and Dlib HOG are dominated on both axes.
 
 ### Face Recognition Models
 

@@ -502,3 +502,120 @@ active-learning:
 download-lfw:
 	@echo "Downloading LFW (defaults: min_faces=30, 80/10/10 split)..."
 	$(PYTHON) scripts/download_research_dataset.py
+
+# ============================================================================
+# Thesis pipeline: Markdown chapters -> preprocessed Markdown -> LaTeX -> PDF
+# (locally compiled) -> pushed to Overleaf via git bridge.
+# ============================================================================
+# Source the per-machine credentials/config if it exists. The file holds
+# Overleaf project IDs and clone paths. .thesis-overleaf.json is gitignored;
+# .thesis-overleaf.json.example is the template.
+THESIS_CONFIG := .thesis-overleaf.json
+
+# These paths come from .thesis-overleaf.json; the Python scripts read it
+# directly, but the Makefile also needs them for robocopy/cd targets. The
+# `jq` extraction below is the only place they appear in shell-land.
+ifneq ("$(wildcard $(THESIS_CONFIG))","")
+THESIS_OVERLEAF := $(shell python -c "import json,sys; print(json.load(open('$(THESIS_CONFIG)'))['projects']['new']['localClone'])" 2>/dev/null)
+BP_TEMPLATE     := $(shell python -c "import json,sys; print(json.load(open('$(THESIS_CONFIG)'))['projects']['legacy']['localClone'])" 2>/dev/null)
+else
+THESIS_OVERLEAF := D:/Coding/Personal/overleaf-bp-new
+BP_TEMPLATE     := D:/Coding/Personal/overleaf-bp-template
+endif
+
+THESIS_BUILD := thesis/build
+CHAPTERS     := 01 02 03 04 05 06 07 08 09 10
+SYSPY        := python
+# Tool autodetect: prefer PATH, fall back to standard Windows install
+# locations. The pandoc and MiKTeX installers add to user PATH but a shell
+# started before the install won't see them; the explicit fallbacks make
+# the Makefile robust against this.
+PANDOC := $(shell which pandoc 2>/dev/null || \
+  ls "$$LOCALAPPDATA/Pandoc/pandoc.exe" 2>/dev/null || \
+  echo pandoc)
+LATEXMK := $(shell which latexmk 2>/dev/null || \
+  ls "$$LOCALAPPDATA/Programs/MiKTeX/miktex/bin/x64/latexmk.exe" 2>/dev/null || \
+  echo latexmk)
+# latexmk on Windows is a perl script -- ensure git-bundled perl is reachable.
+PERL_BIN := /c/Program\ Files/Git/usr/bin
+
+.PHONY: thesis-setup thesis-aliases thesis-md thesis-md-bundle thesis-tex \
+        thesis-figures thesis-build thesis-overleaf thesis-clean thesis-test
+
+# One-time: clone the two Overleaf projects and configure git credentials.
+thesis-setup:
+	$(SYSPY) pipeline/setup_overleaf.py
+
+# Re-scan chapters and refresh the alias skeletons (idempotent).
+thesis-aliases:
+	$(SYSPY) pipeline/build_citation_aliases.py
+
+# Stage 1: citation normalisation + Mermaid extraction. Output: thesis/build/md/.
+# Build will fail if any citation is unresolved (audit step is strict).
+thesis-md:
+	$(SYSPY) pipeline/preprocess_citations.py
+	$(SYSPY) pipeline/extract_mermaid.py
+	$(SYSPY) pipeline/audit_citations.py
+
+# Optional single-file bundle for review (front-matter + 8 chapters concatenated).
+thesis-md-bundle: thesis-md
+	$(SYSPY) pipeline/concat_chapters.py
+
+# Stage 2: pandoc each preprocessed chapter -> LaTeX fragment.
+# Then regenerate the TUKE master with the new \include list.
+thesis-tex: thesis-md
+	@mkdir -p $(THESIS_BUILD)/tex/chapters
+	@for ch in $(CHAPTERS); do \
+	  echo "  pandoc chapter-$$ch" ; \
+	  THESIS_CH_PREFIX="ch$$ch-" "$(PANDOC)" \
+	    --from "markdown+tex_math_dollars+pipe_tables+grid_tables+raw_tex+raw_attribute" \
+	    --to latex --top-level-division=section --syntax-highlighting=none \
+	    --wrap=preserve --lua-filter pipeline/fix_image_paths.lua \
+	    --output "$(THESIS_BUILD)/tex/chapters/chapter-$$ch.tex" \
+	    "$(THESIS_BUILD)/md/chapter-$$ch.md" ; \
+	done
+	$(SYSPY) pipeline/assemble_master.py
+
+# Stage 3: regenerate plot PNGs from results/*.json into thesis/figures/.
+thesis-figures:
+	$(SYSPY) scripts/plot_training_curves.py
+	$(SYSPY) scripts/plot_verification_curves.py
+	$(SYSPY) scripts/plot_confusion_matrix.py
+
+# Stage 4: sync everything into the Overleaf working copy AND compile locally.
+# Local compile catches errors before pushing -- saves a round trip to the
+# Overleaf compile server. robocopy /MIR mirrors so deleted files vanish.
+thesis-build: thesis-tex thesis-figures
+	@if [ ! -d "$(THESIS_OVERLEAF)" ]; then \
+	  echo "ERROR: $(THESIS_OVERLEAF) doesn't exist. Run 'make thesis-setup' first." ; \
+	  exit 2 ; \
+	fi
+	@mkdir -p "$(THESIS_OVERLEAF)/chapters" "$(THESIS_OVERLEAF)/figures/diagrams" "$(THESIS_OVERLEAF)/Files"
+	cp $(THESIS_BUILD)/tex/tukethesis.tex "$(THESIS_OVERLEAF)/tukethesis.tex"
+	cp $(THESIS_BUILD)/tex/chapters/*.tex "$(THESIS_OVERLEAF)/chapters/"
+	cp -r thesis/figures/*.png "$(THESIS_OVERLEAF)/figures/" 2>/dev/null || true
+	cp -r thesis/figures/diagrams/*.png "$(THESIS_OVERLEAF)/figures/diagrams/" 2>/dev/null || true
+	cp -r thesis/figures/diagrams/*.mmd "$(THESIS_OVERLEAF)/figures/diagrams/" 2>/dev/null || true
+	cp thesis/references.bib "$(THESIS_OVERLEAF)/references.bib"
+	cp LaTeX/tukethesis.cls LaTeX/feidipsp.cls LaTeX/feidippp.cls LaTeX/tukediphc.cls "$(THESIS_OVERLEAF)/"
+	cp LaTeX/natbib.sty LaTeX/nicefrac.sty LaTeX/nomencl.sty LaTeX/nomencl.ist "$(THESIS_OVERLEAF)/"
+	cp thesis/figures/zadavaci-list.png "$(THESIS_OVERLEAF)/Files/"
+	@echo "  local compile (latexmk)..."
+	@cd "$(THESIS_OVERLEAF)" && PATH="$(PERL_BIN):$$PATH" "$(LATEXMK)" -pdf -interaction=nonstopmode tukethesis.tex
+
+# Stage 5: commit the regenerated files and push to Overleaf.
+thesis-overleaf: thesis-build
+	@cd "$(THESIS_OVERLEAF)" && \
+	  git add -A && \
+	  (git diff --cached --quiet && echo "  no changes to push" || \
+	    (git commit -m "Regenerate from markdown $$(date +%Y-%m-%d-%H%M)" && \
+	     git push origin master))
+
+# Run the regex test suites for the pipeline scripts.
+thesis-test:
+	$(SYSPY) pipeline/test_preprocess_citations.py
+	$(SYSPY) pipeline/test_extract_mermaid.py
+
+# Wipe the build/ intermediate (figures stay -- they're slow to regenerate).
+thesis-clean:
+	rm -rf $(THESIS_BUILD)/md $(THESIS_BUILD)/tex
