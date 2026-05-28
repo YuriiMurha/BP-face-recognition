@@ -288,11 +288,13 @@ vlo\v{z}en\'y origin\'al zad\'avacieho listu!
 
 \bigskip
 
-I hereby declare that this thesis is my own work and effort. Where
-other sources of information have been used, they have been
-acknowledged.
-%Vyhlasujem, \v{z}e som diplomov\'u pr\'acu vypracoval(a) samostatne
-%s~pou\v{z}it\'{\i}m uvedenej odbornej literat\'ury.
+I hereby declare that I have completed the final thesis independently,
+using the cited academic literature as well as with the assistance of
+generative artificial intelligence tools in accordance with the
+Methodological Guideline on Final and Qualification Theses and the
+Student Code of Ethics of the Technical University of Ko\v{s}ice.
+Artificial intelligence was used as a supporting tool without violating
+the principles of academic ethics and authorship integrity.
 
 \bigskip
 

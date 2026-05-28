@@ -1,7 +1,5 @@
 # User Manual
 
-## A.1 Overview
-
 This appendix describes how to install and operate the face recognition system on a personal computer. The system supports two modes of use: open-set recognition, in which new identities can be registered at runtime from a webcam, and closed-set recognition, in which the system classifies faces against a fixed set of identities known at training time. Both modes share the same detection front end and run on standard consumer hardware.
 
 ## A.2 Prerequisites

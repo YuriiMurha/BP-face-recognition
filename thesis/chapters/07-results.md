@@ -83,13 +83,13 @@ To turn geometry into operational numbers, a threshold-swept verification protoc
 | Progressive Unfreezing | **0.090** | **0.632** | **0.307** | **0.971** |
 | Triplet Loss | 0.179 | 0.342 | 0.212 | 0.910 |
 
-![ROC curves for the three strategies on 10,000 verification pairs; the equal-error-rate point is marked on each curve.](../figures/verification_roc.png)
+![ROC curves for the three strategies on 10,000 verification pairs; the equal-error-rate point is marked on each curve.](../figures/verification_roc.png){width=70%}
 
-![Detection-error-tradeoff (DET) curves on log-log axes, which spread out the low-FAR region most relevant to deployment.](../figures/verification_det.png)
+![Detection-error-tradeoff (DET) curves on log-log axes, which spread out the low-FAR region most relevant to deployment.](../figures/verification_det.png){width=70%}
 
 Progressive unfreezing wins every verification metric (EER 0.090, AUC 0.971), ahead of triplet loss (EER 0.179) and transfer learning (EER 0.296). This is the opposite of what the average separation ratio predicted, for two reasons. Verification at a strict FAR depends on the worst-case negative pairs, and triplet loss's wide average margin hides a tail of negative pairs that its fixed 0.2 margin never separated --- the silhouette score already hinted at this. And progressive unfreezing was trained on exactly the 14 identities the pairs are drawn from, so these are in-distribution numbers that do not directly predict performance on unseen identities. The practical reading: progressive unfreezing is stronger for closed-set or in-distribution verification, while triplet loss remains the better bet when the deployed system must enrol identities never seen in training. Figure 6.6 shows the progressive-unfreezing confusion matrix, whose few off-diagonal entries are the small-support classes from the per-class analysis.
 
-![Confusion matrix for the progressive-unfreezing model on the 1,062-sample test set, shaded by per-row recall.](../figures/confusion_matrix_pu.png)
+![Confusion matrix for the progressive-unfreezing model on the 1,062-sample test set, shaded by per-row recall.](../figures/confusion_matrix_pu.png){width=60%}
 
 ## Cross-validation robustness
 

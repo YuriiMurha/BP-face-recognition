@@ -1,4 +1,4 @@
-# Practical Implementation and Codebase Overview
+# Implementation
 
 This chapter describes the system at the level of components, layers, and interactions rather than files and classes: how it is organised, what the abstractions are, and how they support the experiments in Chapter 6. Appendix B documents the concrete repository structure for anyone extending the code.
 

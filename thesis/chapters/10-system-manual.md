@@ -1,7 +1,5 @@
 # System Manual
 
-## B.1 Purpose and Scope
-
 This appendix documents the internal organisation of the face recognition codebase. It is intended for a reader who wishes to extend, modify, or audit the system rather than merely operate it. No theoretical material is repeated here; for the algorithms and the rationale behind the methodological choices, the body chapters of the thesis are the authoritative reference.
 
 ## B.2 Repository Layout

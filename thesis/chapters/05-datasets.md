@@ -8,7 +8,9 @@ This chapter documents the dataset used in this thesis, from the choice of sourc
 
 The dataset is deliberately heterogeneous. Each source contributes a capture regime the other two lack, and the union covers the range of conditions a deployed system is expected to encounter. The breakdown is given in Table 4.1.
 
-**Table 4.1: Data sources used in the thesis corpus.** All image counts are post-augmentation totals (see the augmentation section below); raw image counts before augmentation are roughly two orders of magnitude smaller per source.
+Counts in the table are post-augmentation totals, roughly two orders of magnitude larger than the raw cropped images.
+
+**Table 4.1: Data sources used in the thesis corpus.**
 
 | Source          | Identities | Augmented images | Capture regime                                   | Role in the experiments                                    |
 |-----------------|-----------:|-----------------:|--------------------------------------------------|------------------------------------------------------------|
