@@ -2,7 +2,7 @@
 
 A face recognition system solves two problems in sequence: it locates every face inside a frame, then decides whose face each crop belongs to. Detection produces rectangles; recognition produces identities. A missed detection is a silent error the recognizer cannot correct, while a precise but mislabelled crop corrupts the downstream database.
 
-This chapter describes the algorithms for each stage and derives the mathematics that governs them. For detection, a mobile-optimized deep network is compared against two classical detectors and a multi-stage convolutional cascade. For recognition, two paradigms are studied — closed-set classification and open-set embedding search — alongside three strategies for adapting a pre-trained FaceNet model.
+This chapter describes the algorithms for each stage and derives the mathematics that governs them. For detection, a mobile-optimized deep network is compared against two classical detectors and a multi-stage convolutional cascade. For recognition, two paradigms are studied (closed-set classification and open-set embedding search), alongside three strategies for adapting a pre-trained FaceNet model.
 
 ## 4.2 Face Detection Methods
 
@@ -88,7 +88,35 @@ Convolutional neural networks are the dominant architecture for face recognition
 
 ### 4.4.2 FaceNet
 
-FaceNet [CITE: schroff2015facenet] turned face recognition into an embedding problem. Instead of classifying identities directly, the network learns a mapping $f : \mathcal{I} \to \mathbb{R}^{d}$ in which the squared Euclidean distance between two embeddings approximates face dissimilarity. The backbone used here is InceptionResNetV1, whose forward path runs from the input face through stem convolutions, three stages of Inception-ResNet blocks (A, B, C) interleaved with reduction blocks, global average pooling, a dense embedding layer, and a final L2-normalization that yields a unit-norm 512-dimensional embedding.
+FaceNet [CITE: schroff2015facenet] turned face recognition into an embedding problem. Instead of classifying identities directly, the network learns a mapping $f : \mathcal{I} \to \mathbb{R}^{d}$ in which the squared Euclidean distance between two embeddings approximates face dissimilarity. The backbone used here is InceptionResNetV1, whose forward path is shown in Figure 3.1: the input face passes through stem convolutions, three stages of Inception-ResNet blocks (A, B, and C) interleaved with reduction blocks, global average pooling, a dense embedding layer, and a final L2-normalization that yields a unit-norm 512-dimensional embedding.
+
+```{=latex}
+\begin{figure}[ht]
+\centering
+\resizebox{0.95\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=5mm and 7mm,
+  box/.style={draw, rounded corners, minimum height=10mm, minimum width=18mm, align=center, font=\footnotesize},
+  >={Stealth[scale=1.1]}
+]
+\node[box] (in) {Input face\\$160\times160\times3$};
+\node[box, right=of in] (stem) {Stem\\convolutions};
+\node[box, right=of stem] (irn) {Inception-ResNet\\A / B / C\\+ reductions};
+\node[box, right=of irn] (gap) {Global avg.\\pooling};
+\node[box, right=of gap] (dense) {Dense\\embedding};
+\node[box, right=of dense] (l2) {L2\\normalisation};
+\node[box, right=of l2] (emb) {Unit-norm\\512-D embedding};
+\draw[->] (in) -- (stem);
+\draw[->] (stem) -- (irn);
+\draw[->] (irn) -- (gap);
+\draw[->] (gap) -- (dense);
+\draw[->] (dense) -- (l2);
+\draw[->] (l2) -- (emb);
+\end{tikzpicture}%
+}
+\caption{The InceptionResNetV1 backbone used for FaceNet embedding extraction.}
+\end{figure}
+```
 
 Inception blocks apply parallel $1 \times 1$, $3 \times 3$, and $5 \times 5$ convolutions and a pooling branch at each resolution and concatenate the outputs, letting the network attend to patterns at several receptive-field sizes. Residual connections add each block's input to its output, keeping gradients stable during backpropagation. The final embedding is L2-normalized,
 
@@ -128,4 +156,4 @@ Per-class precision and F1 complete the picture,
 
 $$\mathrm{Precision}_c = \frac{TP_c}{TP_c + FP_c}, \qquad \mathrm{F1}_c = 2 \cdot \frac{\mathrm{Precision}_c \cdot \mathrm{Recall}_c}{\mathrm{Precision}_c + \mathrm{Recall}_c},$$
 
-with $FP_c$ the count of false positives. Precision captures how often a prediction of class $c$ is correct, recall captures how often an instance of $c$ is recovered, and F1 is their harmonic mean. Macro-averaging weights every identity equally — important in surveillance, where every enrolled person matters regardless of appearance frequency.
+with $FP_c$ the count of false positives. Precision captures how often a prediction of class $c$ is correct, recall captures how often an instance of $c$ is recovered, and F1 is their harmonic mean. Macro-averaging weights every identity equally, which matters in surveillance, where every enrolled person counts regardless of appearance frequency.

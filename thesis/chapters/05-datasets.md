@@ -72,7 +72,21 @@ Augmentation was applied to the training split only, using the Albumentations li
 | Occlusion        | Coarse dropout (random rectangular erasures)                     | Partial occlusion from clothing, hands, other objects |
 | Compression      | JPEG compression at variable quality                             | Streaming and storage artefacts                       |
 
-The multiplier was chosen empirically against validation accuracy: below a certain factor the augmented pool was too narrow and the model overfit to the raw frames; above that threshold, additional variants yielded diminishing gains and longer training without a corresponding accuracy improvement. The transform families were selected to cover the failure modes observed in the security-camera subset, which supplies most of the difficulty. Bounding-box coordinates are not tracked alongside the pixel transformations, which is why the ground-truth detection test set in Chapter 6 is reported on raw frames rather than augmented variants.
+The multiplier was chosen empirically against validation accuracy: below a certain factor the augmented pool was too narrow and the model overfit to the raw frames; above that threshold, additional variants yielded diminishing gains and longer training without a corresponding accuracy improvement. The transform families were selected to cover the failure modes observed in the security-camera subset, which supplies most of the difficulty. The transform pipeline is described below; bounding-box coordinates are not tracked alongside the pixel transformations, which is why the ground-truth detection test set in Chapter 6 is reported on raw frames rather than augmented variants.
+
+**Augmentation Pipeline:**
+
+| Transform                  | Parameters                   | Probability | Purpose                        |
+| -------------------------- | ---------------------------- | ----------- | ------------------------------ |
+| Resize                     | 224×224 px                   | 1.00        | Standardize input for training |
+| Horizontal Flip            | —                            | 0.50        | Exploit facial symmetry        |
+| Random Brightness Contrast | brightness=0.2, contrast=0.2 | 0.30        | Simulate lighting changes      |
+| Random Gamma               | gamma=(80, 120)              | 0.30        | Exposure variation             |
+| RGB Shift                  | r=20, g=20, b=20             | 0.20        | White balance simulation       |
+| Gauss Noise                | var_limit=(10, 50)           | 0.20        | Sensor noise                   |
+| Blur                       | blur_limit=3                 | 0.20        | Motion/defocus blur            |
+
+Each transform is applied independently with its specified probability. An image may receive multiple transforms (e.g., brightness change AND flip AND blur) or none at all. The 224×224 resize standardises the augmented variants written to disk; at training time each variant is downsampled to the 160×160 input expected by the FaceNet backbone.
 
 ## 5.5 Dataset Characteristics
 

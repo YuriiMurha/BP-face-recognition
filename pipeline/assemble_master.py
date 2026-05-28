@@ -83,6 +83,9 @@ PREAMBLE_ADDITIONS = r"""%
 \usepackage{longtable}     % multi-page pandoc tables
 \usepackage{calc}          % pandoc proportional column widths (p{(\linewidth - ...) * \real{...}})
 \usepackage{array}         % needed for >{...} column-spec prefixes used by pandoc
+\usepackage[pdftex]{graphicx}% pre-load with template's option so tikz's graphicx load doesn't clash
+\usepackage{tikz}          % vector diagrams (FaceNet architecture figure)
+\usetikzlibrary{arrows.meta, positioning}
 \usepackage{chngcntr}      % \counterwithin for section-scoped figure/table numbers
 %% Reset figure and table counters at each section boundary, then format them
 %% as "N.M" so figures/tables in chapter 7 read as "Figure 7.1", "Table 7.1",
