@@ -130,7 +130,7 @@ GENERATED_HEADER = (
 )
 
 
-DEFAULT_SUBMISSION_DATE = "May. 30. 2026"  # TUKE class expects Month.Day.Year
+DEFAULT_SUBMISSION_DATE = "May. 29. 2026"  # TUKE class expects Month.Day.Year
 
 
 def _extract_submission_date(progress: str) -> str | None:

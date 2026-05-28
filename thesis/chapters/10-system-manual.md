@@ -59,7 +59,7 @@ The full list of environment variables read by the application is documented in 
 
 ## B.6 Training Workflow
 
-Three training paradigms are implemented, each with its own trainer module: a closed-set classifier trainer for cross-entropy on a fixed set of identities, a metric-learning trainer for triplet-loss embedding optimization, and a FaceNet fine-tuning trainer that supports the three strategies compared in Chapter 4 (feature extraction with a frozen backbone, progressive unfreezing, and triplet loss with online mining).
+Three training paradigms are implemented, each with its own trainer module: a closed-set classifier trainer for cross-entropy on a fixed set of identities, a metric-learning trainer for triplet-loss embedding optimization, and a FaceNet fine-tuning trainer that supports the three strategies compared in Chapter 3 (feature extraction with a frozen backbone, progressive unfreezing, and triplet loss with online mining).
 
 Training is launched through Makefile targets that handle the cross-platform plumbing. On Windows the targets activate the Windows virtual environment and run the trainer on CPU. On WSL2 the targets activate the WSL virtual environment, set the CUDA toolkit path through XLA flags, convert Windows paths to their WSL equivalents, and launch the same trainer with GPU acceleration enabled. The trainer code itself is identical between the two platforms; the divergence lives entirely in the Makefile.
 
@@ -93,6 +93,6 @@ At the runtime level, the cross-platform GPU utility module detects whether the 
 
 ## B.10 Reproducing Thesis Results
 
-Every numerical result reported in Chapter 7 can be regenerated from the repository state through a single Makefile target. The thesis-benchmark target trains or loads each model variant, runs the ground-truth detection evaluation, computes the verification and embedding-quality metrics, and writes the resulting JSON files and PNG plots to the results directory. The plotting scripts that turn the JSON files into the figures embedded in this thesis are themselves Makefile targets that depend only on the JSON outputs of the benchmark stage.
+Every numerical result reported in Chapter 6 can be regenerated from the repository state through a single Makefile target. The thesis-benchmark target trains or loads each model variant, runs the ground-truth detection evaluation, computes the verification and embedding-quality metrics, and writes the resulting JSON files and PNG plots to the results directory. The plotting scripts that turn the JSON files into the figures embedded in this thesis are themselves Makefile targets that depend only on the JSON outputs of the benchmark stage.
 
 Pinned random seeds, exactly reproducible dependency installation through the lockfile, and deterministic Albumentations augmentation together mean that two runs of the benchmark on the same hardware produce bitwise identical output. Cross-hardware runs may produce small floating-point differences but not differences large enough to change the conclusions.

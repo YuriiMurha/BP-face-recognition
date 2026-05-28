@@ -1,101 +1,35 @@
-# Chapter 6: Practical Implementation and Codebase Overview
+# Practical Implementation and Codebase Overview
 
-This chapter describes the design of the face recognition system at the level of components, layers, and interactions, rather than at the level of files and classes. It explains why the system was organized this way, what the abstractions are, and how they fit together to support the experiments reported in Chapter 7. A complementary system manual in Appendix B documents the concrete repository structure for readers who wish to extend or modify the codebase; this chapter stays at the conceptual level.
+This chapter describes the system at the level of components, layers, and interactions rather than files and classes: how it is organised, what the abstractions are, and how they support the experiments in Chapter 6. Appendix B documents the concrete repository structure for anyone extending the code.
 
-## 6.1 Codebase Structure and Organization
+## Codebase structure
 
-The codebase follows a layered Python source layout that distinguishes importable library code from standalone tools. Library code is grouped by concern: a vision layer that contains the detection and recognition implementations, a services layer that orchestrates the pipeline end to end, a database layer that persists registered identities, a preprocessing layer that prepares datasets, and an evaluation layer that runs the experiments reported in Chapter 7. Standalone tools — training launchers, plot generators, benchmark drivers — sit outside the library so that they can be invoked from the command line without importing the entire stack.
+The codebase uses a layered Python source layout that separates importable library code from standalone tools. The library is grouped by concern: a vision layer with the detection and recognition implementations, a service layer that orchestrates the pipeline, a database layer that persists registered identities, a preprocessing layer that prepares datasets, and an evaluation layer that runs the experiments. Standalone tools --- training launchers, plot generators, benchmark drivers --- sit outside the library so they can be run from the command line without importing the whole stack. The split is also a testing boundary: the library is covered by a pytest suite (unit, integration, and slow markers) while the tools are exercised end to end through the Makefile.
 
-The separation between library and tools is deliberate. A reader exploring the codebase to understand how the system works should read the library; a reader running the benchmarks should run the tools. The two have different testing expectations: the library is covered by a pytest suite organized by marker (unit, integration, slow), while the tools are exercised end to end through the Makefile.
+## Architecture
 
-## 6.2 System Architecture
+The runtime has three layers. The vision layer finds and recognises faces in a single image; the service layer orchestrates a complete request across detection, recognition, database lookup, and result aggregation; the application layer wires the service to a camera source and a display window. The boundary between vision and service is deliberately narrow: the vision layer exports two abstract interfaces, one for detectors and one for recognizers, and concrete implementations plug into a registry. The service layer knows nothing about which detector or recognizer it drives --- it talks only to the interfaces. That is what makes the experimental comparison honest: the same service code drives every detector--recognizer combination in Chapter 6, rather than a bespoke harness per method.
 
-### 6.2.1 Layered Architecture
+The pipeline service takes a frame, runs the detector, crops each face to the recognizer's input size, requests an embedding, queries the identity database for nearest neighbours, applies a similarity threshold, and returns annotated results; the same implementation serves both live camera operation and batch evaluation, differing only in the image source. A separate service handles closed-set classification, bypassing the database and reading the predicted class from the recognizer's classifier head. The two paradigms are surfaced as distinct services because their evaluation protocols and deployment lifecycles differ: open-set deployments support live enrolment, while closed-set deployments require retraining to add an identity. Configuration is typed and centralised --- a settings object exposes directories, camera parameters, the default model, and database credentials as validated fields drawn from environment variables or a project-local file, so a misspelled variable fails at startup rather than at runtime.
 
-The runtime architecture has three layers: a vision layer that knows how to find and recognize faces in a single image, a service layer that orchestrates a complete recognition request across detection, recognition, database lookup, and result aggregation, and an application layer that wires the service to a camera source and to a display window.
+## Detection pipeline
 
-The boundary between the vision layer and the service layer is intentionally narrow: the vision layer exports two abstract interfaces, one for detectors and one for recognizers, and concrete implementations of each plug into a registry. The service layer holds no knowledge of which detector or recognizer it is using; it interacts only with the abstract interfaces. The benefit is concrete and visible in the experimental work: the same service code drives every detector–recognizer combination evaluated in Chapter 7, so cross-method comparisons are honest rather than relying on bespoke harnesses per method.
+Detectors implement a single method that maps an image to a list of bounding boxes. The narrow contract is what makes the Chapter 6 comparison credible: every detector exposes the same interface regardless of the library behind it, and the service layer uses only the box list. Five detectors are registered --- MediaPipe BlazeFace (the default, GPU-capable), MTCNN (slow, high recall), Haar Cascade, dlib HOG, and a wrapper around the face_recognition library --- chosen because they sit at different points on the speed--quality curve measured in Chapter 6; their algorithms are derived in Chapter 3.
 
-### 6.2.2 Service Layer Design
+Detectors and recognizers are declared in a YAML registry that names each implementation class and its default parameters. At startup the registry is parsed, classes are resolved by dynamic import, and a factory hands plugin objects to the service layer. Adding a detector is therefore two steps --- implement the interface, add a registry entry --- with no service-layer change, and the same registry entry that selects a model at runtime selects it during a benchmark run, which is what made the comparison reproducible. MediaPipe itself uses a logged fallback chain: the GPU delegate first, then the CPU implementation, then the OpenCV Haar cascade, so that a performance-only GPU-to-CPU fallback is distinguished from an accuracy-affecting fallback to Haar.
 
-The pipeline service accepts a raw frame, invokes the configured detector to obtain bounding boxes, crops each detected face to the input resolution expected by the recognizer, asks the recognizer for an embedding, queries the identity database for nearest-neighbour matches, applies a similarity threshold, and returns annotated results. The same service implementation supports both real-time camera operation and batch evaluation against pre-collected frames; the only difference between the two is the source of the input image.
+## Recognition pipeline
 
-A separate service handles closed-set classification. It bypasses the database entirely and reads the predicted class directly from the recognizer's classifier head. This split exists because the two paradigms have meaningfully different evaluation protocols and meaningfully different deployment characteristics, and surfacing the distinction at the service-layer interface makes the rest of the system clearer.
+Every recognition strategy uses an InceptionResNetV1 backbone derived from FaceNet, initialised from a public checkpoint and producing a 512-dimensional, L2-normalised embedding. Cosine similarity between embeddings drives open-set recognition; the same embeddings feed a classifier head for closed-set recognition. Three fine-tuning strategies adapt the backbone to the 14-identity dataset --- frozen feature extraction, four-phase progressive unfreezing with decaying learning rates, and triplet-loss metric learning with random online mining --- and they share one training harness, evaluation protocol, and logging format (the algorithms are in Chapter 3); each run serialises its training history to JSON so the curves can be regenerated from a single source.
 
-### 6.2.3 Dual Recognition Modes
+Open-set recognition stores registered identities as embedding vectors in a CSV-backed database and returns the closest match above a configurable threshold; closed-set recognition takes the argmax of the softmax head, gated by a confidence threshold. The two share the detection front end and cropping logic, so any measured difference is attributable to the recognition step rather than to preprocessing. Recognizers are loaded by the same factory as detectors, with the registry pointing at either a full Keras model or a quantized variant, so switching between them is a configuration change rather than a code change.
 
-The system supports two recognition modes that share a single detection front end. Open-set mode treats recognition as nearest-neighbour search in an embedding space and accepts new identities at runtime by appending embeddings to the database. Closed-set mode treats recognition as classification against a fixed identity set determined at training time. Chapter 4 derives the algorithmic differences; this chapter notes only that the two modes are exposed as separate application entry points because the operational lifecycle is different: open-set deployments support live enrolment while closed-set deployments require model retraining to add identities.
+## Data pipeline, platform, and tooling
 
-### 6.2.4 Configuration Management
+The preprocessing pipeline (Chapter 4) exposes its three stages --- cropping, splitting, augmentation --- as independent, idempotent Makefile targets that share a dataset-discovery convention needing no per-dataset configuration; re-running a stage on unchanged input produces unchanged output, which is what makes the results reproducible from a fresh checkout. Augmentation is applied to the training partition only and written to disk, trading disk space for training speed and removing augmentation as a source of run-to-run variance; validation and test partitions stay unaugmented so that reported metrics reflect in-distribution images.
 
-Application configuration is typed and centralised. A settings object exposes filesystem directories, camera parameters, the default model selection, and database credentials as typed fields with sensible defaults. Values come from environment variables or from a project-local configuration file, and field types are validated at startup so that misspelled variables produce immediate errors rather than confusing runtime failures later. The same settings object is the single source of truth used throughout the codebase.
+For deployment, TensorFlow Lite produces quantized recognizer variants; dynamic-range quantization is the default because it cuts model size by roughly 75% at negligible accuracy cost, behind the same recognizer interface as the full model. The system runs on Windows and on Ubuntu under WSL2 from a single lockfile that resolves to the GPU TensorFlow wheel on Linux and the CPU wheel on Windows, with dlib built from source on Linux and installed from a pre-built wheel on Windows. Development uses uv for dependency resolution, nox for isolated test sessions, pytest, ruff, mypy, and GNU Make for command-line shortcuts; the quality gates run in seconds, which keeps the cross-validation workflow practical without disrupting interactive development.
 
-## 6.3 Detection Pipeline
+## Summary of design decisions
 
-### 6.3.1 Plugin Interface Design
-
-Detectors implement a single abstract method that maps an image to a list of bounding boxes. The interface is narrow on purpose: it forces every detector to expose the same contract regardless of the library that backs it, which is what makes the Chapter 7 comparison credible. A detector that returned landmarks or confidence scores in addition would still satisfy the contract, but the service layer only uses the bounding-box list, so additional outputs would be inert.
-
-### 6.3.2 Available Detectors
-
-Five detector implementations are registered: MediaPipe BlazeFace (the default, GPU-capable), MTCNN (slow but high-recall), Haar Cascade (the classical baseline), dlib HOG (the classical learned detector), and a thin wrapper around the face_recognition library. Algorithmic details of each method are derived in Chapter 4.2; the practical reason for keeping all five available is that they sit at different operating points on the speed–quality curve evaluated in Chapter 7, and reducing the comparison to a single representative would weaken the empirical claim.
-
-### 6.3.3 Plugin Selection and Switching
-
-Available detectors and recognizers are declared in a YAML registry alongside their default parameters and the fully qualified path to their implementation class. At startup the registry is parsed, classes are resolved through dynamic import, and the resulting plugin objects are made available to the service layer through a factory function. Adding a new detector or recognizer is therefore a two-step operation: implement the appropriate interface in a new module, then declare an entry in the registry. No changes to the service layer or the application entry points are required.
-
-The registry is also the mechanism by which the experimental work was carried out reproducibly. Each detector–recognizer combination evaluated in Chapter 7 corresponds to a registry entry, and the same configuration that selects the model at runtime selects it during the benchmark run.
-
-### 6.3.4 Multi-Tier Fallback in MediaPipe
-
-MediaPipe's runtime supports two backends: a GPU delegate, which is faster but requires hardware and driver compatibility, and a CPU implementation, which works on every platform. The system attempts to use the GPU delegate first, falls back to the CPU implementation if the GPU is unreachable, and finally falls back to the OpenCV Haar cascade if even the CPU MediaPipe path fails. The fallback chain is logged so that silent degradation is visible to the operator; this matters because a GPU-to-CPU fall-back is performance-only while a fall-back to Haar is a meaningful accuracy regression.
-
-## 6.4 Recognition Pipeline
-
-### 6.4.1 FaceNet Embedding Extraction
-
-Every recognition strategy compared in Chapter 7 uses an InceptionResNetV1 backbone derived from FaceNet, with weights initialised from a publicly available checkpoint trained on a large celebrity corpus. The backbone produces a 512-dimensional embedding for each input crop, which is L2-normalised so that all embeddings lie on the unit hypersphere. Cosine similarity between two normalised embeddings is the operating measure used throughout open-set evaluation, while the same embeddings feed into a classification head for closed-set evaluation.
-
-### 6.4.2 Three Training Strategies
-
-Three fine-tuning strategies for adapting the pre-trained backbone to the 14-identity custom dataset are implemented and compared: feature extraction with a frozen backbone, progressive unfreezing of the backbone in four phases with decaying learning rates, and metric learning with triplet loss using random online mining. The algorithmic content of each is in Chapter 4.5; the implementation contributes a common training harness so that all three strategies share the same data pipeline, the same evaluation protocol, and the same logging format. Per-strategy training history is serialised to JSON alongside each saved model so that training curves can be regenerated for the thesis from a single source.
-
-### 6.4.3 Open-Set and Closed-Set Implementations
-
-Open-set recognition is implemented as embedding plus retrieval. Registered identities are stored as embedding vectors in a CSV-backed database; the recognition service computes the cosine similarity between the probe embedding and every entry, and returns the closest match above a configurable threshold. The database also persists basic metadata (identity label, registration timestamp) but the matching itself depends only on the embedding.
-
-Closed-set recognition is implemented as direct classification using the recognizer's classifier head. No database lookup occurs; the predicted identity is the argmax of the softmax output, gated by a confidence threshold. The two implementations share the detection front end and the cropping logic, which is the architectural property that makes Chapter 7's comparison fair: any difference between the two modes is attributable to the recognition step rather than to upstream preprocessing.
-
-### 6.4.4 Model Loading and Switching
-
-Pre-trained and fine-tuned recognizers are loaded by the same factory used for detectors, with the registry pointing to either full or quantized model variants. Switching between the full and the quantized version of the same recognizer is a configuration change rather than a code change, which is what made the size-versus-accuracy comparison in Section 6.6.1 straightforward to run.
-
-## 6.5 Preprocessing and Data Pipeline
-
-The preprocessing pipeline is documented in detail in Chapter 5. From the implementation perspective the relevant points are that the three stages — cropping, splitting, augmentation — are each invokable independently through Makefile targets, that they share a common dataset-discovery convention that requires no per-dataset configuration, and that they are idempotent: re-running a stage on unchanged input produces unchanged output. This last property is what makes the experimental results in Chapter 7 reproducible from a fresh repository checkout.
-
-Augmentation is applied to the training partition only and writes the augmented variants to disk. This trades disk space for training-time speed and eliminates augmentation as a source of run-to-run variance in the training curves: every training run for a given seed sees exactly the same sequence of augmented examples. Validation and test partitions remain unaugmented so that reported metrics reflect behaviour on in-distribution images.
-
-## 6.6 Cross-Platform Support
-
-### 6.6.1 Model Quantization
-
-TensorFlow Lite is used to produce quantized variants of the recognizer for resource-constrained deployment. Three quantization strategies were trialled — dynamic-range, float16, and full int8 — with dynamic-range chosen as the default because it reduces model size by approximately 75% at negligible accuracy cost on the closed-set benchmark. The quantized variant exposes the same recognizer interface as the full Keras model, so consumers of the recognition service do not need to be aware of the underlying representation.
-
-### 6.6.2 GPU Delegate Support
-
-GPU acceleration is supported through MediaPipe's GPU delegate for detection and through TensorFlow's GPU backend for training. Detection runs comfortably on CPU and only invokes the GPU delegate when one is available and reachable. Training, by contrast, is GPU-bound for the FaceNet fine-tuning strategies: a four-phase progressive-unfreezing run on the 14-identity dataset takes approximately 50 minutes on a modest consumer GPU and several hours on CPU. The training tools therefore document GPU as the recommended path, with CPU available as a fallback for quick experiments.
-
-### 6.6.3 Platform-Specific Dependency Management
-
-The system runs on Windows and on Ubuntu under WSL2. Platform divergence is handled at the dependency level by the package manager: the same lockfile resolves to the GPU-capable TensorFlow wheel on Linux and the CPU-only wheel on Windows, and the dlib library is built from source on Linux but installed from a pre-built wheel on Windows where building from source requires additional toolchains. The user is shielded from these details: a single setup command produces a working environment on either platform.
-
-## 6.7 Build and Development Tools
-
-The project uses uv for dependency resolution and lockfile management, nox for orchestrating test sessions in isolated virtual environments, pytest as the test framework, ruff for linting and import sorting, mypy for static type checking, and GNU Make for command-line shortcuts that wrap the underlying invocations. The rationale for each selection is in Chapter 3; the practical effect on the implementation is that quality gates are short to express and fast to run. Lint, type-check, and unit-test passes complete in seconds, which is what makes the cross-validation workflow in Chapter 7 feasible without disrupting interactive development.
-
-## 6.8 Summary of Design Decisions
-
-Four design decisions structure the implementation. First, the narrow vision-layer interface — detectors return rectangles, recognizers return embeddings — makes cross-method comparison credible because the surrounding code is identical for every method evaluated. Second, the YAML model registry decouples plugin selection from code, which is what allowed twenty-plus detector–recognizer combinations to be benchmarked without per-combination harness code. Third, on-disk augmentation eliminates augmentation as a run-to-run confound, which is what makes the cross-validation analysis in Chapter 7 interpretable. Fourth, the dual-paradigm split exposes open-set and closed-set recognition as distinct services rather than as flags on a single service, because the operational semantics differ even when the underlying backbone is shared.
-
-Together these choices reduce the surface area where silent inconsistencies can hide, which is the property a thesis whose conclusions depend on cross-method numerical comparisons needs from its implementation.
+Four decisions structure the implementation. The narrow vision-layer interface --- detectors return rectangles, recognizers return embeddings --- makes cross-method comparison credible because the surrounding code is identical for every method. The YAML registry decouples plugin selection from code, which is what let more than twenty detector--recognizer combinations be benchmarked without per-combination harness code. On-disk augmentation removes augmentation as a run-to-run confound, making the cross-validation analysis interpretable. And the dual-paradigm split exposes open-set and closed-set recognition as distinct services rather than flags on one, because their operational semantics differ even when the backbone is shared. Together these choices shrink the surface where silent inconsistencies could hide --- the property a thesis whose conclusions rest on cross-method comparisons needs from its implementation.
