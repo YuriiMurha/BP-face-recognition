@@ -1,6 +1,0 @@
-flowchart TB
-    A[Input Face] --> B["FaceNet Backbone (frozen)"]
-    B --> C[Embedding]
-    C --> D["Dense + ReLU (trainable)"]
-    D --> E["Dropout (trainable)"]
-    E --> F["Softmax over N classes (trainable)"]
