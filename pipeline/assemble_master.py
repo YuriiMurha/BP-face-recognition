@@ -67,7 +67,7 @@ LIST_OF_APPENDICES = r"""%
 \addcontentsline{toc}{section}{List of Appendices}
 \begin{description}
     \item[Appendix A] CD Medium --- the complete source code of the face
-        recognition system.
+        recognition system together with the quantized model weights.
     \item[Appendix B] User Manual --- installation, configuration, and
         day-to-day operation of the face recognition system for the
         end user.
