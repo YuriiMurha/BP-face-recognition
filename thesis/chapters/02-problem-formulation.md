@@ -8,4 +8,4 @@ The assignment for this thesis defines four tasks: to survey the artificial-inte
 
 **Training, evaluation, and a deployment judgement.** Three fine-tuning strategies --- frozen transfer learning, progressive unfreezing, and triplet-loss metric learning --- were trained on the same data and compared on accuracy, embedding quality, and open-set verification. Progressive unfreezing reached 99.2% closed-set accuracy and was chosen as the default. The detector benchmark and the recognition pipeline run at video rate on a CPU, which establishes fitness for real deployment. Chapter 5 describes the implementation and Chapter 6 reports the results.
 
-**Documentation.** The system ships with a user manual and a system manual (Appendices A and B), and a build that regenerates every reported figure and table from the repository.
+**Documentation.** The system ships with a user manual and a system manual (Appendices B and C), and a build that regenerates every reported figure and table from the repository.

@@ -524,7 +524,7 @@ BP_TEMPLATE     := D:/Coding/Personal/overleaf-bp-template
 endif
 
 THESIS_BUILD := thesis/build
-CHAPTERS     := 01 02 03 04 05 06 07 08 09 10
+CHAPTERS     := 01 02 03 04 05 06 07 08 09 10 11
 SYSPY        := python
 # Tool autodetect: prefer PATH, fall back to standard Windows install
 # locations. The pandoc and MiKTeX installers add to user PATH but a shell

@@ -21,13 +21,6 @@ make lint                        # Ruff linting
 make type-check                  # mypy type checking
 make run                         # Run face recognition app with camera
 
-# Run specific nox sessions
-uv run nox -s tests              # All tests
-uv run nox -s test_config        # Config tests only
-uv run nox -s test_training      # Training tests only
-uv run nox -s test_preprocessing # Preprocessing tests
-uv run nox -s lint               # Lint only
-
 # Run a single test file directly
 uv run pytest src/bp_face_recognition/tests/unit/test_config.py -v
 

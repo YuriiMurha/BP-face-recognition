@@ -47,6 +47,12 @@ def _build_includes(main_chapters: range, appendix_chapters: range) -> str:
     \\section commands with letters (A, B, C, ...) instead of digits.
     """
     lines = [f"\\include{{chapters/chapter-{n:02d}}}" for n in main_chapters]
+    # Back-matter order per supervisor: conclusion -> bibliography ->
+    # list of appendices (last page of the work proper) -> appendix bodies.
+    lines.append("\\bibliographystyle{plain}")
+    lines.append("\\phantomsection")
+    lines.append("\\addcontentsline{toc}{section}{Bibliography}")
+    lines.append("\\bibliography{references}")
     lines.append(LIST_OF_APPENDICES)
     lines.append("\\appendix")
     lines.extend(f"\\include{{chapters/chapter-{n:02d}}}" for n in appendix_chapters)
@@ -55,13 +61,17 @@ def _build_includes(main_chapters: range, appendix_chapters: range) -> str:
 
 LIST_OF_APPENDICES = r"""%
 %% List of Appendices -- mirrors the legacy Zoznam priloh pattern.
+%% Starts on its own page (supervisor's request).
+\clearpage
 \section*{List of Appendices}
 \addcontentsline{toc}{section}{List of Appendices}
 \begin{description}
-    \item[Appendix A] User Manual --- installation, configuration, and
+    \item[Appendix A] CD Medium --- the complete source code of the face
+        recognition system.
+    \item[Appendix B] User Manual --- installation, configuration, and
         day-to-day operation of the face recognition system for the
         end user.
-    \item[Appendix B] System Manual --- technical reference for the
+    \item[Appendix C] System Manual --- technical reference for the
         repository layout, component architecture, configuration files,
         training workflow, and reproducibility of the experimental
         results.
@@ -72,7 +82,8 @@ LIST_OF_APPENDICES = r"""%
 
 NEW_INCLUDES = _build_includes(
     main_chapters=range(1, 9),       # chapters 01..08
-    appendix_chapters=range(9, 11),  # chapters 09 (User Manual), 10 (System Manual)
+    # Appendix order (by include sequence): CD (A), User Manual (B), System Manual (C).
+    appendix_chapters=(11, 9, 10),   # 11 (CD), 09 (User Manual), 10 (System Manual)
 )
 
 PREAMBLE_ADDITIONS = r"""%
@@ -198,12 +209,10 @@ def assemble(
 
     # Replace `\include{bibliography}` with `\bibliography{references}`,
     # preceded by `\bibliographystyle{plain}`.
-    text = re.sub(
-        r"\\include\{bibliography\}",
-        lambda m: "\\bibliographystyle{plain}\n\\bibliography{references}",
-        text,
-        count=1,
-    )
+    # The bibliography is now emitted inside the include list (right after the
+    # conclusion, before the appendices), so drop the legacy placeholder rather
+    # than turning it into a second \bibliography at the end of the document.
+    text = re.sub(r"\\include\{bibliography\}\s*\n?", "", text, count=1)
 
     # Remove pre-body `\bibliographystyle{dcu}` (was line ~99 in legacy).
     text = re.sub(r"^\\bibliographystyle\{dcu\}\s*\n", "", text, flags=re.MULTILINE)

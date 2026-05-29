@@ -236,9 +236,7 @@ given}}
 Study Programme:& \@studyprogramme \\
 Field of study:& \@fieldofstudy \\
 Department:& \@department~(\@departmentabbr) \\
-Supervisor:& \@supervisor \\
-Consultant(s):& \@consultanta \\
-\phantom{Consultant(s):}& \@consultantb
+Supervisor:& \@supervisor
 \end{tabular}
 
 \vspace{2\baselineskip}
